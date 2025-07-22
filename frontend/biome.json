@@ -31,7 +31,7 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "useLiteralKeys": "warn",
+        "useLiteralKeys": "off",
         "noBannedTypes": "error"
       },
       "correctness": {

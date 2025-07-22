@@ -4,6 +4,6 @@ toolchain go1.24.5
 
 use (
 	.
-	./services/group
 	./gateway
+	./services/group
 )

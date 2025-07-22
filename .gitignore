@@ -58,7 +58,7 @@ temp/
 # Mise
 .mise/
 
-# Generated files
-*.pb.go
-*_grpc.pb.go
+# Generated files (exclude proto generated files from this rule)
+# *.pb.go
+# *_grpc.pb.go
 generated/

@@ -32,7 +32,7 @@ export default function CreateGroupPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">新しいグループを作成</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
         <div>
           <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">
@@ -85,7 +85,7 @@ export default function CreateGroupPage() {
           </label>
           <div className="space-y-2">
             {members.map((member, index) => (
-              <div key={`member-${index}`} className="flex gap-2">
+              <div key={member || `member-${index}`} className="flex gap-2">
                 <input
                   type="text"
                   value={member}
