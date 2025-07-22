@@ -13,6 +13,9 @@ service GroupService {
   rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse);
   rpc AddMember(AddMemberRequest) returns (AddMemberResponse);
   rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
+  rpc AddExpense(AddExpenseRequest) returns (AddExpenseResponse);
+  rpc GetGroupExpenses(GetGroupExpensesRequest) returns (GetGroupExpensesResponse);
+  rpc CalculateSettlements(CalculateSettlementsRequest) returns (CalculateSettlementsResponse);
 }
 
 message Group {
@@ -87,4 +90,76 @@ message RemoveMemberRequest {
 
 message RemoveMemberResponse {
   bool success = 1;
+}
+
+// Expense messages
+message AddExpenseRequest {
+  string group_id = 1;
+  int64 amount = 2; // Amount in cents (JPY)
+  string description = 3;
+  string paid_by_id = 4; // Member ID who paid
+  repeated string split_member_ids = 5; // Member IDs to split among
+}
+
+message AddExpenseResponse {
+  ExpenseWithDetails expense = 1;
+}
+
+message GetGroupExpensesRequest {
+  string group_id = 1;
+}
+
+message GetGroupExpensesResponse {
+  repeated ExpenseWithDetails expenses = 1;
+}
+
+message ExpenseWithDetails {
+  string id = 1;
+  string group_id = 2;
+  int64 amount = 3; // Amount in cents (JPY)
+  string description = 4;
+  string paid_by_id = 5;
+  string paid_by_name = 6;
+  repeated SplitMember split_members = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message SplitMember {
+  string member_id = 1;
+  string member_name = 2;
+  int64 amount = 3; // Amount owed by this member in cents (JPY)
+}
+
+// Settlement calculation messages
+message CalculateSettlementsRequest {
+  string group_id = 1;
+  repeated Expense expenses = 2;
+}
+
+message CalculateSettlementsResponse {
+  repeated Settlement settlements = 1;
+  repeated MemberBalance balances = 2;
+}
+
+message Expense {
+  string id = 1;
+  string payer_id = 2;
+  int64 amount = 3; // Amount in cents (JPY)
+  string description = 4;
+  repeated string split_between = 5; // Member IDs
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message Settlement {
+  string from_member_id = 1;
+  string to_member_id = 2;
+  int64 amount = 3; // Amount in cents (JPY)
+  string from_name = 4;
+  string to_name = 5;
+}
+
+message MemberBalance {
+  string member_id = 1;
+  string member_name = 2;
+  int64 balance = 3; // Positive = owed money, Negative = owes money
 }

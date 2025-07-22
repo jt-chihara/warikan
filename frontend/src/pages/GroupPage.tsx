@@ -1,21 +1,98 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ExpenseModal from '../components/ExpenseModal';
+import { useAddExpense, useGroupExpenses } from '../hooks/useExpense';
+import { useGroup } from '../hooks/useGroup';
+import type { AddExpenseInput } from '../types/group';
 
 export default function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
-
-  console.log('Group ID:', groupId); // TODO: GraphQL queryでグループ情報を取得
+  const { data, loading, error } = useGroup(groupId || '');
+  const {
+    data: expensesData,
+    loading: expensesLoading,
+    refetch: refetchExpenses,
+  } = useGroupExpenses(groupId || '');
+  const [addExpense] = useAddExpense();
   const [activeTab, setActiveTab] = useState<'expenses' | 'settlement'>('expenses');
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+
+  const handleAddExpense = async (expense: {
+    amount: number;
+    description: string;
+    paidBy: string;
+    splitAmong: string[];
+  }) => {
+    try {
+      const input: AddExpenseInput = {
+        groupId: groupId || '',
+        amount: expense.amount,
+        description: expense.description,
+        paidById: expense.paidBy,
+        splitMemberIds: expense.splitAmong,
+      };
+
+      await addExpense({ variables: { input } });
+      await refetchExpenses();
+    } catch (err) {
+      console.error('Error adding expense:', err);
+      alert('支払いの追加に失敗しました。');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-64">
+        <div className="text-gray-600">読み込み中...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-md p-4">
+        <div className="text-red-800">エラーが発生しました: {error.message}</div>
+      </div>
+    );
+  }
+
+  if (!data?.group) {
+    return (
+      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+        <div className="text-yellow-800">グループが見つかりません。</div>
+      </div>
+    );
+  }
+
+  const group = data.group;
 
   return (
     <div>
       <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">熱海旅行</h2>
-        <p className="text-gray-600 mt-1">2024年1月の熱海温泉旅行</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{group.name}</h2>
+            {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
+            <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+              <span>通貨: {group.currency}</span>
+              <span>作成日: {new Date(group.createdAt).toLocaleDateString('ja-JP')}</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+              {group.members.length}人
+            </span>
+          </div>
+        </div>
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">太郎</span>
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">花子</span>
-          <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">次郎</span>
+          {group.members.map((member) => (
+            <span
+              key={member.id}
+              className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+            >
+              {member.name}
+            </span>
+          ))}
         </div>
       </div>
 
@@ -53,25 +130,46 @@ export default function GroupPage() {
               <div className="mb-4">
                 <button
                   type="button"
+                  onClick={() => setIsExpenseModalOpen(true)}
                   className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
                 >
                   支払いを追加
                 </button>
               </div>
-              <div className="space-y-4">
-                <div className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-semibold">宿泊費</h4>
-                      <p className="text-sm text-gray-600">太郎が支払い</p>
+
+              {expensesLoading ? (
+                <div className="text-center py-8 text-gray-600">読み込み中...</div>
+              ) : expensesData?.groupExpenses?.length ? (
+                <div className="space-y-4">
+                  {expensesData.groupExpenses.map((expense) => (
+                    <div key={expense.id} className="border rounded-lg p-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold">{expense.description}</h4>
+                          <p className="text-sm text-gray-600">{expense.paidByName}が支払い</p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {new Date(expense.createdAt).toLocaleDateString('ja-JP')}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold">¥{expense.amount.toLocaleString()}</p>
+                          <p className="text-sm text-gray-600">
+                            {expense.splitMembers.length}人で割り勘
+                          </p>
+                        </div>
+                      </div>
+                      <div className="mt-2 text-sm text-gray-600">
+                        <span>割り勘対象: </span>
+                        <span>
+                          {expense.splitMembers.map((member) => member.memberName).join(', ')}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">¥30,000</p>
-                      <p className="text-sm text-gray-600">全員で割り勘</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">まだ支払い記録がありません。</div>
+              )}
             </div>
           ) : (
             <div>
@@ -93,6 +191,15 @@ export default function GroupPage() {
           )}
         </div>
       </div>
+
+      {group && (
+        <ExpenseModal
+          isOpen={isExpenseModalOpen}
+          onClose={() => setIsExpenseModalOpen(false)}
+          group={group}
+          onAddExpense={handleAddExpense}
+        />
+      )}
     </div>
   );
 }

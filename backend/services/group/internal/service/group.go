@@ -3,16 +3,26 @@ package service
 import (
 	"context"
 	"errors"
+	"time"
 
+	"github.com/google/uuid"
+	"github.com/jt-chihara/warikan/services/group/internal/algorithm"
+	"github.com/jt-chihara/warikan/services/group/internal/domain"
+	"github.com/jt-chihara/warikan/services/group/internal/repository"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type GroupService struct {
-	repo GroupRepositoryInterface
+	repo        GroupRepositoryInterface
+	expenseRepo repository.ExpenseRepository
 }
 
-func NewGroupService(repo GroupRepositoryInterface) *GroupService {
-	return &GroupService{repo: repo}
+func NewGroupService(repo GroupRepositoryInterface, expenseRepo repository.ExpenseRepository) *GroupService {
+	return &GroupService{
+		repo:        repo,
+		expenseRepo: expenseRepo,
+	}
 }
 
 func (s *GroupService) CreateGroup(ctx context.Context, req *groupv1.CreateGroupRequest) (*groupv1.CreateGroupResponse, error) {
@@ -115,5 +125,231 @@ func (s *GroupService) RemoveMember(ctx context.Context, req *groupv1.RemoveMemb
 
 	return &groupv1.RemoveMemberResponse{
 		Success: true,
+	}, nil
+}
+
+func (s *GroupService) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
+	if req.GroupId == "" {
+		return nil, errors.New("group ID is required")
+	}
+
+	// Get group to validate it exists and get members
+	group, err := s.repo.GetGroupByID(req.GroupId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert proto expenses to algorithm format
+	algExpenses := make([]algorithm.Expense, len(req.Expenses))
+	for i, expense := range req.Expenses {
+		algExpenses[i] = algorithm.Expense{
+			ID:           expense.Id,
+			PayerID:      expense.PayerId,
+			Amount:       expense.Amount,
+			SplitBetween: expense.SplitBetween,
+		}
+	}
+
+	// Convert proto members to algorithm format
+	algMembers := make([]algorithm.Member, len(group.Members))
+	for i, member := range group.Members {
+		algMembers[i] = algorithm.Member{
+			ID:   member.Id,
+			Name: member.Name,
+		}
+	}
+
+	// Calculate member balances
+	balances := algorithm.CalculateMemberBalances(algExpenses, algMembers)
+
+	// Calculate optimal settlements
+	settlements, err := algorithm.CalculateOptimalSettlements(balances)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert algorithm results to proto format
+	protoSettlements := make([]*groupv1.Settlement, len(settlements))
+	for i, settlement := range settlements {
+		protoSettlements[i] = &groupv1.Settlement{
+			FromMemberId: settlement.FromMemberID,
+			ToMemberId:   settlement.ToMemberID,
+			Amount:       settlement.Amount,
+			FromName:     settlement.FromName,
+			ToName:       settlement.ToName,
+		}
+	}
+
+	protoBalances := make([]*groupv1.MemberBalance, len(balances))
+	for i, balance := range balances {
+		protoBalances[i] = &groupv1.MemberBalance{
+			MemberId:   balance.MemberID,
+			MemberName: balance.Name,
+			Balance:    balance.Amount,
+		}
+	}
+
+	return &groupv1.CalculateSettlementsResponse{
+		Settlements: protoSettlements,
+		Balances:    protoBalances,
+	}, nil
+}
+
+func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRequest) (*groupv1.AddExpenseResponse, error) {
+	if req.GroupId == "" {
+		return nil, errors.New("group ID is required")
+	}
+	if req.Amount <= 0 {
+		return nil, errors.New("amount must be positive")
+	}
+	if req.Description == "" {
+		return nil, errors.New("description is required")
+	}
+	if req.PaidById == "" {
+		return nil, errors.New("paid by ID is required")
+	}
+	if len(req.SplitMemberIds) == 0 {
+		return nil, errors.New("split members are required")
+	}
+
+	// Parse UUIDs
+	groupID, err := uuid.Parse(req.GroupId)
+	if err != nil {
+		return nil, errors.New("invalid group ID")
+	}
+	
+	paidByID, err := uuid.Parse(req.PaidById)
+	if err != nil {
+		return nil, errors.New("invalid paid by ID")
+	}
+
+	// Validate group exists and get members
+	group, err := s.repo.GetGroupByID(req.GroupId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Calculate split amount
+	splitAmount := req.Amount / int64(len(req.SplitMemberIds))
+
+	// Create split members
+	var splitMembers []domain.SplitMember
+	var paidByName string
+	
+	for _, memberID := range req.SplitMemberIds {
+		memberUUID, err := uuid.Parse(memberID)
+		if err != nil {
+			return nil, errors.New("invalid member ID: " + memberID)
+		}
+
+		// Find member name
+		var memberName string
+		for _, member := range group.Members {
+			if member.Id == memberID {
+				memberName = member.Name
+				break
+			}
+		}
+		if memberName == "" {
+			return nil, errors.New("member not found: " + memberID)
+		}
+
+		// Set paid by name if this is the payer
+		if memberID == req.PaidById {
+			paidByName = memberName
+		}
+
+		splitMembers = append(splitMembers, domain.SplitMember{
+			MemberID:   memberUUID,
+			MemberName: memberName,
+			Amount:     splitAmount,
+		})
+	}
+
+	// Create expense
+	now := time.Now()
+	expense := &domain.Expense{
+		ID:           uuid.New(),
+		GroupID:      groupID,
+		Amount:       req.Amount,
+		Description:  req.Description,
+		PaidByID:     paidByID,
+		PaidByName:   paidByName,
+		SplitMembers: splitMembers,
+		CreatedAt:    now,
+		UpdatedAt:    now,
+	}
+
+	// Save expense
+	err = s.expenseRepo.Create(ctx, expense)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to proto format
+	protoSplitMembers := make([]*groupv1.SplitMember, len(splitMembers))
+	for i, split := range splitMembers {
+		protoSplitMembers[i] = &groupv1.SplitMember{
+			MemberId:   split.MemberID.String(),
+			MemberName: split.MemberName,
+			Amount:     split.Amount,
+		}
+	}
+
+	return &groupv1.AddExpenseResponse{
+		Expense: &groupv1.ExpenseWithDetails{
+			Id:           expense.ID.String(),
+			GroupId:      expense.GroupID.String(),
+			Amount:       expense.Amount,
+			Description:  expense.Description,
+			PaidById:     expense.PaidByID.String(),
+			PaidByName:   expense.PaidByName,
+			SplitMembers: protoSplitMembers,
+			CreatedAt:    timestamppb.New(expense.CreatedAt),
+		},
+	}, nil
+}
+
+func (s *GroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGroupExpensesRequest) (*groupv1.GetGroupExpensesResponse, error) {
+	if req.GroupId == "" {
+		return nil, errors.New("group ID is required")
+	}
+
+	groupID, err := uuid.Parse(req.GroupId)
+	if err != nil {
+		return nil, errors.New("invalid group ID")
+	}
+
+	expenses, err := s.expenseRepo.FindByGroupID(ctx, groupID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to proto format
+	protoExpenses := make([]*groupv1.ExpenseWithDetails, len(expenses))
+	for i, expense := range expenses {
+		protoSplitMembers := make([]*groupv1.SplitMember, len(expense.SplitMembers))
+		for j, split := range expense.SplitMembers {
+			protoSplitMembers[j] = &groupv1.SplitMember{
+				MemberId:   split.MemberID.String(),
+				MemberName: split.MemberName,
+				Amount:     split.Amount,
+			}
+		}
+
+		protoExpenses[i] = &groupv1.ExpenseWithDetails{
+			Id:           expense.ID.String(),
+			GroupId:      expense.GroupID.String(),
+			Amount:       expense.Amount,
+			Description:  expense.Description,
+			PaidById:     expense.PaidByID.String(),
+			PaidByName:   expense.PaidByName,
+			SplitMembers: protoSplitMembers,
+			CreatedAt:    timestamppb.New(expense.CreatedAt),
+		}
+	}
+
+	return &groupv1.GetGroupExpensesResponse{
+		Expenses: protoExpenses,
 	}, nil
 }

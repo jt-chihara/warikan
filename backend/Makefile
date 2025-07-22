@@ -1,4 +1,4 @@
-.PHONY: build-migrate run-migrate migrate-up migrate-down migrate-create help
+.PHONY: build-migrate run-migrate migrate-up migrate-down migrate-create proto help
 
 # Build migration tool
 build-migrate:
@@ -11,6 +11,12 @@ migrate-up: build-migrate
 # Run migration down
 migrate-down: build-migrate
 	cd migrations && ../bin/migrate -direction down
+
+# Generate protobuf files
+proto:
+	protoc --go_out=. --go_opt=paths=source_relative \
+		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+		proto/group/v1/group.proto
 
 # Create new migration file
 migrate-create:
