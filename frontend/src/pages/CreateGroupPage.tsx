@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCreateGroup } from '../hooks/useGroup';
+import { useLocalGroups } from '../hooks/useLocalGroups';
+import type { CreateGroupInput } from '../types/group';
 
 export default function CreateGroupPage() {
   const navigate = useNavigate();
+  const [createGroup, { loading, error }] = useCreateGroup();
+  const { addGroup } = useLocalGroups();
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
   const [currency, setCurrency] = useState('JPY');
@@ -24,14 +29,46 @@ export default function CreateGroupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: GraphQL mutationでグループを作成
-    console.log('Creating group:', { groupName, description, currency, members });
-    // navigate(`/groups/${groupId}`);
+    
+    // Filter out empty member names
+    const validMembers = members.filter(member => member.trim() !== '');
+    
+    if (validMembers.length === 0) {
+      alert('少なくとも1人のメンバーを追加してください。');
+      return;
+    }
+
+    try {
+      const input: CreateGroupInput = {
+        name: groupName,
+        description: description.trim() || undefined,
+        currency,
+        memberNames: validMembers,
+      };
+
+      const result = await createGroup({ variables: { input } });
+      
+      if (result.data?.createGroup) {
+        // Save to local storage for offline functionality
+        addGroup(result.data.createGroup);
+        navigate(`/groups/${result.data.createGroup.id}`);
+      }
+    } catch (err) {
+      console.error('Error creating group:', err);
+    }
   };
 
   return (
     <div className="max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">新しいグループを作成</h2>
+
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="text-red-800">
+            エラーが発生しました: {error.message}
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
         <div>
@@ -64,19 +101,12 @@ export default function CreateGroupPage() {
         </div>
 
         <div>
-          <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700">
             通貨
           </label>
-          <select
-            id="currency"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option value="JPY">円 (JPY)</option>
-            <option value="USD">ドル (USD)</option>
-            <option value="EUR">ユーロ (EUR)</option>
-          </select>
+          <div className="mt-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
+            円 (JPY)
+          </div>
         </div>
 
         <div>
@@ -85,7 +115,7 @@ export default function CreateGroupPage() {
           </label>
           <div className="space-y-2">
             {members.map((member, index) => (
-              <div key={member || `member-${index}`} className="flex gap-2">
+              <div key={`member-${index}`} className="flex gap-2">
                 <input
                   type="text"
                   value={member}
@@ -117,9 +147,10 @@ export default function CreateGroupPage() {
         <div className="flex gap-4">
           <button
             type="submit"
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700"
+            disabled={loading}
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            グループを作成
+            {loading ? '作成中...' : 'グループを作成'}
           </button>
           <button
             type="button"

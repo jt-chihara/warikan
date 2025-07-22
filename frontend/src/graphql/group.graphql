@@ -1,0 +1,64 @@
+mutation CreateGroup($input: CreateGroupInput!) {
+  createGroup(input: $input) {
+    id
+    name
+    description
+    currency
+    createdAt
+    members {
+      id
+      name
+      email
+      joinedAt
+    }
+  }
+}
+
+query ListGroups {
+  groups {
+    id
+    name
+    description
+    currency
+    createdAt
+    updatedAt
+    members {
+      id
+      name
+    }
+  }
+}
+
+query GetGroup($id: ID!) {
+  group(id: $id) {
+    id
+    name
+    description
+    currency
+    createdAt
+    updatedAt
+    members {
+      id
+      name
+      email
+      joinedAt
+    }
+  }
+}
+
+query CalculateSettlements($groupId: ID!, $expenses: [ExpenseInput!]!) {
+  calculateSettlements(groupId: $groupId, expenses: $expenses) {
+    settlements {
+      fromMemberId
+      toMemberId
+      amount
+      fromName
+      ToName
+    }
+    balances {
+      memberId
+      memberName
+      balance
+    }
+  }
+}
