@@ -29,7 +29,7 @@ jobs:
 
     - name: Install dependencies
       working-directory: ./backend
-      run: go mod download
+      run: go work sync
 
     - name: Run backend unit tests
       working-directory: ./backend
@@ -38,15 +38,15 @@ jobs:
         go tool cover -html=coverage.out -o coverage.html
 
     - name: Run Group Service unit tests
-      working-directory: ./backend/services/group
+      working-directory: ./backend
       run: |
-        go test ./... -v -race -coverprofile=coverage.out
-        go tool cover -html=coverage.out -o coverage.html
+        go test ./services/group/... -v -race -coverprofile=group-coverage.out
+        go tool cover -html=group-coverage.out -o group-coverage.html
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
-        files: ./backend/coverage.out,./backend/services/group/coverage.out
+        files: ./backend/coverage.out,./backend/group-coverage.out
         fail_ci_if_error: false
 
   test-frontend:
