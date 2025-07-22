@@ -782,6 +782,700 @@ func (x *RemoveMemberResponse) GetSuccess() bool {
 	return false
 }
 
+// Expense messages
+type AddExpenseRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	GroupId        string                 `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	Amount         int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"` // Amount in cents (JPY)
+	Description    string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	PaidById       string                 `protobuf:"bytes,4,opt,name=paid_by_id,json=paidById,proto3" json:"paid_by_id,omitempty"`                   // Member ID who paid
+	SplitMemberIds []string               `protobuf:"bytes,5,rep,name=split_member_ids,json=splitMemberIds,proto3" json:"split_member_ids,omitempty"` // Member IDs to split among
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *AddExpenseRequest) Reset() {
+	*x = AddExpenseRequest{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddExpenseRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddExpenseRequest) ProtoMessage() {}
+
+func (x *AddExpenseRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddExpenseRequest.ProtoReflect.Descriptor instead.
+func (*AddExpenseRequest) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AddExpenseRequest) GetGroupId() string {
+	if x != nil {
+		return x.GroupId
+	}
+	return ""
+}
+
+func (x *AddExpenseRequest) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *AddExpenseRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *AddExpenseRequest) GetPaidById() string {
+	if x != nil {
+		return x.PaidById
+	}
+	return ""
+}
+
+func (x *AddExpenseRequest) GetSplitMemberIds() []string {
+	if x != nil {
+		return x.SplitMemberIds
+	}
+	return nil
+}
+
+type AddExpenseResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Expense       *ExpenseWithDetails    `protobuf:"bytes,1,opt,name=expense,proto3" json:"expense,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddExpenseResponse) Reset() {
+	*x = AddExpenseResponse{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddExpenseResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddExpenseResponse) ProtoMessage() {}
+
+func (x *AddExpenseResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddExpenseResponse.ProtoReflect.Descriptor instead.
+func (*AddExpenseResponse) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *AddExpenseResponse) GetExpense() *ExpenseWithDetails {
+	if x != nil {
+		return x.Expense
+	}
+	return nil
+}
+
+type GetGroupExpensesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GroupId       string                 `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGroupExpensesRequest) Reset() {
+	*x = GetGroupExpensesRequest{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGroupExpensesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGroupExpensesRequest) ProtoMessage() {}
+
+func (x *GetGroupExpensesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGroupExpensesRequest.ProtoReflect.Descriptor instead.
+func (*GetGroupExpensesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetGroupExpensesRequest) GetGroupId() string {
+	if x != nil {
+		return x.GroupId
+	}
+	return ""
+}
+
+type GetGroupExpensesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Expenses      []*ExpenseWithDetails  `protobuf:"bytes,1,rep,name=expenses,proto3" json:"expenses,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGroupExpensesResponse) Reset() {
+	*x = GetGroupExpensesResponse{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGroupExpensesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGroupExpensesResponse) ProtoMessage() {}
+
+func (x *GetGroupExpensesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGroupExpensesResponse.ProtoReflect.Descriptor instead.
+func (*GetGroupExpensesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetGroupExpensesResponse) GetExpenses() []*ExpenseWithDetails {
+	if x != nil {
+		return x.Expenses
+	}
+	return nil
+}
+
+type ExpenseWithDetails struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	GroupId       string                 `protobuf:"bytes,2,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"` // Amount in cents (JPY)
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	PaidById      string                 `protobuf:"bytes,5,opt,name=paid_by_id,json=paidById,proto3" json:"paid_by_id,omitempty"`
+	PaidByName    string                 `protobuf:"bytes,6,opt,name=paid_by_name,json=paidByName,proto3" json:"paid_by_name,omitempty"`
+	SplitMembers  []*SplitMember         `protobuf:"bytes,7,rep,name=split_members,json=splitMembers,proto3" json:"split_members,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ExpenseWithDetails) Reset() {
+	*x = ExpenseWithDetails{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ExpenseWithDetails) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ExpenseWithDetails) ProtoMessage() {}
+
+func (x *ExpenseWithDetails) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ExpenseWithDetails.ProtoReflect.Descriptor instead.
+func (*ExpenseWithDetails) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *ExpenseWithDetails) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ExpenseWithDetails) GetGroupId() string {
+	if x != nil {
+		return x.GroupId
+	}
+	return ""
+}
+
+func (x *ExpenseWithDetails) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ExpenseWithDetails) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *ExpenseWithDetails) GetPaidById() string {
+	if x != nil {
+		return x.PaidById
+	}
+	return ""
+}
+
+func (x *ExpenseWithDetails) GetPaidByName() string {
+	if x != nil {
+		return x.PaidByName
+	}
+	return ""
+}
+
+func (x *ExpenseWithDetails) GetSplitMembers() []*SplitMember {
+	if x != nil {
+		return x.SplitMembers
+	}
+	return nil
+}
+
+func (x *ExpenseWithDetails) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+type SplitMember struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MemberId      string                 `protobuf:"bytes,1,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
+	MemberName    string                 `protobuf:"bytes,2,opt,name=member_name,json=memberName,proto3" json:"member_name,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"` // Amount owed by this member in cents (JPY)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SplitMember) Reset() {
+	*x = SplitMember{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SplitMember) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SplitMember) ProtoMessage() {}
+
+func (x *SplitMember) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SplitMember.ProtoReflect.Descriptor instead.
+func (*SplitMember) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *SplitMember) GetMemberId() string {
+	if x != nil {
+		return x.MemberId
+	}
+	return ""
+}
+
+func (x *SplitMember) GetMemberName() string {
+	if x != nil {
+		return x.MemberName
+	}
+	return ""
+}
+
+func (x *SplitMember) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+// Settlement calculation messages
+type CalculateSettlementsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GroupId       string                 `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
+	Expenses      []*Expense             `protobuf:"bytes,2,rep,name=expenses,proto3" json:"expenses,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CalculateSettlementsRequest) Reset() {
+	*x = CalculateSettlementsRequest{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CalculateSettlementsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CalculateSettlementsRequest) ProtoMessage() {}
+
+func (x *CalculateSettlementsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CalculateSettlementsRequest.ProtoReflect.Descriptor instead.
+func (*CalculateSettlementsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CalculateSettlementsRequest) GetGroupId() string {
+	if x != nil {
+		return x.GroupId
+	}
+	return ""
+}
+
+func (x *CalculateSettlementsRequest) GetExpenses() []*Expense {
+	if x != nil {
+		return x.Expenses
+	}
+	return nil
+}
+
+type CalculateSettlementsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Settlements   []*Settlement          `protobuf:"bytes,1,rep,name=settlements,proto3" json:"settlements,omitempty"`
+	Balances      []*MemberBalance       `protobuf:"bytes,2,rep,name=balances,proto3" json:"balances,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CalculateSettlementsResponse) Reset() {
+	*x = CalculateSettlementsResponse{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CalculateSettlementsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CalculateSettlementsResponse) ProtoMessage() {}
+
+func (x *CalculateSettlementsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CalculateSettlementsResponse.ProtoReflect.Descriptor instead.
+func (*CalculateSettlementsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *CalculateSettlementsResponse) GetSettlements() []*Settlement {
+	if x != nil {
+		return x.Settlements
+	}
+	return nil
+}
+
+func (x *CalculateSettlementsResponse) GetBalances() []*MemberBalance {
+	if x != nil {
+		return x.Balances
+	}
+	return nil
+}
+
+type Expense struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	PayerId       string                 `protobuf:"bytes,2,opt,name=payer_id,json=payerId,proto3" json:"payer_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"` // Amount in cents (JPY)
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	SplitBetween  []string               `protobuf:"bytes,5,rep,name=split_between,json=splitBetween,proto3" json:"split_between,omitempty"` // Member IDs
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Expense) Reset() {
+	*x = Expense{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Expense) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Expense) ProtoMessage() {}
+
+func (x *Expense) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Expense.ProtoReflect.Descriptor instead.
+func (*Expense) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *Expense) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Expense) GetPayerId() string {
+	if x != nil {
+		return x.PayerId
+	}
+	return ""
+}
+
+func (x *Expense) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *Expense) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Expense) GetSplitBetween() []string {
+	if x != nil {
+		return x.SplitBetween
+	}
+	return nil
+}
+
+func (x *Expense) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+type Settlement struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FromMemberId  string                 `protobuf:"bytes,1,opt,name=from_member_id,json=fromMemberId,proto3" json:"from_member_id,omitempty"`
+	ToMemberId    string                 `protobuf:"bytes,2,opt,name=to_member_id,json=toMemberId,proto3" json:"to_member_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"` // Amount in cents (JPY)
+	FromName      string                 `protobuf:"bytes,4,opt,name=from_name,json=fromName,proto3" json:"from_name,omitempty"`
+	ToName        string                 `protobuf:"bytes,5,opt,name=to_name,json=toName,proto3" json:"to_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Settlement) Reset() {
+	*x = Settlement{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Settlement) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Settlement) ProtoMessage() {}
+
+func (x *Settlement) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Settlement.ProtoReflect.Descriptor instead.
+func (*Settlement) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *Settlement) GetFromMemberId() string {
+	if x != nil {
+		return x.FromMemberId
+	}
+	return ""
+}
+
+func (x *Settlement) GetToMemberId() string {
+	if x != nil {
+		return x.ToMemberId
+	}
+	return ""
+}
+
+func (x *Settlement) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *Settlement) GetFromName() string {
+	if x != nil {
+		return x.FromName
+	}
+	return ""
+}
+
+func (x *Settlement) GetToName() string {
+	if x != nil {
+		return x.ToName
+	}
+	return ""
+}
+
+type MemberBalance struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MemberId      string                 `protobuf:"bytes,1,opt,name=member_id,json=memberId,proto3" json:"member_id,omitempty"`
+	MemberName    string                 `protobuf:"bytes,2,opt,name=member_name,json=memberName,proto3" json:"member_name,omitempty"`
+	Balance       int64                  `protobuf:"varint,3,opt,name=balance,proto3" json:"balance,omitempty"` // Positive = owed money, Negative = owes money
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MemberBalance) Reset() {
+	*x = MemberBalance{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MemberBalance) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MemberBalance) ProtoMessage() {}
+
+func (x *MemberBalance) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MemberBalance.ProtoReflect.Descriptor instead.
+func (*MemberBalance) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *MemberBalance) GetMemberId() string {
+	if x != nil {
+		return x.MemberId
+	}
+	return ""
+}
+
+func (x *MemberBalance) GetMemberName() string {
+	if x != nil {
+		return x.MemberName
+	}
+	return ""
+}
+
+func (x *MemberBalance) GetBalance() int64 {
+	if x != nil {
+		return x.Balance
+	}
+	return 0
+}
+
 var File_proto_group_v1_group_proto protoreflect.FileDescriptor
 
 const file_proto_group_v1_group_proto_rawDesc = "" +
@@ -835,14 +1529,75 @@ const file_proto_group_v1_group_proto_rawDesc = "" +
 	"\bgroup_id\x18\x01 \x01(\tR\agroupId\x12\x1b\n" +
 	"\tmember_id\x18\x02 \x01(\tR\bmemberId\"0\n" +
 	"\x14RemoveMemberResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess2\xca\x03\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xb0\x01\n" +
+	"\x11AddExpenseRequest\x12\x19\n" +
+	"\bgroup_id\x18\x01 \x01(\tR\agroupId\x12\x16\n" +
+	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1c\n" +
+	"\n" +
+	"paid_by_id\x18\x04 \x01(\tR\bpaidById\x12(\n" +
+	"\x10split_member_ids\x18\x05 \x03(\tR\x0esplitMemberIds\"L\n" +
+	"\x12AddExpenseResponse\x126\n" +
+	"\aexpense\x18\x01 \x01(\v2\x1c.group.v1.ExpenseWithDetailsR\aexpense\"4\n" +
+	"\x17GetGroupExpensesRequest\x12\x19\n" +
+	"\bgroup_id\x18\x01 \x01(\tR\agroupId\"T\n" +
+	"\x18GetGroupExpensesResponse\x128\n" +
+	"\bexpenses\x18\x01 \x03(\v2\x1c.group.v1.ExpenseWithDetailsR\bexpenses\"\xb0\x02\n" +
+	"\x12ExpenseWithDetails\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\bgroup_id\x18\x02 \x01(\tR\agroupId\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1c\n" +
+	"\n" +
+	"paid_by_id\x18\x05 \x01(\tR\bpaidById\x12 \n" +
+	"\fpaid_by_name\x18\x06 \x01(\tR\n" +
+	"paidByName\x12:\n" +
+	"\rsplit_members\x18\a \x03(\v2\x15.group.v1.SplitMemberR\fsplitMembers\x129\n" +
+	"\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"c\n" +
+	"\vSplitMember\x12\x1b\n" +
+	"\tmember_id\x18\x01 \x01(\tR\bmemberId\x12\x1f\n" +
+	"\vmember_name\x18\x02 \x01(\tR\n" +
+	"memberName\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\"g\n" +
+	"\x1bCalculateSettlementsRequest\x12\x19\n" +
+	"\bgroup_id\x18\x01 \x01(\tR\agroupId\x12-\n" +
+	"\bexpenses\x18\x02 \x03(\v2\x11.group.v1.ExpenseR\bexpenses\"\x8b\x01\n" +
+	"\x1cCalculateSettlementsResponse\x126\n" +
+	"\vsettlements\x18\x01 \x03(\v2\x14.group.v1.SettlementR\vsettlements\x123\n" +
+	"\bbalances\x18\x02 \x03(\v2\x17.group.v1.MemberBalanceR\bbalances\"\xce\x01\n" +
+	"\aExpense\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\bpayer_id\x18\x02 \x01(\tR\apayerId\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12#\n" +
+	"\rsplit_between\x18\x05 \x03(\tR\fsplitBetween\x129\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xa2\x01\n" +
+	"\n" +
+	"Settlement\x12$\n" +
+	"\x0efrom_member_id\x18\x01 \x01(\tR\ffromMemberId\x12 \n" +
+	"\fto_member_id\x18\x02 \x01(\tR\n" +
+	"toMemberId\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12\x1b\n" +
+	"\tfrom_name\x18\x04 \x01(\tR\bfromName\x12\x17\n" +
+	"\ato_name\x18\x05 \x01(\tR\x06toName\"g\n" +
+	"\rMemberBalance\x12\x1b\n" +
+	"\tmember_id\x18\x01 \x01(\tR\bmemberId\x12\x1f\n" +
+	"\vmember_name\x18\x02 \x01(\tR\n" +
+	"memberName\x12\x18\n" +
+	"\abalance\x18\x03 \x01(\x03R\abalance2\xd5\x05\n" +
 	"\fGroupService\x12J\n" +
 	"\vCreateGroup\x12\x1c.group.v1.CreateGroupRequest\x1a\x1d.group.v1.CreateGroupResponse\x12A\n" +
 	"\bGetGroup\x12\x19.group.v1.GetGroupRequest\x1a\x1a.group.v1.GetGroupResponse\x12J\n" +
 	"\vUpdateGroup\x12\x1c.group.v1.UpdateGroupRequest\x1a\x1d.group.v1.UpdateGroupResponse\x12J\n" +
 	"\vDeleteGroup\x12\x1c.group.v1.DeleteGroupRequest\x1a\x1d.group.v1.DeleteGroupResponse\x12D\n" +
 	"\tAddMember\x12\x1a.group.v1.AddMemberRequest\x1a\x1b.group.v1.AddMemberResponse\x12M\n" +
-	"\fRemoveMember\x12\x1d.group.v1.RemoveMemberRequest\x1a\x1e.group.v1.RemoveMemberResponseB<Z:github.com/username/warikan/backend/proto/group/v1;groupv1b\x06proto3"
+	"\fRemoveMember\x12\x1d.group.v1.RemoveMemberRequest\x1a\x1e.group.v1.RemoveMemberResponse\x12G\n" +
+	"\n" +
+	"AddExpense\x12\x1b.group.v1.AddExpenseRequest\x1a\x1c.group.v1.AddExpenseResponse\x12Y\n" +
+	"\x10GetGroupExpenses\x12!.group.v1.GetGroupExpensesRequest\x1a\".group.v1.GetGroupExpensesResponse\x12e\n" +
+	"\x14CalculateSettlements\x12%.group.v1.CalculateSettlementsRequest\x1a&.group.v1.CalculateSettlementsResponseB>Z<github.com/jt-chihara/warikan/backend/proto/group/v1;groupv1b\x06proto3"
 
 var (
 	file_proto_group_v1_group_proto_rawDescOnce sync.Once
@@ -856,50 +1611,75 @@ func file_proto_group_v1_group_proto_rawDescGZIP() []byte {
 	return file_proto_group_v1_group_proto_rawDescData
 }
 
-var file_proto_group_v1_group_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_proto_group_v1_group_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_proto_group_v1_group_proto_goTypes = []any{
-	(*Group)(nil),                 // 0: group.v1.Group
-	(*Member)(nil),                // 1: group.v1.Member
-	(*CreateGroupRequest)(nil),    // 2: group.v1.CreateGroupRequest
-	(*CreateGroupResponse)(nil),   // 3: group.v1.CreateGroupResponse
-	(*GetGroupRequest)(nil),       // 4: group.v1.GetGroupRequest
-	(*GetGroupResponse)(nil),      // 5: group.v1.GetGroupResponse
-	(*UpdateGroupRequest)(nil),    // 6: group.v1.UpdateGroupRequest
-	(*UpdateGroupResponse)(nil),   // 7: group.v1.UpdateGroupResponse
-	(*DeleteGroupRequest)(nil),    // 8: group.v1.DeleteGroupRequest
-	(*DeleteGroupResponse)(nil),   // 9: group.v1.DeleteGroupResponse
-	(*AddMemberRequest)(nil),      // 10: group.v1.AddMemberRequest
-	(*AddMemberResponse)(nil),     // 11: group.v1.AddMemberResponse
-	(*RemoveMemberRequest)(nil),   // 12: group.v1.RemoveMemberRequest
-	(*RemoveMemberResponse)(nil),  // 13: group.v1.RemoveMemberResponse
-	(*timestamppb.Timestamp)(nil), // 14: google.protobuf.Timestamp
+	(*Group)(nil),                        // 0: group.v1.Group
+	(*Member)(nil),                       // 1: group.v1.Member
+	(*CreateGroupRequest)(nil),           // 2: group.v1.CreateGroupRequest
+	(*CreateGroupResponse)(nil),          // 3: group.v1.CreateGroupResponse
+	(*GetGroupRequest)(nil),              // 4: group.v1.GetGroupRequest
+	(*GetGroupResponse)(nil),             // 5: group.v1.GetGroupResponse
+	(*UpdateGroupRequest)(nil),           // 6: group.v1.UpdateGroupRequest
+	(*UpdateGroupResponse)(nil),          // 7: group.v1.UpdateGroupResponse
+	(*DeleteGroupRequest)(nil),           // 8: group.v1.DeleteGroupRequest
+	(*DeleteGroupResponse)(nil),          // 9: group.v1.DeleteGroupResponse
+	(*AddMemberRequest)(nil),             // 10: group.v1.AddMemberRequest
+	(*AddMemberResponse)(nil),            // 11: group.v1.AddMemberResponse
+	(*RemoveMemberRequest)(nil),          // 12: group.v1.RemoveMemberRequest
+	(*RemoveMemberResponse)(nil),         // 13: group.v1.RemoveMemberResponse
+	(*AddExpenseRequest)(nil),            // 14: group.v1.AddExpenseRequest
+	(*AddExpenseResponse)(nil),           // 15: group.v1.AddExpenseResponse
+	(*GetGroupExpensesRequest)(nil),      // 16: group.v1.GetGroupExpensesRequest
+	(*GetGroupExpensesResponse)(nil),     // 17: group.v1.GetGroupExpensesResponse
+	(*ExpenseWithDetails)(nil),           // 18: group.v1.ExpenseWithDetails
+	(*SplitMember)(nil),                  // 19: group.v1.SplitMember
+	(*CalculateSettlementsRequest)(nil),  // 20: group.v1.CalculateSettlementsRequest
+	(*CalculateSettlementsResponse)(nil), // 21: group.v1.CalculateSettlementsResponse
+	(*Expense)(nil),                      // 22: group.v1.Expense
+	(*Settlement)(nil),                   // 23: group.v1.Settlement
+	(*MemberBalance)(nil),                // 24: group.v1.MemberBalance
+	(*timestamppb.Timestamp)(nil),        // 25: google.protobuf.Timestamp
 }
 var file_proto_group_v1_group_proto_depIdxs = []int32{
-	14, // 0: group.v1.Group.created_at:type_name -> google.protobuf.Timestamp
-	14, // 1: group.v1.Group.updated_at:type_name -> google.protobuf.Timestamp
+	25, // 0: group.v1.Group.created_at:type_name -> google.protobuf.Timestamp
+	25, // 1: group.v1.Group.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 2: group.v1.Group.members:type_name -> group.v1.Member
-	14, // 3: group.v1.Member.joined_at:type_name -> google.protobuf.Timestamp
+	25, // 3: group.v1.Member.joined_at:type_name -> google.protobuf.Timestamp
 	0,  // 4: group.v1.CreateGroupResponse.group:type_name -> group.v1.Group
 	0,  // 5: group.v1.GetGroupResponse.group:type_name -> group.v1.Group
 	0,  // 6: group.v1.UpdateGroupResponse.group:type_name -> group.v1.Group
 	1,  // 7: group.v1.AddMemberResponse.member:type_name -> group.v1.Member
-	2,  // 8: group.v1.GroupService.CreateGroup:input_type -> group.v1.CreateGroupRequest
-	4,  // 9: group.v1.GroupService.GetGroup:input_type -> group.v1.GetGroupRequest
-	6,  // 10: group.v1.GroupService.UpdateGroup:input_type -> group.v1.UpdateGroupRequest
-	8,  // 11: group.v1.GroupService.DeleteGroup:input_type -> group.v1.DeleteGroupRequest
-	10, // 12: group.v1.GroupService.AddMember:input_type -> group.v1.AddMemberRequest
-	12, // 13: group.v1.GroupService.RemoveMember:input_type -> group.v1.RemoveMemberRequest
-	3,  // 14: group.v1.GroupService.CreateGroup:output_type -> group.v1.CreateGroupResponse
-	5,  // 15: group.v1.GroupService.GetGroup:output_type -> group.v1.GetGroupResponse
-	7,  // 16: group.v1.GroupService.UpdateGroup:output_type -> group.v1.UpdateGroupResponse
-	9,  // 17: group.v1.GroupService.DeleteGroup:output_type -> group.v1.DeleteGroupResponse
-	11, // 18: group.v1.GroupService.AddMember:output_type -> group.v1.AddMemberResponse
-	13, // 19: group.v1.GroupService.RemoveMember:output_type -> group.v1.RemoveMemberResponse
-	14, // [14:20] is the sub-list for method output_type
-	8,  // [8:14] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	18, // 8: group.v1.AddExpenseResponse.expense:type_name -> group.v1.ExpenseWithDetails
+	18, // 9: group.v1.GetGroupExpensesResponse.expenses:type_name -> group.v1.ExpenseWithDetails
+	19, // 10: group.v1.ExpenseWithDetails.split_members:type_name -> group.v1.SplitMember
+	25, // 11: group.v1.ExpenseWithDetails.created_at:type_name -> google.protobuf.Timestamp
+	22, // 12: group.v1.CalculateSettlementsRequest.expenses:type_name -> group.v1.Expense
+	23, // 13: group.v1.CalculateSettlementsResponse.settlements:type_name -> group.v1.Settlement
+	24, // 14: group.v1.CalculateSettlementsResponse.balances:type_name -> group.v1.MemberBalance
+	25, // 15: group.v1.Expense.created_at:type_name -> google.protobuf.Timestamp
+	2,  // 16: group.v1.GroupService.CreateGroup:input_type -> group.v1.CreateGroupRequest
+	4,  // 17: group.v1.GroupService.GetGroup:input_type -> group.v1.GetGroupRequest
+	6,  // 18: group.v1.GroupService.UpdateGroup:input_type -> group.v1.UpdateGroupRequest
+	8,  // 19: group.v1.GroupService.DeleteGroup:input_type -> group.v1.DeleteGroupRequest
+	10, // 20: group.v1.GroupService.AddMember:input_type -> group.v1.AddMemberRequest
+	12, // 21: group.v1.GroupService.RemoveMember:input_type -> group.v1.RemoveMemberRequest
+	14, // 22: group.v1.GroupService.AddExpense:input_type -> group.v1.AddExpenseRequest
+	16, // 23: group.v1.GroupService.GetGroupExpenses:input_type -> group.v1.GetGroupExpensesRequest
+	20, // 24: group.v1.GroupService.CalculateSettlements:input_type -> group.v1.CalculateSettlementsRequest
+	3,  // 25: group.v1.GroupService.CreateGroup:output_type -> group.v1.CreateGroupResponse
+	5,  // 26: group.v1.GroupService.GetGroup:output_type -> group.v1.GetGroupResponse
+	7,  // 27: group.v1.GroupService.UpdateGroup:output_type -> group.v1.UpdateGroupResponse
+	9,  // 28: group.v1.GroupService.DeleteGroup:output_type -> group.v1.DeleteGroupResponse
+	11, // 29: group.v1.GroupService.AddMember:output_type -> group.v1.AddMemberResponse
+	13, // 30: group.v1.GroupService.RemoveMember:output_type -> group.v1.RemoveMemberResponse
+	15, // 31: group.v1.GroupService.AddExpense:output_type -> group.v1.AddExpenseResponse
+	17, // 32: group.v1.GroupService.GetGroupExpenses:output_type -> group.v1.GetGroupExpensesResponse
+	21, // 33: group.v1.GroupService.CalculateSettlements:output_type -> group.v1.CalculateSettlementsResponse
+	25, // [25:34] is the sub-list for method output_type
+	16, // [16:25] is the sub-list for method input_type
+	16, // [16:16] is the sub-list for extension type_name
+	16, // [16:16] is the sub-list for extension extendee
+	0,  // [0:16] is the sub-list for field type_name
 }
 
 func init() { file_proto_group_v1_group_proto_init() }
@@ -913,7 +1693,7 @@ func file_proto_group_v1_group_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_group_v1_group_proto_rawDesc), len(file_proto_group_v1_group_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   14,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

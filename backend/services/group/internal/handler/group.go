@@ -44,3 +44,11 @@ func (h *GroupHandler) RemoveMember(ctx context.Context, req *groupv1.RemoveMemb
 func (h *GroupHandler) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
 	return h.service.CalculateSettlements(ctx, req)
 }
+
+func (h *GroupHandler) AddExpense(ctx context.Context, req *groupv1.AddExpenseRequest) (*groupv1.AddExpenseResponse, error) {
+	return h.service.AddExpense(ctx, req)
+}
+
+func (h *GroupHandler) GetGroupExpenses(ctx context.Context, req *groupv1.GetGroupExpensesRequest) (*groupv1.GetGroupExpensesResponse, error) {
+	return h.service.GetGroupExpenses(ctx, req)
+}

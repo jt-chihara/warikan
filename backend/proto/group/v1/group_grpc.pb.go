@@ -19,12 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GroupService_CreateGroup_FullMethodName  = "/group.v1.GroupService/CreateGroup"
-	GroupService_GetGroup_FullMethodName     = "/group.v1.GroupService/GetGroup"
-	GroupService_UpdateGroup_FullMethodName  = "/group.v1.GroupService/UpdateGroup"
-	GroupService_DeleteGroup_FullMethodName  = "/group.v1.GroupService/DeleteGroup"
-	GroupService_AddMember_FullMethodName    = "/group.v1.GroupService/AddMember"
-	GroupService_RemoveMember_FullMethodName = "/group.v1.GroupService/RemoveMember"
+	GroupService_CreateGroup_FullMethodName          = "/group.v1.GroupService/CreateGroup"
+	GroupService_GetGroup_FullMethodName             = "/group.v1.GroupService/GetGroup"
+	GroupService_UpdateGroup_FullMethodName          = "/group.v1.GroupService/UpdateGroup"
+	GroupService_DeleteGroup_FullMethodName          = "/group.v1.GroupService/DeleteGroup"
+	GroupService_AddMember_FullMethodName            = "/group.v1.GroupService/AddMember"
+	GroupService_RemoveMember_FullMethodName         = "/group.v1.GroupService/RemoveMember"
+	GroupService_AddExpense_FullMethodName           = "/group.v1.GroupService/AddExpense"
+	GroupService_GetGroupExpenses_FullMethodName     = "/group.v1.GroupService/GetGroupExpenses"
+	GroupService_CalculateSettlements_FullMethodName = "/group.v1.GroupService/CalculateSettlements"
 )
 
 // GroupServiceClient is the client API for GroupService service.
@@ -37,6 +40,9 @@ type GroupServiceClient interface {
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*DeleteGroupResponse, error)
 	AddMember(ctx context.Context, in *AddMemberRequest, opts ...grpc.CallOption) (*AddMemberResponse, error)
 	RemoveMember(ctx context.Context, in *RemoveMemberRequest, opts ...grpc.CallOption) (*RemoveMemberResponse, error)
+	AddExpense(ctx context.Context, in *AddExpenseRequest, opts ...grpc.CallOption) (*AddExpenseResponse, error)
+	GetGroupExpenses(ctx context.Context, in *GetGroupExpensesRequest, opts ...grpc.CallOption) (*GetGroupExpensesResponse, error)
+	CalculateSettlements(ctx context.Context, in *CalculateSettlementsRequest, opts ...grpc.CallOption) (*CalculateSettlementsResponse, error)
 }
 
 type groupServiceClient struct {
@@ -107,6 +113,36 @@ func (c *groupServiceClient) RemoveMember(ctx context.Context, in *RemoveMemberR
 	return out, nil
 }
 
+func (c *groupServiceClient) AddExpense(ctx context.Context, in *AddExpenseRequest, opts ...grpc.CallOption) (*AddExpenseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddExpenseResponse)
+	err := c.cc.Invoke(ctx, GroupService_AddExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupServiceClient) GetGroupExpenses(ctx context.Context, in *GetGroupExpensesRequest, opts ...grpc.CallOption) (*GetGroupExpensesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGroupExpensesResponse)
+	err := c.cc.Invoke(ctx, GroupService_GetGroupExpenses_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *groupServiceClient) CalculateSettlements(ctx context.Context, in *CalculateSettlementsRequest, opts ...grpc.CallOption) (*CalculateSettlementsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CalculateSettlementsResponse)
+	err := c.cc.Invoke(ctx, GroupService_CalculateSettlements_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GroupServiceServer is the server API for GroupService service.
 // All implementations must embed UnimplementedGroupServiceServer
 // for forward compatibility.
@@ -117,6 +153,9 @@ type GroupServiceServer interface {
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*DeleteGroupResponse, error)
 	AddMember(context.Context, *AddMemberRequest) (*AddMemberResponse, error)
 	RemoveMember(context.Context, *RemoveMemberRequest) (*RemoveMemberResponse, error)
+	AddExpense(context.Context, *AddExpenseRequest) (*AddExpenseResponse, error)
+	GetGroupExpenses(context.Context, *GetGroupExpensesRequest) (*GetGroupExpensesResponse, error)
+	CalculateSettlements(context.Context, *CalculateSettlementsRequest) (*CalculateSettlementsResponse, error)
 	mustEmbedUnimplementedGroupServiceServer()
 }
 
@@ -144,6 +183,15 @@ func (UnimplementedGroupServiceServer) AddMember(context.Context, *AddMemberRequ
 }
 func (UnimplementedGroupServiceServer) RemoveMember(context.Context, *RemoveMemberRequest) (*RemoveMemberResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveMember not implemented")
+}
+func (UnimplementedGroupServiceServer) AddExpense(context.Context, *AddExpenseRequest) (*AddExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddExpense not implemented")
+}
+func (UnimplementedGroupServiceServer) GetGroupExpenses(context.Context, *GetGroupExpensesRequest) (*GetGroupExpensesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupExpenses not implemented")
+}
+func (UnimplementedGroupServiceServer) CalculateSettlements(context.Context, *CalculateSettlementsRequest) (*CalculateSettlementsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CalculateSettlements not implemented")
 }
 func (UnimplementedGroupServiceServer) mustEmbedUnimplementedGroupServiceServer() {}
 func (UnimplementedGroupServiceServer) testEmbeddedByValue()                      {}
@@ -274,6 +322,60 @@ func _GroupService_RemoveMember_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_AddExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddExpenseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).AddExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_AddExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).AddExpense(ctx, req.(*AddExpenseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GroupService_GetGroupExpenses_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupExpensesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).GetGroupExpenses(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_GetGroupExpenses_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).GetGroupExpenses(ctx, req.(*GetGroupExpensesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GroupService_CalculateSettlements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CalculateSettlementsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).CalculateSettlements(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_CalculateSettlements_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).CalculateSettlements(ctx, req.(*CalculateSettlementsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GroupService_ServiceDesc is the grpc.ServiceDesc for GroupService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +406,18 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveMember",
 			Handler:    _GroupService_RemoveMember_Handler,
+		},
+		{
+			MethodName: "AddExpense",
+			Handler:    _GroupService_AddExpense_Handler,
+		},
+		{
+			MethodName: "GetGroupExpenses",
+			Handler:    _GroupService_GetGroupExpenses_Handler,
+		},
+		{
+			MethodName: "CalculateSettlements",
+			Handler:    _GroupService_CalculateSettlements_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

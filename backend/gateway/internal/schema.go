@@ -108,6 +108,51 @@ var settlementResultType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
+var splitMemberType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "SplitMember",
+	Fields: graphql.Fields{
+		"memberId": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"memberName": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"amount": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.Int),
+		},
+	},
+})
+
+var expenseWithDetailsType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "ExpenseWithDetails",
+	Fields: graphql.Fields{
+		"id": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"groupId": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"amount": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.Int),
+		},
+		"description": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"paidById": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"paidByName": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"splitMembers": &graphql.Field{
+			Type: graphql.NewList(graphql.NewNonNull(splitMemberType)),
+		},
+		"createdAt": &graphql.Field{
+			Type: graphql.NewNonNull(dateTimeType),
+		},
+	},
+})
+
 var expenseInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "ExpenseInput",
 	Fields: graphql.InputObjectConfigFieldMap{
@@ -238,6 +283,27 @@ var removeMemberInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	},
 })
 
+var addExpenseInput = graphql.NewInputObject(graphql.InputObjectConfig{
+	Name: "AddExpenseInput",
+	Fields: graphql.InputObjectConfigFieldMap{
+		"groupId": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"amount": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.Int),
+		},
+		"description": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"paidById": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"splitMemberIds": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.NewList(graphql.NewNonNull(graphql.ID))),
+		},
+	},
+})
+
 func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 	// Query type
 	queryType := graphql.NewObject(graphql.ObjectConfig{
@@ -336,6 +402,32 @@ func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 						"settlements": resp.Settlements,
 						"balances":    resp.Balances,
 					}, nil
+				},
+			},
+			"groupExpenses": &graphql.Field{
+				Type: graphql.NewList(graphql.NewNonNull(expenseWithDetailsType)),
+				Args: graphql.FieldConfigArgument{
+					"groupId": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					groupId, ok := p.Args["groupId"].(string)
+					if !ok {
+						return nil, nil
+					}
+
+					req := &groupv1.GetGroupExpensesRequest{
+						GroupId: groupId,
+					}
+
+					resp, err := groupClient.GetGroupExpenses(context.Background(), req)
+					if err != nil {
+						log.Printf("Error getting group expenses: %v", err)
+						return nil, err
+					}
+
+					return resp.Expenses, nil
 				},
 			},
 		},
@@ -501,6 +593,55 @@ func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 					}
 
 					return resp.Success, nil
+				},
+			},
+			"addExpense": &graphql.Field{
+				Type: expenseWithDetailsType,
+				Args: graphql.FieldConfigArgument{
+					"input": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(addExpenseInput),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					input, ok := p.Args["input"].(map[string]interface{})
+					if !ok {
+						return nil, nil
+					}
+
+					// Convert amount from float64 to int64 (amount in cents)
+					amount := int64(0)
+					if amountFloat, ok := input["amount"].(float64); ok {
+						amount = int64(amountFloat)
+					} else if amountInt, ok := input["amount"].(int); ok {
+						amount = int64(amountInt)
+					}
+
+					// Extract splitMemberIds
+					var splitMemberIds []string
+					if splitMemberIdsInterface, ok := input["splitMemberIds"].([]interface{}); ok {
+						splitMemberIds = make([]string, len(splitMemberIdsInterface))
+						for i, id := range splitMemberIdsInterface {
+							if idStr, ok := id.(string); ok {
+								splitMemberIds[i] = idStr
+							}
+						}
+					}
+
+					req := &groupv1.AddExpenseRequest{
+						GroupId:         input["groupId"].(string),
+						Amount:          amount,
+						Description:     input["description"].(string),
+						PaidById:        input["paidById"].(string),
+						SplitMemberIds:  splitMemberIds,
+					}
+
+					resp, err := groupClient.AddExpense(context.Background(), req)
+					if err != nil {
+						log.Printf("Error adding expense: %v", err)
+						return nil, err
+					}
+
+					return resp.Expense, nil
 				},
 			},
 		},
