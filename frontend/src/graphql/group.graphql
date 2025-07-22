@@ -46,6 +46,40 @@ query GetGroup($id: ID!) {
   }
 }
 
+mutation AddExpense($input: AddExpenseInput!) {
+  addExpense(input: $input) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
+query GetGroupExpenses($groupId: ID!) {
+  groupExpenses(groupId: $groupId) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
 query CalculateSettlements($groupId: ID!, $expenses: [ExpenseInput!]!) {
   calculateSettlements(groupId: $groupId, expenses: $expenses) {
     settlements {

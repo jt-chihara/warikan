@@ -29,17 +29,13 @@ export default function HomePage() {
                 className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start mb-2">
-                  <h4 className="text-lg font-semibold text-gray-900 truncate">
-                    {group.name}
-                  </h4>
+                  <h4 className="text-lg font-semibold text-gray-900 truncate">{group.name}</h4>
                   <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                     {group.members.length}人
                   </span>
                 </div>
                 {group.description && (
-                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                    {group.description}
-                  </p>
+                  <p className="text-gray-600 text-sm mb-2 line-clamp-2">{group.description}</p>
                 )}
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>通貨: {group.currency}</span>
@@ -50,10 +46,7 @@ export default function HomePage() {
           </div>
           {groups.length > 6 && (
             <div className="mt-4 text-center">
-              <Link
-                to="/groups"
-                className="text-blue-600 hover:text-blue-800 font-medium"
-              >
+              <Link to="/groups" className="text-blue-600 hover:text-blue-800 font-medium">
                 すべてのグループを見る
               </Link>
             </div>

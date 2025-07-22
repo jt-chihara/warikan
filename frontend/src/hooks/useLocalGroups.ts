@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Group } from '../types/group';
 
 const GROUPS_STORAGE_KEY = 'warikan_groups';
@@ -24,15 +24,15 @@ export function useLocalGroups() {
   };
 
   const updateGroup = (groupId: string, updates: Partial<Group>) => {
-    const updatedGroups = groups.map(group =>
-      group.id === groupId ? { ...group, ...updates } : group
+    const updatedGroups = groups.map((group) =>
+      group.id === groupId ? { ...group, ...updates } : group,
     );
     setGroups(updatedGroups);
     localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(updatedGroups));
   };
 
   const removeGroup = (groupId: string) => {
-    const updatedGroups = groups.filter(group => group.id !== groupId);
+    const updatedGroups = groups.filter((group) => group.id !== groupId);
     setGroups(updatedGroups);
     localStorage.setItem(GROUPS_STORAGE_KEY, JSON.stringify(updatedGroups));
   };

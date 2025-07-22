@@ -24,11 +24,27 @@ export interface CreateGroupInput {
 
 export interface Expense {
   id: string;
-  payerId: string;
+  groupId: string;
   amount: number;
-  description?: string;
-  splitBetween: string[];
-  createdAt?: string;
+  description: string;
+  paidById: string;
+  paidByName: string;
+  splitMembers: SplitMember[];
+  createdAt: string;
+}
+
+export interface SplitMember {
+  memberId: string;
+  memberName: string;
+  amount: number;
+}
+
+export interface AddExpenseInput {
+  groupId: string;
+  amount: number;
+  description: string;
+  paidById: string;
+  splitMemberIds: string[];
 }
 
 export interface Settlement {

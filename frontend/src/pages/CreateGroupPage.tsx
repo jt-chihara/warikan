@@ -10,7 +10,7 @@ export default function CreateGroupPage() {
   const { addGroup } = useLocalGroups();
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
-  const [currency, setCurrency] = useState('JPY');
+  const [currency] = useState('JPY');
   const [members, setMembers] = useState(['']);
 
   const handleAddMember = () => {
@@ -29,10 +29,10 @@ export default function CreateGroupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Filter out empty member names
-    const validMembers = members.filter(member => member.trim() !== '');
-    
+    const validMembers = members.filter((member) => member.trim() !== '');
+
     if (validMembers.length === 0) {
       alert('少なくとも1人のメンバーを追加してください。');
       return;
@@ -41,13 +41,13 @@ export default function CreateGroupPage() {
     try {
       const input: CreateGroupInput = {
         name: groupName,
-        description: description.trim() || undefined,
+        ...(description.trim() && { description: description.trim() }),
         currency,
         memberNames: validMembers,
       };
 
       const result = await createGroup({ variables: { input } });
-      
+
       if (result.data?.createGroup) {
         // Save to local storage for offline functionality
         addGroup(result.data.createGroup);
@@ -64,9 +64,7 @@ export default function CreateGroupPage() {
 
       {error && (
         <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
-          <div className="text-red-800">
-            エラーが発生しました: {error.message}
-          </div>
+          <div className="text-red-800">エラーが発生しました: {error.message}</div>
         </div>
       )}
 
@@ -101,9 +99,7 @@ export default function CreateGroupPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            通貨
-          </label>
+          <span className="block text-sm font-medium text-gray-700">通貨</span>
           <div className="mt-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-gray-900">
             円 (JPY)
           </div>
@@ -115,7 +111,7 @@ export default function CreateGroupPage() {
           </label>
           <div className="space-y-2">
             {members.map((member, index) => (
-              <div key={`member-${index}`} className="flex gap-2">
+              <div key={member || index} className="flex gap-2">
                 <input
                   type="text"
                   value={member}
