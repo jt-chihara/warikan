@@ -1,17 +1,17 @@
-module github.com/username/warikan/backend/gateway
+module github.com/jt-chihara/warikan/backend/gateway
 
 go 1.23.0
 
 toolchain go1.24.5
 
-replace github.com/username/warikan/backend => ../
+replace github.com/jt-chihara/warikan/backend => ../
 
 require (
 	github.com/gorilla/mux v1.8.1
 	github.com/graphql-go/graphql v0.8.1
 	github.com/graphql-go/handler v0.2.4
 	github.com/rs/cors v1.11.1
-	github.com/username/warikan/backend v0.0.0-00010101000000-000000000000
+	github.com/jt-chihara/warikan/backend v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
 )

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/graphql-go/graphql"
-	"github.com/username/warikan/backend/proto/group/v1"
+	"github.com/jt-chihara/warikan/backend/proto/group/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

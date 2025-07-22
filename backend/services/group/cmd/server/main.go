@@ -10,9 +10,9 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 
-	"github.com/username/warikan/services/group/internal/handler"
-	"github.com/username/warikan/services/group/internal/repository"
-	"github.com/username/warikan/services/group/internal/service"
+	"github.com/jt-chihara/warikan/services/group/internal/handler"
+	"github.com/jt-chihara/warikan/services/group/internal/repository"
+	"github.com/jt-chihara/warikan/services/group/internal/service"
 )
 
 func main() {

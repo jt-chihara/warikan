@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	
-	groupv1 "github.com/username/warikan/backend/proto/group/v1"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
 type GroupRepository struct {
