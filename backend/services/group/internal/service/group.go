@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/jt-chihara/warikan/services/group/internal/algorithm"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
@@ -115,5 +116,72 @@ func (s *GroupService) RemoveMember(ctx context.Context, req *groupv1.RemoveMemb
 
 	return &groupv1.RemoveMemberResponse{
 		Success: true,
+	}, nil
+}
+
+func (s *GroupService) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
+	if req.GroupId == "" {
+		return nil, errors.New("group ID is required")
+	}
+
+	// Get group to validate it exists and get members
+	group, err := s.repo.GetGroupByID(req.GroupId)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert proto expenses to algorithm format
+	algExpenses := make([]algorithm.Expense, len(req.Expenses))
+	for i, expense := range req.Expenses {
+		algExpenses[i] = algorithm.Expense{
+			ID:           expense.Id,
+			PayerID:      expense.PayerId,
+			Amount:       expense.Amount,
+			SplitBetween: expense.SplitBetween,
+		}
+	}
+
+	// Convert proto members to algorithm format
+	algMembers := make([]algorithm.Member, len(group.Members))
+	for i, member := range group.Members {
+		algMembers[i] = algorithm.Member{
+			ID:   member.Id,
+			Name: member.Name,
+		}
+	}
+
+	// Calculate member balances
+	balances := algorithm.CalculateMemberBalances(algExpenses, algMembers)
+
+	// Calculate optimal settlements
+	settlements, err := algorithm.CalculateOptimalSettlements(balances)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert algorithm results to proto format
+	protoSettlements := make([]*groupv1.Settlement, len(settlements))
+	for i, settlement := range settlements {
+		protoSettlements[i] = &groupv1.Settlement{
+			FromMemberId: settlement.FromMemberID,
+			ToMemberId:   settlement.ToMemberID,
+			Amount:       settlement.Amount,
+			FromName:     settlement.FromName,
+			ToName:       settlement.ToName,
+		}
+	}
+
+	protoBalances := make([]*groupv1.MemberBalance, len(balances))
+	for i, balance := range balances {
+		protoBalances[i] = &groupv1.MemberBalance{
+			MemberId:   balance.MemberID,
+			MemberName: balance.Name,
+			Balance:    balance.Amount,
+		}
+	}
+
+	return &groupv1.CalculateSettlementsResponse{
+		Settlements: protoSettlements,
+		Balances:    protoBalances,
 	}, nil
 }

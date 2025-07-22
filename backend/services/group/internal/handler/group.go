@@ -40,3 +40,7 @@ func (h *GroupHandler) AddMember(ctx context.Context, req *groupv1.AddMemberRequ
 func (h *GroupHandler) RemoveMember(ctx context.Context, req *groupv1.RemoveMemberRequest) (*groupv1.RemoveMemberResponse, error) {
 	return h.service.RemoveMember(ctx, req)
 }
+
+func (h *GroupHandler) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
+	return h.service.CalculateSettlements(ctx, req)
+}

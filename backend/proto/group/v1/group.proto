@@ -13,6 +13,7 @@ service GroupService {
   rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse);
   rpc AddMember(AddMemberRequest) returns (AddMemberResponse);
   rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
+  rpc CalculateSettlements(CalculateSettlementsRequest) returns (CalculateSettlementsResponse);
 }
 
 message Group {
@@ -87,4 +88,38 @@ message RemoveMemberRequest {
 
 message RemoveMemberResponse {
   bool success = 1;
+}
+
+// Settlement calculation messages
+message CalculateSettlementsRequest {
+  string group_id = 1;
+  repeated Expense expenses = 2;
+}
+
+message CalculateSettlementsResponse {
+  repeated Settlement settlements = 1;
+  repeated MemberBalance balances = 2;
+}
+
+message Expense {
+  string id = 1;
+  string payer_id = 2;
+  int64 amount = 3; // Amount in cents (JPY)
+  string description = 4;
+  repeated string split_between = 5; // Member IDs
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message Settlement {
+  string from_member_id = 1;
+  string to_member_id = 2;
+  int64 amount = 3; // Amount in cents (JPY)
+  string from_name = 4;
+  string to_name = 5;
+}
+
+message MemberBalance {
+  string member_id = 1;
+  string member_name = 2;
+  int64 balance = 3; // Positive = owed money, Negative = owes money
 }
