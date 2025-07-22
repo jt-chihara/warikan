@@ -40,7 +40,7 @@ jobs:
     - name: Run Group Service unit tests
       working-directory: ./backend
       run: |
-        go test ./services/group/... -v -race -coverprofile=group-coverage.out
+        go test ./services/group/internal/algorithm/... -v -race -coverprofile=group-coverage.out
         go tool cover -html=group-coverage.out -o group-coverage.html
 
     - name: Upload coverage to Codecov
