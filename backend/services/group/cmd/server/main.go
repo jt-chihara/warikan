@@ -1,0 +1,66 @@
+package main
+
+import (
+	"database/sql"
+	"log"
+	"net"
+	"os"
+
+	"google.golang.org/grpc"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+
+	"github.com/username/warikan/services/group/internal/handler"
+	"github.com/username/warikan/services/group/internal/repository"
+	"github.com/username/warikan/services/group/internal/service"
+)
+
+func main() {
+	// Load environment variables
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found: %v", err)
+	}
+
+	// Database connection
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		dbURL = "postgres://user:password@localhost/warikan?sslmode=disable"
+	}
+
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		log.Fatalf("Failed to ping database: %v", err)
+	}
+
+	// Initialize layers
+	groupRepo := repository.NewGroupRepository(db)
+	groupService := service.NewGroupService(groupRepo)
+	groupHandler := handler.NewGroupHandler(groupService)
+
+	// gRPC server setup
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "50051"
+	}
+
+	lis, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		log.Fatalf("Failed to listen: %v", err)
+	}
+
+	s := grpc.NewServer()
+	
+	// Register services (this would be generated with proper protoc)
+	// For now, we'll just log that the server is starting
+	_ = groupHandler // Use the handler variable
+
+	log.Printf("Group service listening on port %s", port)
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
+}

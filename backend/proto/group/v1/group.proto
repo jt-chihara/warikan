@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package group.v1;
+
+option go_package = "github.com/username/warikan/backend/proto/group/v1;groupv1";
+
+import "google/protobuf/timestamp.proto";
+
+service GroupService {
+  rpc CreateGroup(CreateGroupRequest) returns (CreateGroupResponse);
+  rpc GetGroup(GetGroupRequest) returns (GetGroupResponse);
+  rpc UpdateGroup(UpdateGroupRequest) returns (UpdateGroupResponse);
+  rpc DeleteGroup(DeleteGroupRequest) returns (DeleteGroupResponse);
+  rpc AddMember(AddMemberRequest) returns (AddMemberResponse);
+  rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
+}
+
+message Group {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string currency = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  repeated Member members = 7;
+}
+
+message Member {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  google.protobuf.Timestamp joined_at = 4;
+}
+
+message CreateGroupRequest {
+  string name = 1;
+  string description = 2;
+  string currency = 3;
+  repeated string member_names = 4;
+}
+
+message CreateGroupResponse {
+  Group group = 1;
+}
+
+message GetGroupRequest {
+  string id = 1;
+}
+
+message GetGroupResponse {
+  Group group = 1;
+}
+
+message UpdateGroupRequest {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string currency = 4;
+}
+
+message UpdateGroupResponse {
+  Group group = 1;
+}
+
+message DeleteGroupRequest {
+  string id = 1;
+}
+
+message DeleteGroupResponse {
+  bool success = 1;
+}
+
+message AddMemberRequest {
+  string group_id = 1;
+  string member_name = 2;
+  string member_email = 3;
+}
+
+message AddMemberResponse {
+  Member member = 1;
+}
+
+message RemoveMemberRequest {
+  string group_id = 1;
+  string member_id = 2;
+}
+
+message RemoveMemberResponse {
+  bool success = 1;
+}

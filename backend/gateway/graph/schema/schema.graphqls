@@ -1,0 +1,58 @@
+# GraphQL schema definition
+
+scalar DateTime
+
+type Group {
+  id: ID!
+  name: String!
+  description: String
+  currency: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  members: [Member!]!
+}
+
+type Member {
+  id: ID!
+  name: String!
+  email: String
+  joinedAt: DateTime!
+}
+
+input CreateGroupInput {
+  name: String!
+  description: String
+  currency: String
+  memberNames: [String!]!
+}
+
+input UpdateGroupInput {
+  id: ID!
+  name: String!
+  description: String
+  currency: String!
+}
+
+input AddMemberInput {
+  groupId: ID!
+  memberName: String!
+  memberEmail: String
+}
+
+input RemoveMemberInput {
+  groupId: ID!
+  memberId: ID!
+}
+
+type Query {
+  group(id: ID!): Group
+  groups: [Group!]!
+}
+
+type Mutation {
+  createGroup(input: CreateGroupInput!): Group!
+  updateGroup(input: UpdateGroupInput!): Group!
+  deleteGroup(id: ID!): Boolean!
+  addMember(input: AddMemberInput!): Member!
+  removeMember(input: RemoveMemberInput!): Boolean!
+}
