@@ -2,7 +2,7 @@ package handler
 
 import (
 	"context"
-	groupv1 "github.com/username/warikan/backend/proto/group/v1"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
 // GroupServiceInterface defines the interface for group service operations

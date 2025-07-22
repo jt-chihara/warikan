@@ -1,4 +1,4 @@
-module github.com/username/warikan/backend
+module github.com/jt-chihara/warikan/backend
 
 go 1.22.0
 

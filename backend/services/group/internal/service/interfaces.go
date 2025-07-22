@@ -1,6 +1,6 @@
 package service
 
-import groupv1 "github.com/username/warikan/backend/proto/group/v1"
+import groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 
 // GroupRepositoryInterface defines the interface for group repository operations
 type GroupRepositoryInterface interface {

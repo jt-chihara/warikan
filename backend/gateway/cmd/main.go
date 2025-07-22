@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	"github.com/username/warikan/backend/gateway/internal"
-	groupv1 "github.com/username/warikan/backend/proto/group/v1"
+	"github.com/jt-chihara/warikan/backend/gateway/internal"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
 func main() {

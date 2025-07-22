@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package group.v1;
 
-option go_package = "github.com/username/warikan/backend/proto/group/v1;groupv1";
+option go_package = "github.com/jt-chihara/warikan/backend/proto/group/v1;groupv1";
 
 import "google/protobuf/timestamp.proto";
 

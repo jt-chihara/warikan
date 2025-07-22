@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package settlement.v1;
 
-option go_package = "github.com/username/warikan/backend/proto/settlement/v1;settlementv1";
+option go_package = "github.com/jt-chihara/warikan/backend/proto/settlement/v1;settlementv1";
 
 import "google/protobuf/timestamp.proto";
 

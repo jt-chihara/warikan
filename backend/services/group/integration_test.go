@@ -17,10 +17,10 @@ import (
 	"github.com/stretchr/testify/suite"
 	_ "github.com/lib/pq"
 
-	groupv1 "github.com/username/warikan/backend/proto/group/v1"
-	"github.com/username/warikan/services/group/internal/handler"
-	"github.com/username/warikan/services/group/internal/repository"
-	"github.com/username/warikan/services/group/internal/service"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
+	"github.com/jt-chihara/warikan/services/group/internal/handler"
+	"github.com/jt-chihara/warikan/services/group/internal/repository"
+	"github.com/jt-chihara/warikan/services/group/internal/service"
 )
 
 type IntegrationTestSuite struct {
