@@ -7,21 +7,6 @@ jobs:
   test-backend:
     name: Backend Tests
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: testuser
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: warikan_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
     - name: Checkout code
@@ -46,25 +31,14 @@ jobs:
       working-directory: ./backend
       run: go mod download
 
-    - name: Run database migrations
+    - name: Run backend unit tests
       working-directory: ./backend
-      env:
-        DATABASE_URL: postgres://testuser:testpass@localhost:5432/warikan_test?sslmode=disable
-      run: |
-        go run cmd/migrate/main.go
-
-    - name: Run backend tests
-      working-directory: ./backend
-      env:
-        DATABASE_URL: postgres://testuser:testpass@localhost:5432/warikan_test?sslmode=disable
       run: |
         go test ./... -v -race -coverprofile=coverage.out
         go tool cover -html=coverage.out -o coverage.html
 
-    - name: Run Group Service tests
+    - name: Run Group Service unit tests
       working-directory: ./backend/services/group
-      env:
-        DATABASE_URL: postgres://testuser:testpass@localhost:5432/warikan_test?sslmode=disable
       run: |
         go test ./... -v -race -coverprofile=coverage.out
         go tool cover -html=coverage.out -o coverage.html
