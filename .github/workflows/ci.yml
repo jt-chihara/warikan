@@ -76,6 +76,21 @@ jobs:
       working-directory: ./frontend
       run: npm run typecheck
 
+    - name: Run frontend tests
+      working-directory: ./frontend
+      run: npm run test:ci
+
+    - name: Run frontend tests with coverage
+      working-directory: ./frontend
+      run: npm run test:coverage:ci
+
     - name: Build frontend
       working-directory: ./frontend
       run: npm run build
+
+    - name: Upload frontend coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./frontend/coverage/lcov.info
+        flags: frontend
+        fail_ci_if_error: false
