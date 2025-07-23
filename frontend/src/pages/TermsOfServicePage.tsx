@@ -3,7 +3,7 @@ export default function TermsOfServicePage() {
     <div className="max-w-4xl mx-auto">
       <div className="bg-white shadow rounded-lg p-6 sm:p-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">利用規約</h1>
-        
+
         <div className="prose prose-gray max-w-none">
           <p className="text-gray-600 mb-6">
             本利用規約（以下「本規約」）は、jt-chihara（以下「当方」）が提供する割り勘アプリ「warikan」（以下「本サービス」）の利用条件を定めるものです。
@@ -34,26 +34,36 @@ export default function TermsOfServicePage() {
             <ul className="list-disc list-inside text-gray-700 space-y-2">
               <li>法令または公序良俗に違反する行為</li>
               <li>犯罪行為に関連する行為</li>
-              <li>本サービスの内容等、本サービスに含まれる著作権、商標権その他の知的財産権を侵害する行為</li>
-              <li>当方、ほかのユーザー、またはその他第三者のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為</li>
+              <li>
+                本サービスの内容等、本サービスに含まれる著作権、商標権その他の知的財産権を侵害する行為
+              </li>
+              <li>
+                当方、ほかのユーザー、またはその他第三者のサーバーまたはネットワークの機能を破壊したり、妨害したりする行為
+              </li>
               <li>本サービスによって得られた情報を商業的に利用する行為</li>
               <li>当方のサービスの運営を妨害するおそれのある行為</li>
               <li>不正アクセスをし、またはこれを試みる行為</li>
               <li>他のユーザーに関する個人情報等を収集または蓄積する行為</li>
               <li>不正な目的を持って本サービスを利用する行為</li>
-              <li>本サービスの他のユーザーまたはその他の第三者に不利益、損害、不快感を与える行為</li>
+              <li>
+                本サービスの他のユーザーまたはその他の第三者に不利益、損害、不快感を与える行為
+              </li>
               <li>その他当方が不適切と判断する行為</li>
             </ul>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">第4条（本サービスの提供の停止等）</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              第4条（本サービスの提供の停止等）
+            </h2>
             <p className="text-gray-700 mb-4">
               当方は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなく本サービスの全部または一部の提供を停止または中断することができるものとします。
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
               <li>本サービスにかかるコンピュータシステムの保守点検または更新を行う場合</li>
-              <li>地震、落雷、火災、停電または天災などの不可抗力により、本サービスの提供が困難となった場合</li>
+              <li>
+                地震、落雷、火災、停電または天災などの不可抗力により、本サービスの提供が困難となった場合
+              </li>
               <li>コンピュータまたは通信回線等が事故により停止した場合</li>
               <li>その他、当方が本サービスの提供が困難と判断した場合</li>
             </ul>
@@ -88,7 +98,9 @@ export default function TermsOfServicePage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">第7条（サービス内容の変更等）</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              第7条（サービス内容の変更等）
+            </h2>
             <p className="text-gray-700">
               当方は、ユーザーへの事前の告知をもって、本サービスの内容を変更、追加または廃止することがあり、ユーザーはこれに同意するものとします。
             </p>
@@ -101,7 +113,9 @@ export default function TermsOfServicePage() {
             </p>
             <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4">
               <li>本規約の変更がユーザーの一般の利益に適合するとき</li>
-              <li>本規約の変更が本サービス利用契約の目的に反せず、かつ、変更の必要性、変更後の内容の相当性その他の変更に係る事情に照らして合理的なものであるとき</li>
+              <li>
+                本規約の変更が本サービス利用契約の目的に反せず、かつ、変更の必要性、変更後の内容の相当性その他の変更に係る事情に照らして合理的なものであるとき
+              </li>
             </ul>
           </section>
 
@@ -120,14 +134,18 @@ export default function TermsOfServicePage() {
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">第11条（権利義務の譲渡の禁止）</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              第11条（権利義務の譲渡の禁止）
+            </h2>
             <p className="text-gray-700">
               ユーザーは、当方の書面による事前の承諾なく、利用契約上の地位または本規約に基づく権利もしくは義務を第三者に譲渡し、または担保に供することはできません。
             </p>
           </section>
 
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">第12条（準拠法・裁判管轄）</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              第12条（準拠法・裁判管轄）
+            </h2>
             <p className="text-gray-700">
               本規約の解釈にあたっては、日本法を準拠法とします。本サービスに関して紛争が生じた場合には、当方の本店所在地を管轄する裁判所を専属的合意管轄とします。
             </p>
