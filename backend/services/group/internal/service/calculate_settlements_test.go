@@ -9,25 +9,27 @@ import (
 )
 
 func TestGroupService_CalculateSettlements_Success(t *testing.T) {
-	mockRepo := NewMockGroupRepositoryInterface(t)
-	service := NewGroupService(mockRepo)
+	mockRepo := new(MockGroupRepositoryInterface)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockRepo, mockExpenseRepo)
 
-	groupID := "group-123"
+	groupID := "550e8400-e29b-41d4-a716-446655440000"
 	expenses := []*groupv1.Expense{
 		{
 			Id:           "exp1",
-			PayerId:      "member1",
+			PayerId:      "550e8400-e29b-41d4-a716-446655440001",
 			Amount:       2000,
 			Description:  "Lunch",
-			SplitBetween: []string{"member1", "member2"},
+			SplitBetween: []string{"550e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440002"},
 		},
 	}
 
 	group := &groupv1.Group{
-		Id: groupID,
+		Id:       groupID,
+		Currency: "JPY",
 		Members: []*groupv1.Member{
-			{Id: "member1", Name: "Alice"},
-			{Id: "member2", Name: "Bob"},
+			{Id: "550e8400-e29b-41d4-a716-446655440001", Name: "Alice"},
+			{Id: "550e8400-e29b-41d4-a716-446655440002", Name: "Bob"},
 		},
 	}
 
@@ -47,8 +49,8 @@ func TestGroupService_CalculateSettlements_Success(t *testing.T) {
 	
 	// Check settlement details
 	settlement := resp.Settlements[0]
-	assert.Equal(t, "member2", settlement.FromMemberId)
-	assert.Equal(t, "member1", settlement.ToMemberId)
+	assert.Equal(t, "550e8400-e29b-41d4-a716-446655440002", settlement.FromMemberId)
+	assert.Equal(t, "550e8400-e29b-41d4-a716-446655440001", settlement.ToMemberId)
 	assert.Equal(t, int64(1000), settlement.Amount)
 	assert.Equal(t, "Bob", settlement.FromName)
 	assert.Equal(t, "Alice", settlement.ToName)
@@ -57,8 +59,9 @@ func TestGroupService_CalculateSettlements_Success(t *testing.T) {
 }
 
 func TestGroupService_CalculateSettlements_EmptyGroupID(t *testing.T) {
-	mockRepo := NewMockGroupRepositoryInterface(t)
-	service := NewGroupService(mockRepo)
+	mockRepo := new(MockGroupRepositoryInterface)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockRepo, mockExpenseRepo)
 
 	req := &groupv1.CalculateSettlementsRequest{
 		GroupId:  "",
@@ -73,8 +76,9 @@ func TestGroupService_CalculateSettlements_EmptyGroupID(t *testing.T) {
 }
 
 func TestGroupService_CalculateSettlements_GroupNotFound(t *testing.T) {
-	mockRepo := NewMockGroupRepositoryInterface(t)
-	service := NewGroupService(mockRepo)
+	mockRepo := new(MockGroupRepositoryInterface)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockRepo, mockExpenseRepo)
 
 	groupID := "nonexistent-group"
 	req := &groupv1.CalculateSettlementsRequest{
