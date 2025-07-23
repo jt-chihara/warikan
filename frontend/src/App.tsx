@@ -5,6 +5,7 @@ import { apolloClient } from './lib/apollo-client';
 import CreateGroupPage from './pages/CreateGroupPage';
 import GroupPage from './pages/GroupPage';
 import HomePage from './pages/HomePage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/groups/new" element={<CreateGroupPage />} />
             <Route path="/groups/:groupId" element={<GroupPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
           </Routes>
         </Layout>
       </Router>
