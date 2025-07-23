@@ -4,6 +4,11 @@ import { useCreateGroup } from '../hooks/useGroup';
 import { useLocalGroups } from '../hooks/useLocalGroups';
 import type { CreateGroupInput } from '../types/group';
 
+interface MemberInput {
+  id: string;
+  name: string;
+}
+
 export default function CreateGroupPage() {
   const navigate = useNavigate();
   const [createGroup, { loading, error }] = useCreateGroup();
@@ -11,10 +16,10 @@ export default function CreateGroupPage() {
   const [groupName, setGroupName] = useState('');
   const [description, setDescription] = useState('');
   const [currency] = useState('JPY');
-  const [members, setMembers] = useState(['']);
+  const [members, setMembers] = useState<MemberInput[]>([{ id: crypto.randomUUID(), name: '' }]);
 
   const handleAddMember = () => {
-    setMembers([...members, '']);
+    setMembers([...members, { id: crypto.randomUUID(), name: '' }]);
   };
 
   const handleRemoveMember = (index: number) => {
@@ -23,7 +28,7 @@ export default function CreateGroupPage() {
 
   const handleMemberChange = (index: number, value: string) => {
     const newMembers = [...members];
-    newMembers[index] = value;
+    newMembers[index].name = value;
     setMembers(newMembers);
   };
 
@@ -31,7 +36,9 @@ export default function CreateGroupPage() {
     e.preventDefault();
 
     // Filter out empty member names
-    const validMembers = members.filter((member) => member.trim() !== '');
+    const validMembers = members
+      .filter((member) => member.name.trim() !== '')
+      .map((member) => member.name.trim());
 
     if (validMembers.length === 0) {
       alert('少なくとも1人のメンバーを追加してください。');
@@ -114,10 +121,10 @@ export default function CreateGroupPage() {
           </label>
           <div className="space-y-2">
             {members.map((member, index) => (
-              <div key={`member-${index}-${member}`} className="flex gap-2">
+              <div key={member.id} className="flex gap-2">
                 <input
                   type="text"
-                  value={member}
+                  value={member.name}
                   onChange={(e) => handleMemberChange(index, e.target.value)}
                   placeholder="メンバー名"
                   className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base"
