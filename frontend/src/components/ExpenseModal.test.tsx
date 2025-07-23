@@ -64,7 +64,7 @@ describe('ExpenseModal', () => {
       />,
     );
 
-    const closeButton = screen.getByLabelText('閉じる');
+    const closeButton = screen.getByRole('button', { name: '閉じる' });
     await user.click(closeButton);
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
