@@ -32,14 +32,15 @@ func (r *expenseRepository) Create(ctx context.Context, expense *domain.Expense)
 
 	// Insert expense
 	query := `
-		INSERT INTO expenses (id, group_id, amount, description, paid_by_id, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)`
+		INSERT INTO expenses (id, group_id, amount, description, currency, paid_by_id, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
 	
 	_, err = tx.ExecContext(ctx, query,
 		expense.ID,
 		expense.GroupID,
 		expense.Amount,
 		expense.Description,
+		expense.Currency,
 		expense.PaidByID,
 		expense.CreatedAt,
 		expense.UpdatedAt,
@@ -71,7 +72,7 @@ func (r *expenseRepository) Create(ctx context.Context, expense *domain.Expense)
 
 func (r *expenseRepository) FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Expense, error) {
 	query := `
-		SELECT e.id, e.group_id, e.amount, e.description, e.paid_by_id, 
+		SELECT e.id, e.group_id, e.amount, e.description, e.currency, e.paid_by_id, 
 		       e.created_at, e.updated_at,
 		       m.name as paid_by_name
 		FROM expenses e
@@ -93,6 +94,7 @@ func (r *expenseRepository) FindByGroupID(ctx context.Context, groupID uuid.UUID
 			&expense.GroupID,
 			&expense.Amount,
 			&expense.Description,
+			&expense.Currency,
 			&expense.PaidByID,
 			&expense.CreatedAt,
 			&expense.UpdatedAt,
@@ -121,7 +123,7 @@ func (r *expenseRepository) FindByGroupID(ctx context.Context, groupID uuid.UUID
 
 func (r *expenseRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain.Expense, error) {
 	query := `
-		SELECT e.id, e.group_id, e.amount, e.description, e.paid_by_id, 
+		SELECT e.id, e.group_id, e.amount, e.description, e.currency, e.paid_by_id, 
 		       e.created_at, e.updated_at,
 		       m.name as paid_by_name
 		FROM expenses e
@@ -134,6 +136,7 @@ func (r *expenseRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain
 		&expense.GroupID,
 		&expense.Amount,
 		&expense.Description,
+		&expense.Currency,
 		&expense.PaidByID,
 		&expense.CreatedAt,
 		&expense.UpdatedAt,

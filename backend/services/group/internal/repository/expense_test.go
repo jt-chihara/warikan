@@ -33,6 +33,7 @@ func TestExpenseRepository_Create(t *testing.T) {
 		GroupID:     groupID,
 		Amount:      3000,
 		Description: "Lunch",
+		Currency:    "JPY",
 		PaidByID:    paidByID,
 		PaidByName:  "Alice",
 		SplitMembers: []domain.SplitMember{
@@ -64,8 +65,8 @@ func TestExpenseRepository_Create(t *testing.T) {
 				mock.ExpectBegin()
 				
 				// Expect expense insert
-				mock.ExpectExec(`INSERT INTO expenses \(id, group_id, amount, description, paid_by_id, created_at, updated_at\) VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7\)`).
-					WithArgs(expenseID, groupID, int64(3000), "Lunch", paidByID, now, now).
+				mock.ExpectExec(`INSERT INTO expenses \(id, group_id, amount, description, currency, paid_by_id, created_at, updated_at\) VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8\)`).
+					WithArgs(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now).
 					WillReturnResult(sqlmock.NewResult(1, 1))
 				
 				// Expect split member inserts
@@ -87,7 +88,7 @@ func TestExpenseRepository_Create(t *testing.T) {
 			setupMocks: func() {
 				mock.ExpectBegin()
 				mock.ExpectExec(`INSERT INTO expenses`).
-					WithArgs(expenseID, groupID, int64(3000), "Lunch", paidByID, now, now).
+					WithArgs(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now).
 					WillReturnError(sql.ErrConnDone)
 				mock.ExpectRollback()
 			},
@@ -139,8 +140,8 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 			setupMocks: func() {
 				// Mock main expense query
 				expenseRows := sqlmock.NewRows([]string{
-					"id", "group_id", "amount", "description", "paid_by_id", "created_at", "updated_at", "paid_by_name",
-				}).AddRow(expenseID, groupID, int64(3000), "Lunch", paidByID, now, now, "Alice")
+					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
+				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
 				
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
@@ -163,7 +164,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 			groupID: groupID,
 			setupMocks: func() {
 				expenseRows := sqlmock.NewRows([]string{
-					"id", "group_id", "amount", "description", "paid_by_id", "created_at", "updated_at", "paid_by_name",
+					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				})
 				
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
@@ -242,8 +243,8 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 			setupMocks: func() {
 				// Mock main expense query
 				expenseRow := sqlmock.NewRows([]string{
-					"id", "group_id", "amount", "description", "paid_by_id", "created_at", "updated_at", "paid_by_name",
-				}).AddRow(expenseID, groupID, int64(3000), "Lunch", paidByID, now, now, "Alice")
+					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
+				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
 				
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(expenseID).
@@ -264,6 +265,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 				GroupID:     groupID,
 				Amount:      3000,
 				Description: "Lunch",
+				Currency:    "JPY",
 				PaidByName:  "Alice",
 			},
 		},

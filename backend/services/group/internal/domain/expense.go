@@ -16,6 +16,7 @@ type Expense struct {
 	GroupID      uuid.UUID     `json:"group_id"`
 	Amount       int64         `json:"amount"` // Amount in cents (JPY)
 	Description  string        `json:"description"`
+	Currency     string        `json:"currency"`
 	PaidByID     uuid.UUID     `json:"paid_by_id"`
 	PaidByName   string        `json:"paid_by_name"`
 	SplitMembers []SplitMember `json:"split_members"`

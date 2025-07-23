@@ -273,6 +273,7 @@ func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRe
 		GroupID:      groupID,
 		Amount:       req.Amount,
 		Description:  req.Description,
+		Currency:     group.Currency,
 		PaidByID:     paidByID,
 		PaidByName:   paidByName,
 		SplitMembers: splitMembers,
