@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	"github.com/jt-chihara/warikan/services/group/internal/repository"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
@@ -64,7 +65,7 @@ func (m *MockGroupRepository) RemoveMember(groupID, memberID string) error {
 func TestGroupService_CreateGroup_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.CreateGroupRequest{
 		Name:        "Test Group",
@@ -105,7 +106,7 @@ func TestGroupService_CreateGroup_Success(t *testing.T) {
 func TestGroupService_CreateGroup_EmptyName(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.CreateGroupRequest{
 		Name:        "", // Empty name should cause error
@@ -129,7 +130,7 @@ func TestGroupService_CreateGroup_EmptyName(t *testing.T) {
 func TestGroupService_CreateGroup_DefaultCurrency(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.CreateGroupRequest{
 		Name:        "Test Group",
@@ -163,7 +164,7 @@ func TestGroupService_CreateGroup_DefaultCurrency(t *testing.T) {
 func TestGroupService_GetGroup_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	groupID := uuid.New().String()
 	req := &groupv1.GetGroupRequest{Id: groupID}
@@ -193,7 +194,7 @@ func TestGroupService_GetGroup_Success(t *testing.T) {
 func TestGroupService_GetGroup_EmptyID(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.GetGroupRequest{Id: ""} // Empty ID should cause error
 
@@ -211,7 +212,7 @@ func TestGroupService_GetGroup_EmptyID(t *testing.T) {
 func TestGroupService_UpdateGroup_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	groupID := uuid.New().String()
 	req := &groupv1.UpdateGroupRequest{
@@ -246,7 +247,7 @@ func TestGroupService_UpdateGroup_Success(t *testing.T) {
 func TestGroupService_DeleteGroup_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	groupID := uuid.New().String()
 	req := &groupv1.DeleteGroupRequest{Id: groupID}
@@ -266,7 +267,7 @@ func TestGroupService_DeleteGroup_Success(t *testing.T) {
 func TestGroupService_DeleteGroup_RepositoryError(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	groupID := uuid.New().String()
 	req := &groupv1.DeleteGroupRequest{Id: groupID}
@@ -288,7 +289,7 @@ func TestGroupService_DeleteGroup_RepositoryError(t *testing.T) {
 func TestGroupService_AddMember_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.AddMemberRequest{
 		GroupId:     uuid.New().String(),
@@ -320,7 +321,7 @@ func TestGroupService_AddMember_Success(t *testing.T) {
 func TestGroupService_AddMember_EmptyName(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.AddMemberRequest{
 		GroupId:     uuid.New().String(),
@@ -342,7 +343,7 @@ func TestGroupService_AddMember_EmptyName(t *testing.T) {
 func TestGroupService_RemoveMember_Success(t *testing.T) {
 	// Arrange
 	mockRepo := new(MockGroupRepository)
-	service := NewGroupService(mockRepo)
+	service := NewGroupService(mockRepo, nil) // ExpenseRepo not needed for these tests
 
 	req := &groupv1.RemoveMemberRequest{
 		GroupId:  uuid.New().String(),

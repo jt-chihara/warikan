@@ -13,6 +13,7 @@ import (
 	"github.com/jt-chihara/warikan/services/group/internal/handler"
 	"github.com/jt-chihara/warikan/services/group/internal/repository"
 	"github.com/jt-chihara/warikan/services/group/internal/service"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
 func main() {
@@ -56,9 +57,8 @@ func main() {
 
 	s := grpc.NewServer()
 	
-	// Register services (this would be generated with proper protoc)
-	// For now, we'll just log that the server is starting
-	_ = groupHandler // Use the handler variable
+	// Register GroupService
+	groupv1.RegisterGroupServiceServer(s, groupHandler)
 
 	log.Printf("Group service listening on port %s", port)
 	if err := s.Serve(lis); err != nil {

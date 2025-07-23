@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import ExpenseModal from '../components/ExpenseModal';
 import { useAddExpense, useGroupExpenses } from '../hooks/useExpense';
 import { useGroup } from '../hooks/useGroup';
+import { formatDateFromGraphQL } from '../lib/dateUtils';
 import type { AddExpenseInput } from '../types/group';
 
 export default function GroupPage() {
@@ -75,7 +76,7 @@ export default function GroupPage() {
             {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
               <span>通貨: {group.currency}</span>
-              <span>作成日: {new Date(group.createdAt).toLocaleDateString('ja-JP')}</span>
+              <span>作成日: {formatDateFromGraphQL(group.createdAt)}</span>
             </div>
           </div>
           <div className="self-start">
@@ -148,7 +149,7 @@ export default function GroupPage() {
                           <h4 className="font-semibold">{expense.description}</h4>
                           <p className="text-sm text-gray-600">{expense.paidByName}が支払い</p>
                           <p className="text-xs text-gray-500 mt-1">
-                            {new Date(expense.createdAt).toLocaleDateString('ja-JP')}
+                            {formatDateFromGraphQL(expense.createdAt)}
                           </p>
                         </div>
                         <div className="text-right self-start">
