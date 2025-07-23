@@ -69,6 +69,6 @@ describe('Layout', () => {
     expect(nav).toHaveClass('bg-white', 'shadow');
 
     const main = container.querySelector('main');
-    expect(main).toHaveClass('max-w-7xl', 'mx-auto', 'px-4', 'sm:px-6', 'lg:px-8', 'py-8');
+    expect(main).toHaveClass('flex-1', 'max-w-7xl', 'mx-auto', 'px-4', 'sm:px-6', 'lg:px-8', 'pt-4', 'pb-8', 'w-full');
   });
 });
