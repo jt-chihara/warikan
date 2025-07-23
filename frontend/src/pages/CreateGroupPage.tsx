@@ -114,7 +114,7 @@ export default function CreateGroupPage() {
           </label>
           <div className="space-y-2">
             {members.map((member, index) => (
-              <div key={member || index} className="flex gap-2">
+              <div key={index} className="flex gap-2">
                 <input
                   type="text"
                   value={member}

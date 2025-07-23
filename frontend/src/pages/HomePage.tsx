@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLocalGroups } from '../hooks/useLocalGroups';
+import { formatDateFromGraphQL } from '../lib/dateUtils';
 
 export default function HomePage() {
   const { groups } = useLocalGroups();
@@ -39,7 +40,7 @@ export default function HomePage() {
                 )}
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>通貨: {group.currency}</span>
-                  <span>{new Date(group.createdAt).toLocaleDateString('ja-JP')}</span>
+                  <span>{formatDateFromGraphQL(group.createdAt)}</span>
                 </div>
               </Link>
             ))}

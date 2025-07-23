@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/graphql-go/handler"
@@ -15,8 +16,14 @@ import (
 )
 
 func main() {
+	// Get group service URL from environment
+	groupServiceURL := os.Getenv("GROUP_SERVICE_URL")
+	if groupServiceURL == "" {
+		groupServiceURL = "localhost:50051"
+	}
+
 	// Connect to group service
-	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial(groupServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to group service: %v", err)
 	}
