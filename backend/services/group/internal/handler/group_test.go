@@ -67,6 +67,30 @@ func (m *MockGroupService) RemoveMember(ctx context.Context, req *groupv1.Remove
 	return args.Get(0).(*groupv1.RemoveMemberResponse), args.Error(1)
 }
 
+func (m *MockGroupService) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.CalculateSettlementsResponse), args.Error(1)
+}
+
+func (m *MockGroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRequest) (*groupv1.AddExpenseResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.AddExpenseResponse), args.Error(1)
+}
+
+func (m *MockGroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGroupExpensesRequest) (*groupv1.GetGroupExpensesResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.GetGroupExpensesResponse), args.Error(1)
+}
+
 func TestGroupHandler_CreateGroup_Success(t *testing.T) {
 	// Arrange
 	mockService := new(MockGroupService)

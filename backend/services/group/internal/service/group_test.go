@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/jt-chihara/warikan/services/group/internal/repository"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 

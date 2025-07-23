@@ -143,7 +143,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
 				
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
 					WillReturnRows(expenseRows)
 				
@@ -167,7 +167,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				})
 				
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
 					WillReturnRows(expenseRows)
 			},
@@ -178,7 +178,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 			name:    "query error",
 			groupID: groupID,
 			setupMocks: func() {
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
 					WillReturnError(sql.ErrConnDone)
 			},
@@ -246,7 +246,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
 				
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnRows(expenseRow)
 				
@@ -273,7 +273,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 			name:      "expense not found",
 			expenseID: expenseID,
 			setupMocks: func() {
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnError(sql.ErrNoRows)
 			},
@@ -284,7 +284,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 			name:      "query error",
 			expenseID: expenseID,
 			setupMocks: func() {
-				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
+				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnError(sql.ErrConnDone)
 			},
