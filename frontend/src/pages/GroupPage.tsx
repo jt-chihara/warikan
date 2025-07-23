@@ -68,17 +68,17 @@ export default function GroupPage() {
 
   return (
     <div>
-      <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <div className="flex justify-between items-start">
+      <div className="bg-white shadow rounded-lg p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{group.name}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{group.name}</h2>
             {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
-            <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
               <span>通貨: {group.currency}</span>
               <span>作成日: {new Date(group.createdAt).toLocaleDateString('ja-JP')}</span>
             </div>
           </div>
-          <div className="text-right">
+          <div className="self-start">
             <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
               {group.members.length}人
             </span>
@@ -102,7 +102,7 @@ export default function GroupPage() {
             <button
               type="button"
               onClick={() => setActiveTab('expenses')}
-              className={`py-4 px-6 border-b-2 font-medium text-sm ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial ${
                 activeTab === 'expenses'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -113,7 +113,7 @@ export default function GroupPage() {
             <button
               type="button"
               onClick={() => setActiveTab('settlement')}
-              className={`py-4 px-6 border-b-2 font-medium text-sm ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial ${
                 activeTab === 'settlement'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -124,7 +124,7 @@ export default function GroupPage() {
           </nav>
         </div>
 
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {activeTab === 'expenses' ? (
             <div>
               <div className="mb-4">
@@ -142,17 +142,17 @@ export default function GroupPage() {
               ) : expensesData?.groupExpenses?.length ? (
                 <div className="space-y-4">
                   {expensesData.groupExpenses.map((expense) => (
-                    <div key={expense.id} className="border rounded-lg p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
+                    <div key={expense.id} className="border rounded-lg p-3 sm:p-4">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                        <div className="flex-1">
                           <h4 className="font-semibold">{expense.description}</h4>
                           <p className="text-sm text-gray-600">{expense.paidByName}が支払い</p>
                           <p className="text-xs text-gray-500 mt-1">
                             {new Date(expense.createdAt).toLocaleDateString('ja-JP')}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="font-semibold">¥{expense.amount.toLocaleString()}</p>
+                        <div className="text-right self-start">
+                          <p className="font-semibold text-lg sm:text-base">¥{expense.amount.toLocaleString()}</p>
                           <p className="text-sm text-gray-600">
                             {expense.splitMembers.length}人で割り勘
                           </p>

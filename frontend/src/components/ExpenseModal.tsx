@@ -71,12 +71,19 @@ export default function ExpenseModal({ isOpen, onClose, group, onAddExpense }: E
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center sm:p-4 z-50">
+      <div className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">支払いを追加</h3>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            ✕
+          <button 
+            type="button" 
+            onClick={onClose} 
+            className="text-gray-400 hover:text-gray-600 p-2"
+            aria-label="閉じる"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
