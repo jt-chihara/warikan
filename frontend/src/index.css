@@ -1,2 +1,8 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
+
+/* 確実にブラウザのデフォルトマージンを除去 */
+html, body {
+  margin: 0;
+  padding: 0;
+}
