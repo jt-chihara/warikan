@@ -32,7 +32,7 @@
 
 3. **Docker Composeでサービスを起動**
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
 ### 🔗 アクセスURL
@@ -79,48 +79,48 @@ warikan/
 
 ```bash
 # サービス起動 (初回 / Dockerfileに変更があった場合)
-docker-compose up --build
+docker compose up --build
 
 # サービス起動 (通常)
-docker-compose up
+docker compose up
 
 # バックグラウンドで起動
-docker-compose up -d
+docker compose up -d
 
 # サービス停止
-docker-compose down
+docker compose down
 
 # ボリュームも含めて完全削除
-docker-compose down -v
+docker compose down -v
 ```
 
 ### 個別サービスの管理
 
 ```bash
 # 特定のサービスのみ起動
-docker-compose up frontend
-docker-compose up gateway
-docker-compose up group-service
-docker-compose up db
+docker compose up frontend
+docker compose up gateway
+docker compose up group-service
+docker compose up db
 
 # サービスの再起動
-docker-compose restart frontend
+docker compose restart frontend
 
 # サービスのログ確認
-docker-compose logs -f frontend
-docker-compose logs -f gateway
+docker compose logs -f frontend
+docker compose logs -f gateway
 ```
 
 ### デバッグ・開発作業
 
 ```bash
 # コンテナ内でシェルを実行
-docker-compose exec frontend sh
-docker-compose exec gateway sh
-docker-compose exec group-service sh
+docker compose exec frontend sh
+docker compose exec gateway sh
+docker compose exec group-service sh
 
 # データベースに接続
-docker-compose exec db psql -U warikan -d warikan
+docker compose exec db psql -U warikan -d warikan
 ```
 
 ## 🧪 テスト実行
@@ -129,10 +129,10 @@ docker-compose exec db psql -U warikan -d warikan
 
 ```bash
 # コンテナ内でテスト実行
-docker-compose exec frontend npm test
+docker compose exec frontend npm test
 
 # カバレッジ付きテスト
-docker-compose exec frontend npm run test:coverage
+docker compose exec frontend npm run test:coverage
 
 # ホストマシンでテスト実行 (node_modulesが必要)
 cd frontend
@@ -143,10 +143,10 @@ npm test
 
 ```bash
 # Group Serviceのテスト
-docker-compose exec group-service go test ./...
+docker compose exec group-service go test ./...
 
 # カバレッジ付きテスト
-docker-compose exec group-service go test -coverprofile=coverage.out ./...
+docker compose exec group-service go test -coverprofile=coverage.out ./...
 ```
 
 ## 🔄 開発ワークフロー
@@ -167,10 +167,10 @@ docker-compose exec group-service go test -coverprofile=coverage.out ./...
 
 ```bash
 # マイグレーション実行
-docker-compose exec group-service go run cmd/migrate/main.go
+docker compose exec group-service go run cmd/migrate/main.go
 
 # データベース接続
-docker-compose exec db psql -U warikan -d warikan
+docker compose exec db psql -U warikan -d warikan
 
 # よく使うSQL
 SELECT * FROM groups;
@@ -193,20 +193,20 @@ ports:
 
 ```bash
 # データベースコンテナの状態確認
-docker-compose ps db
+docker compose ps db
 
 # データベースログ確認
-docker-compose logs db
+docker compose logs db
 
 # データベースのヘルスチェック
-docker-compose exec db pg_isready -U warikan -d warikan
+docker compose exec db pg_isready -U warikan -d warikan
 ```
 
 ### コンテナビルドエラー
 
 ```bash
 # キャッシュをクリアして再ビルド
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # 未使用のイメージ・コンテナを削除
 docker system prune -f
@@ -216,11 +216,11 @@ docker system prune -f
 
 ```bash
 # フロントエンドの依存関係を再インストール
-docker-compose exec frontend npm ci
+docker compose exec frontend npm ci
 
 # または、ボリュームを削除して再起動
-docker-compose down -v
-docker-compose up --build
+docker compose down -v
+docker compose up --build
 ```
 
 ## 📊 モニタリング
@@ -229,13 +229,13 @@ docker-compose up --build
 
 ```bash
 # 全サービスのログ
-docker-compose logs -f
+docker compose logs -f
 
 # 特定のサービスのログ
-docker-compose logs -f frontend
-docker-compose logs -f gateway
-docker-compose logs -f group-service
-docker-compose logs -f db
+docker compose logs -f frontend
+docker compose logs -f gateway
+docker compose logs -f group-service
+docker compose logs -f db
 ```
 
 ### リソース使用量
@@ -245,7 +245,7 @@ docker-compose logs -f db
 docker stats
 
 # Docker Composeサービスの状態
-docker-compose ps
+docker compose ps
 ```
 
 ## 🚀 本番環境への展開
