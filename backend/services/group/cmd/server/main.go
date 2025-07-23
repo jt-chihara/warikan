@@ -39,7 +39,8 @@ func main() {
 
 	// Initialize layers
 	groupRepo := repository.NewGroupRepository(db)
-	groupService := service.NewGroupService(groupRepo)
+	expenseRepo := repository.NewExpenseRepository(db)
+	groupService := service.NewGroupService(groupRepo, expenseRepo)
 	groupHandler := handler.NewGroupHandler(groupService)
 
 	// gRPC server setup

@@ -1,0 +1,72 @@
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:17-alpine
+    container_name: warikan-db
+    environment:
+      POSTGRES_DB: warikan
+      POSTGRES_USER: warikan
+      POSTGRES_PASSWORD: warikan_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U warikan -d warikan"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Group Service (gRPC)
+  group-service:
+    build:
+      context: ./backend
+      dockerfile: services/group/Dockerfile
+    container_name: warikan-group-service
+    environment:
+      - DATABASE_URL=postgres://warikan:warikan_dev_password@db:5432/warikan?sslmode=disable
+      - GRPC_PORT=50051
+    ports:
+      - "50051:50051"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+
+  # GraphQL Gateway
+  gateway:
+    build:
+      context: ./backend
+      dockerfile: gateway/Dockerfile
+    container_name: warikan-gateway
+    environment:
+      - GROUP_SERVICE_URL=group-service:50051
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - group-service
+    volumes:
+      - ./backend:/app
+
+  # Frontend (React + Vite)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: warikan-frontend
+    environment:
+      - VITE_GRAPHQL_ENDPOINT=http://localhost:8080/query
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+
+volumes:
+  postgres_data:

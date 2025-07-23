@@ -1,4 +1,4 @@
-# Development Dockerfile
+# Gateway Dockerfile for development
 FROM golang:1.23-alpine
 
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN go work sync
 RUN go mod download
 
 # Expose port
-EXPOSE 50051
+EXPOSE 8080
 
 # Start development server with hot reload
-CMD ["go", "run", "./services/group/cmd/server/main.go"]
+CMD ["go", "run", "./gateway/cmd/main.go"]
