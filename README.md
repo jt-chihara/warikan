@@ -21,7 +21,7 @@
 
 1. **リポジトリをクローン**
    ```bash
-   git clone <repository-url>
+   git clone git@github.com:jt-chihara/warikan.git
    cd warikan
    ```
 
