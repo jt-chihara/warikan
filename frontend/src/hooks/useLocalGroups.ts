@@ -19,10 +19,10 @@ export function useLocalGroups() {
 
   const addGroup = (group: Group) => {
     // 重複チェック
-    if (groups.find(g => g.id === group.id)) {
+    if (groups.find((g) => g.id === group.id)) {
       return;
     }
-    
+
     try {
       // 新しいグループを先頭に追加
       const updatedGroups = [group, ...groups];

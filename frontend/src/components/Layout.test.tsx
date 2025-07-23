@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { describe, expect, it } from 'vitest';
 import Layout from './Layout';
 
 describe('Layout', () => {
@@ -12,9 +12,9 @@ describe('Layout', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
-      </Layout>
+      </Layout>,
     );
-    
+
     expect(screen.getByText('割り勘アプリ')).toBeInTheDocument();
   });
 
@@ -22,9 +22,9 @@ describe('Layout', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
-      </Layout>
+      </Layout>,
     );
-    
+
     // デスクトップビュー
     expect(screen.getByText('新しいグループ')).toBeInTheDocument();
     // モバイルビュー
@@ -35,9 +35,9 @@ describe('Layout', () => {
     renderWithRouter(
       <Layout>
         <div data-testid="child-content">Test Child Content</div>
-      </Layout>
+      </Layout>,
     );
-    
+
     expect(screen.getByTestId('child-content')).toBeInTheDocument();
     expect(screen.getByText('Test Child Content')).toBeInTheDocument();
   });
@@ -46,14 +46,14 @@ describe('Layout', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
-      </Layout>
+      </Layout>,
     );
-    
+
     const homeLink = screen.getByRole('link', { name: /割り勘アプリ/i });
     expect(homeLink).toHaveAttribute('href', '/');
-    
+
     const newGroupLinks = screen.getAllByRole('link', { name: /新しいグループ|新規/i });
-    newGroupLinks.forEach(link => {
+    newGroupLinks.forEach((link) => {
       expect(link).toHaveAttribute('href', '/groups/new');
     });
   });
@@ -62,12 +62,12 @@ describe('Layout', () => {
     const { container } = renderWithRouter(
       <Layout>
         <div>Test Content</div>
-      </Layout>
+      </Layout>,
     );
-    
+
     const nav = container.querySelector('nav');
     expect(nav).toHaveClass('bg-white', 'shadow');
-    
+
     const main = container.querySelector('main');
     expect(main).toHaveClass('max-w-7xl', 'mx-auto', 'px-4', 'sm:px-6', 'lg:px-8', 'py-8');
   });

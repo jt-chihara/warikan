@@ -152,7 +152,9 @@ export default function GroupPage() {
                           </p>
                         </div>
                         <div className="text-right self-start">
-                          <p className="font-semibold text-lg sm:text-base">¥{expense.amount.toLocaleString()}</p>
+                          <p className="font-semibold text-lg sm:text-base">
+                            ¥{expense.amount.toLocaleString()}
+                          </p>
                           <p className="text-sm text-gray-600">
                             {expense.splitMembers.length}人で割り勘
                           </p>

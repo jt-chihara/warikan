@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
 import { gql } from '@apollo/client';
-import { useAddExpense, useGroupExpenses } from './useExpense';
+import { MockedProvider } from '@apollo/client/testing';
+import { renderHook, waitFor } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import type { AddExpenseInput, Expense } from '../types/group';
+import { useAddExpense, useGroupExpenses } from './useExpense';
 
 const mockExpense: Expense = {
   id: 'expense-123',

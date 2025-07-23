@@ -1,9 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
-import { renderHook, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
 import { gql } from '@apollo/client';
-import { useCreateGroup, useGroup, useCalculateSettlements } from './useGroup';
+import { MockedProvider } from '@apollo/client/testing';
+import { renderHook, waitFor } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import type { CreateGroupInput, Group, SettlementResult } from '../types/group';
+import { useCalculateSettlements, useCreateGroup, useGroup } from './useGroup';
 
 const mockGroup: Group = {
   id: 'group-123',

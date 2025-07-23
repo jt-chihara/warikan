@@ -68,7 +68,10 @@ export default function CreateGroupPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow"
+      >
         <div>
           <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">
             グループ名
