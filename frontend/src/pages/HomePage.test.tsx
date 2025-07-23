@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Group } from '../types/group';
 import HomePage from './HomePage';
 
@@ -42,7 +42,12 @@ describe('HomePage', () => {
   });
 
   it('renders hero section', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: [], addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: [],
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -54,7 +59,12 @@ describe('HomePage', () => {
   });
 
   it('renders feature cards', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: [], addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: [],
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -64,7 +74,12 @@ describe('HomePage', () => {
   });
 
   it('does not show recent groups when no groups exist', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: [], addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: [],
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -72,7 +87,12 @@ describe('HomePage', () => {
   });
 
   it('shows recent groups when groups exist', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: mockGroups, addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: mockGroups,
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -83,7 +103,12 @@ describe('HomePage', () => {
   });
 
   it('shows member count for each group', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: mockGroups, addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: mockGroups,
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -92,7 +117,12 @@ describe('HomePage', () => {
   });
 
   it('formats dates correctly', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: mockGroups, addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: mockGroups,
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -101,7 +131,12 @@ describe('HomePage', () => {
   });
 
   it('links to group pages correctly', () => {
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: mockGroups, addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: mockGroups,
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
@@ -119,7 +154,12 @@ describe('HomePage', () => {
       members: [],
     }));
 
-    vi.mocked(useLocalGroups).mockReturnValue({ groups: manyGroups, addGroup: vi.fn() });
+    vi.mocked(useLocalGroups).mockReturnValue({
+      groups: manyGroups,
+      addGroup: vi.fn(),
+      updateGroup: vi.fn(),
+      removeGroup: vi.fn(),
+    });
 
     renderWithRouter(<HomePage />);
 
