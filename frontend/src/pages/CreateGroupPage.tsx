@@ -59,8 +59,8 @@ export default function CreateGroupPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">新しいグループを作成</h2>
+    <div className="max-w-2xl mx-auto px-4 sm:px-0">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">新しいグループを作成</h2>
 
       {error && (
         <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-4">
@@ -68,7 +68,10 @@ export default function CreateGroupPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 rounded-lg shadow"
+      >
         <div>
           <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">
             グループ名
@@ -117,7 +120,7 @@ export default function CreateGroupPage() {
                   value={member}
                   onChange={(e) => handleMemberChange(index, e.target.value)}
                   placeholder="メンバー名"
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base"
                 />
                 {members.length > 1 && (
                   <button
@@ -140,20 +143,20 @@ export default function CreateGroupPage() {
           </button>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
+          >
+            キャンセル
+          </button>
           <button
             type="submit"
             disabled={loading}
             className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? '作成中...' : 'グループを作成'}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50"
-          >
-            キャンセル
           </button>
         </div>
       </form>
