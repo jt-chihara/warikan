@@ -6,8 +6,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/mock"
 
-	"github.com/jt-chihara/warikan/services/group/internal/domain"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
+	"github.com/jt-chihara/warikan/services/group/internal/domain"
 )
 
 // MockExpenseRepository is a mock implementation of ExpenseRepository
@@ -34,6 +34,11 @@ func (m *MockExpenseRepository) FindByID(ctx context.Context, id uuid.UUID) (*do
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*domain.Expense), args.Error(1)
+}
+
+func (m *MockExpenseRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	args := m.Called(ctx, id)
+	return args.Error(0)
 }
 
 // MockGroupRepositoryInterface for testing

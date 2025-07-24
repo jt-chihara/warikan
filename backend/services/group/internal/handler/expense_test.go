@@ -69,23 +69,31 @@ func (m *MockGroupServiceInterface) GetGroupExpenses(ctx context.Context, req *g
 	return args.Get(0).(*groupv1.GetGroupExpensesResponse), args.Error(1)
 }
 
+func (m *MockGroupServiceInterface) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.DeleteExpenseResponse), args.Error(1)
+}
+
 func TestGroupHandler_AddExpense(t *testing.T) {
 	tests := []struct {
-		name           string
-		request        *groupv1.AddExpenseRequest
-		mockResponse   *groupv1.AddExpenseResponse
-		mockError      error
-		expectedError  bool
-		setupMocks     func(*MockGroupServiceInterface)
+		name          string
+		request       *groupv1.AddExpenseRequest
+		mockResponse  *groupv1.AddExpenseResponse
+		mockError     error
+		expectedError bool
+		setupMocks    func(*MockGroupServiceInterface)
 	}{
 		{
 			name: "successful expense addition",
 			request: &groupv1.AddExpenseRequest{
-				GroupId:         "group-123",
-				Amount:          3000,
-				Description:     "Lunch",
-				PaidById:        "member-1",
-				SplitMemberIds:  []string{"member-1", "member-2", "member-3"},
+				GroupId:        "group-123",
+				Amount:         3000,
+				Description:    "Lunch",
+				PaidById:       "member-1",
+				SplitMemberIds: []string{"member-1", "member-2", "member-3"},
 			},
 			mockResponse: &groupv1.AddExpenseResponse{
 				Expense: &groupv1.ExpenseWithDetails{
@@ -120,10 +128,10 @@ func TestGroupHandler_AddExpense(t *testing.T) {
 			setupMocks: func(mockService *MockGroupServiceInterface) {
 				mockService.On("AddExpense", mock.Anything, mock.MatchedBy(func(req *groupv1.AddExpenseRequest) bool {
 					return req.GroupId == "group-123" &&
-						   req.Amount == 3000 &&
-						   req.Description == "Lunch" &&
-						   req.PaidById == "member-1" &&
-						   len(req.SplitMemberIds) == 3
+						req.Amount == 3000 &&
+						req.Description == "Lunch" &&
+						req.PaidById == "member-1" &&
+						len(req.SplitMemberIds) == 3
 				})).Return(&groupv1.AddExpenseResponse{
 					Expense: &groupv1.ExpenseWithDetails{
 						Id:          "expense-123",
@@ -157,11 +165,11 @@ func TestGroupHandler_AddExpense(t *testing.T) {
 		{
 			name: "service returns error",
 			request: &groupv1.AddExpenseRequest{
-				GroupId:         "group-123",
-				Amount:          3000,
-				Description:     "Lunch",
-				PaidById:        "member-1",
-				SplitMemberIds:  []string{"member-1", "member-2"},
+				GroupId:        "group-123",
+				Amount:         3000,
+				Description:    "Lunch",
+				PaidById:       "member-1",
+				SplitMemberIds: []string{"member-1", "member-2"},
 			},
 			mockResponse:  nil,
 			mockError:     errors.New("group not found"),
@@ -176,11 +184,11 @@ func TestGroupHandler_AddExpense(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockService := new(MockGroupServiceInterface)
 			tt.setupMocks(mockService)
-			
+
 			handler := NewGroupHandler(mockService)
-			
+
 			resp, err := handler.AddExpense(context.Background(), tt.request)
-			
+
 			if tt.expectedError {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -193,7 +201,7 @@ func TestGroupHandler_AddExpense(t *testing.T) {
 				assert.Equal(t, tt.mockResponse.Expense.Description, resp.Expense.Description)
 				assert.Equal(t, len(tt.mockResponse.Expense.SplitMembers), len(resp.Expense.SplitMembers))
 			}
-			
+
 			mockService.AssertExpectations(t)
 		})
 	}
@@ -201,12 +209,12 @@ func TestGroupHandler_AddExpense(t *testing.T) {
 
 func TestGroupHandler_GetGroupExpenses(t *testing.T) {
 	tests := []struct {
-		name           string
-		request        *groupv1.GetGroupExpensesRequest
-		mockResponse   *groupv1.GetGroupExpensesResponse
-		mockError      error
-		expectedError  bool
-		setupMocks     func(*MockGroupServiceInterface)
+		name          string
+		request       *groupv1.GetGroupExpensesRequest
+		mockResponse  *groupv1.GetGroupExpensesResponse
+		mockError     error
+		expectedError bool
+		setupMocks    func(*MockGroupServiceInterface)
 	}{
 		{
 			name: "successful expenses retrieval",
@@ -346,11 +354,11 @@ func TestGroupHandler_GetGroupExpenses(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockService := new(MockGroupServiceInterface)
 			tt.setupMocks(mockService)
-			
+
 			handler := NewGroupHandler(mockService)
-			
+
 			resp, err := handler.GetGroupExpenses(context.Background(), tt.request)
-			
+
 			if tt.expectedError {
 				assert.Error(t, err)
 				assert.Nil(t, resp)
@@ -359,11 +367,11 @@ func TestGroupHandler_GetGroupExpenses(t *testing.T) {
 				assert.NotNil(t, resp)
 				assert.NotNil(t, resp.Expenses)
 				assert.Equal(t, len(tt.mockResponse.Expenses), len(resp.Expenses))
-				
+
 				if len(resp.Expenses) > 0 {
 					expense := resp.Expenses[0]
 					mockExpense := tt.mockResponse.Expenses[0]
-					
+
 					assert.Equal(t, mockExpense.Id, expense.Id)
 					assert.Equal(t, mockExpense.Amount, expense.Amount)
 					assert.Equal(t, mockExpense.Description, expense.Description)
@@ -371,7 +379,7 @@ func TestGroupHandler_GetGroupExpenses(t *testing.T) {
 					assert.Equal(t, len(mockExpense.SplitMembers), len(expense.SplitMembers))
 				}
 			}
-			
+
 			mockService.AssertExpectations(t)
 		})
 	}

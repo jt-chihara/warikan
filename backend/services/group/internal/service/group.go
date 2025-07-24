@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 	"github.com/jt-chihara/warikan/services/group/internal/algorithm"
 	"github.com/jt-chihara/warikan/services/group/internal/domain"
 	"github.com/jt-chihara/warikan/services/group/internal/repository"
-	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -217,7 +217,7 @@ func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRe
 	if err != nil {
 		return nil, errors.New("invalid group ID")
 	}
-	
+
 	paidByID, err := uuid.Parse(req.PaidById)
 	if err != nil {
 		return nil, errors.New("invalid paid by ID")
@@ -235,7 +235,7 @@ func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRe
 	// Create split members
 	var splitMembers []domain.SplitMember
 	var paidByName string
-	
+
 	for _, memberID := range req.SplitMemberIds {
 		memberUUID, err := uuid.Parse(memberID)
 		if err != nil {
@@ -352,5 +352,25 @@ func (s *GroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGro
 
 	return &groupv1.GetGroupExpensesResponse{
 		Expenses: protoExpenses,
+	}, nil
+}
+
+func (s *GroupService) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
+	if req.ExpenseId == "" {
+		return nil, errors.New("expense ID is required")
+	}
+
+	expenseID, err := uuid.Parse(req.ExpenseId)
+	if err != nil {
+		return nil, errors.New("invalid expense ID")
+	}
+
+	err = s.expenseRepo.Delete(ctx, expenseID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &groupv1.DeleteExpenseResponse{
+		Success: true,
 	}, nil
 }

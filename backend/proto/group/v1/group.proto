@@ -14,6 +14,7 @@ service GroupService {
   rpc AddMember(AddMemberRequest) returns (AddMemberResponse);
   rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
   rpc AddExpense(AddExpenseRequest) returns (AddExpenseResponse);
+  rpc DeleteExpense(DeleteExpenseRequest) returns (DeleteExpenseResponse);
   rpc GetGroupExpenses(GetGroupExpensesRequest) returns (GetGroupExpensesResponse);
   rpc CalculateSettlements(CalculateSettlementsRequest) returns (CalculateSettlementsResponse);
 }
@@ -103,6 +104,14 @@ message AddExpenseRequest {
 
 message AddExpenseResponse {
   ExpenseWithDetails expense = 1;
+}
+
+message DeleteExpenseRequest {
+  string expense_id = 1;
+}
+
+message DeleteExpenseResponse {
+  bool success = 1;
 }
 
 message GetGroupExpensesRequest {

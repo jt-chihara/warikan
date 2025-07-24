@@ -91,6 +91,14 @@ func (m *MockGroupService) GetGroupExpenses(ctx context.Context, req *groupv1.Ge
 	return args.Get(0).(*groupv1.GetGroupExpensesResponse), args.Error(1)
 }
 
+func (m *MockGroupService) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.DeleteExpenseResponse), args.Error(1)
+}
+
 func TestGroupHandler_CreateGroup_Success(t *testing.T) {
 	// Arrange
 	mockService := new(MockGroupService)
@@ -318,6 +326,49 @@ func TestGroupHandler_RemoveMember_ServiceError(t *testing.T) {
 
 	// Act
 	resp, err := handler.RemoveMember(context.Background(), req)
+
+	// Assert
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+	assert.Equal(t, expectedError, err)
+
+	mockService.AssertExpectations(t)
+}
+
+func TestGroupHandler_DeleteExpense_Success(t *testing.T) {
+	// Arrange
+	mockService := new(MockGroupService)
+	handler := NewGroupHandler(mockService)
+
+	expenseID := uuid.New().String()
+	req := &groupv1.DeleteExpenseRequest{ExpenseId: expenseID}
+
+	expectedResp := &groupv1.DeleteExpenseResponse{Success: true}
+
+	mockService.On("DeleteExpense", mock.Anything, req).Return(expectedResp, nil)
+
+	// Act
+	resp, err := handler.DeleteExpense(context.Background(), req)
+
+	// Assert
+	require.NoError(t, err)
+	assert.True(t, resp.Success)
+
+	mockService.AssertExpectations(t)
+}
+
+func TestGroupHandler_DeleteExpense_ServiceError(t *testing.T) {
+	// Arrange
+	mockService := new(MockGroupService)
+	handler := NewGroupHandler(mockService)
+
+	req := &groupv1.DeleteExpenseRequest{ExpenseId: ""}
+
+	expectedError := errors.New("expense ID is required")
+	mockService.On("DeleteExpense", mock.Anything, req).Return(nil, expectedError)
+
+	// Act
+	resp, err := handler.DeleteExpense(context.Background(), req)
 
 	// Assert
 	assert.Error(t, err)

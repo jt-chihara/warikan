@@ -644,6 +644,32 @@ func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 					return resp.Expense, nil
 				},
 			},
+			"deleteExpense": &graphql.Field{
+				Type: graphql.NewNonNull(graphql.Boolean),
+				Args: graphql.FieldConfigArgument{
+					"expenseId": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(graphql.ID),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					expenseId, ok := p.Args["expenseId"].(string)
+					if !ok {
+						return false, nil
+					}
+
+					req := &groupv1.DeleteExpenseRequest{
+						ExpenseId: expenseId,
+					}
+
+					resp, err := groupClient.DeleteExpense(context.Background(), req)
+					if err != nil {
+						log.Printf("Error deleting expense: %v", err)
+						return false, err
+					}
+
+					return resp.Success, nil
+				},
+			},
 		},
 	})
 

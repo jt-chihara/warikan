@@ -2,10 +2,10 @@ package internal
 
 import (
 	"context"
-	"testing"
-	"time"
 	"github.com/google/uuid"
 	"github.com/jt-chihara/warikan/services/group/internal/domain"
+	"testing"
+	"time"
 )
 
 // Simple validation test to ensure our types and structures are correct
@@ -70,10 +70,10 @@ func TestDomainTypes(t *testing.T) {
 func TestSplitCalculation(t *testing.T) {
 	// Test even split calculation logic
 	testCases := []struct {
-		name           string
-		totalAmount    int64
-		memberCount    int
-		expectedSplit  int64
+		name          string
+		totalAmount   int64
+		memberCount   int
+		expectedSplit int64
 	}{
 		{
 			name:          "even split 3000 among 3 members",
@@ -82,7 +82,7 @@ func TestSplitCalculation(t *testing.T) {
 			expectedSplit: 1000,
 		},
 		{
-			name:          "even split 1000 among 2 members", 
+			name:          "even split 1000 among 2 members",
 			totalAmount:   1000,
 			memberCount:   2,
 			expectedSplit: 500,
@@ -98,11 +98,11 @@ func TestSplitCalculation(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			splitAmount := tc.totalAmount / int64(tc.memberCount)
-			
+
 			if splitAmount != tc.expectedSplit {
 				t.Errorf("Expected split %d, got %d", tc.expectedSplit, splitAmount)
 			}
-			
+
 			// Check for remainders in uneven splits
 			remainder := tc.totalAmount % int64(tc.memberCount)
 			if remainder > 0 {
@@ -117,7 +117,7 @@ func TestSplitCalculation(t *testing.T) {
 func TestContextUsage(t *testing.T) {
 	// Test context creation and usage
 	ctx := context.Background()
-	
+
 	if ctx == nil {
 		t.Errorf("Context should not be nil")
 	}

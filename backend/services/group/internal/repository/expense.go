@@ -13,6 +13,7 @@ type ExpenseRepository interface {
 	Create(ctx context.Context, expense *domain.Expense) error
 	FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Expense, error)
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Expense, error)
+	Delete(ctx context.Context, id uuid.UUID) error
 }
 
 type expenseRepository struct {
@@ -34,7 +35,7 @@ func (r *expenseRepository) Create(ctx context.Context, expense *domain.Expense)
 	query := `
 		INSERT INTO expenses (id, group_id, amount, description, currency, paid_by_id, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-	
+
 	_, err = tx.ExecContext(ctx, query,
 		expense.ID,
 		expense.GroupID,
@@ -54,7 +55,7 @@ func (r *expenseRepository) Create(ctx context.Context, expense *domain.Expense)
 		splitQuery := `
 			INSERT INTO expense_splits (expense_id, member_id, amount)
 			VALUES ($1, $2, $3)`
-		
+
 		for _, split := range expense.SplitMembers {
 			_, err = tx.ExecContext(ctx, splitQuery,
 				expense.ID,
@@ -157,6 +158,39 @@ func (r *expenseRepository) FindByID(ctx context.Context, id uuid.UUID) (*domain
 	expense.SplitMembers = splits
 
 	return &expense, nil
+}
+
+func (r *expenseRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	// Delete expense splits first (foreign key constraint)
+	splitQuery := `DELETE FROM expense_splits WHERE expense_id = $1`
+	_, err = tx.ExecContext(ctx, splitQuery, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete expense splits: %w", err)
+	}
+
+	// Delete expense
+	expenseQuery := `DELETE FROM expenses WHERE id = $1`
+	result, err := tx.ExecContext(ctx, expenseQuery, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete expense: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return domain.ErrExpenseNotFound
+	}
+
+	return tx.Commit()
 }
 
 func (r *expenseRepository) findSplitMembers(ctx context.Context, expenseID uuid.UUID) ([]domain.SplitMember, error) {
