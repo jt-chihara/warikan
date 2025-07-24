@@ -903,6 +903,94 @@ func (x *AddExpenseResponse) GetExpense() *ExpenseWithDetails {
 	return nil
 }
 
+type DeleteExpenseRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ExpenseId     string                 `protobuf:"bytes,1,opt,name=expense_id,json=expenseId,proto3" json:"expense_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteExpenseRequest) Reset() {
+	*x = DeleteExpenseRequest{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteExpenseRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteExpenseRequest) ProtoMessage() {}
+
+func (x *DeleteExpenseRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteExpenseRequest.ProtoReflect.Descriptor instead.
+func (*DeleteExpenseRequest) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *DeleteExpenseRequest) GetExpenseId() string {
+	if x != nil {
+		return x.ExpenseId
+	}
+	return ""
+}
+
+type DeleteExpenseResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteExpenseResponse) Reset() {
+	*x = DeleteExpenseResponse{}
+	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteExpenseResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteExpenseResponse) ProtoMessage() {}
+
+func (x *DeleteExpenseResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteExpenseResponse.ProtoReflect.Descriptor instead.
+func (*DeleteExpenseResponse) Descriptor() ([]byte, []int) {
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *DeleteExpenseResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 type GetGroupExpensesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	GroupId       string                 `protobuf:"bytes,1,opt,name=group_id,json=groupId,proto3" json:"group_id,omitempty"`
@@ -912,7 +1000,7 @@ type GetGroupExpensesRequest struct {
 
 func (x *GetGroupExpensesRequest) Reset() {
 	*x = GetGroupExpensesRequest{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	mi := &file_proto_group_v1_group_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -924,7 +1012,7 @@ func (x *GetGroupExpensesRequest) String() string {
 func (*GetGroupExpensesRequest) ProtoMessage() {}
 
 func (x *GetGroupExpensesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[16]
+	mi := &file_proto_group_v1_group_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -937,7 +1025,7 @@ func (x *GetGroupExpensesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupExpensesRequest.ProtoReflect.Descriptor instead.
 func (*GetGroupExpensesRequest) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{16}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetGroupExpensesRequest) GetGroupId() string {
@@ -956,7 +1044,7 @@ type GetGroupExpensesResponse struct {
 
 func (x *GetGroupExpensesResponse) Reset() {
 	*x = GetGroupExpensesResponse{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	mi := &file_proto_group_v1_group_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -968,7 +1056,7 @@ func (x *GetGroupExpensesResponse) String() string {
 func (*GetGroupExpensesResponse) ProtoMessage() {}
 
 func (x *GetGroupExpensesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[17]
+	mi := &file_proto_group_v1_group_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -981,7 +1069,7 @@ func (x *GetGroupExpensesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetGroupExpensesResponse.ProtoReflect.Descriptor instead.
 func (*GetGroupExpensesResponse) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{17}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetGroupExpensesResponse) GetExpenses() []*ExpenseWithDetails {
@@ -1007,7 +1095,7 @@ type ExpenseWithDetails struct {
 
 func (x *ExpenseWithDetails) Reset() {
 	*x = ExpenseWithDetails{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[18]
+	mi := &file_proto_group_v1_group_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1019,7 +1107,7 @@ func (x *ExpenseWithDetails) String() string {
 func (*ExpenseWithDetails) ProtoMessage() {}
 
 func (x *ExpenseWithDetails) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[18]
+	mi := &file_proto_group_v1_group_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1032,7 +1120,7 @@ func (x *ExpenseWithDetails) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExpenseWithDetails.ProtoReflect.Descriptor instead.
 func (*ExpenseWithDetails) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{18}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ExpenseWithDetails) GetId() string {
@@ -1102,7 +1190,7 @@ type SplitMember struct {
 
 func (x *SplitMember) Reset() {
 	*x = SplitMember{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[19]
+	mi := &file_proto_group_v1_group_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1114,7 +1202,7 @@ func (x *SplitMember) String() string {
 func (*SplitMember) ProtoMessage() {}
 
 func (x *SplitMember) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[19]
+	mi := &file_proto_group_v1_group_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1127,7 +1215,7 @@ func (x *SplitMember) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SplitMember.ProtoReflect.Descriptor instead.
 func (*SplitMember) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{19}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *SplitMember) GetMemberId() string {
@@ -1162,7 +1250,7 @@ type CalculateSettlementsRequest struct {
 
 func (x *CalculateSettlementsRequest) Reset() {
 	*x = CalculateSettlementsRequest{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[20]
+	mi := &file_proto_group_v1_group_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1174,7 +1262,7 @@ func (x *CalculateSettlementsRequest) String() string {
 func (*CalculateSettlementsRequest) ProtoMessage() {}
 
 func (x *CalculateSettlementsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[20]
+	mi := &file_proto_group_v1_group_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1187,7 +1275,7 @@ func (x *CalculateSettlementsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateSettlementsRequest.ProtoReflect.Descriptor instead.
 func (*CalculateSettlementsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{20}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *CalculateSettlementsRequest) GetGroupId() string {
@@ -1214,7 +1302,7 @@ type CalculateSettlementsResponse struct {
 
 func (x *CalculateSettlementsResponse) Reset() {
 	*x = CalculateSettlementsResponse{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[21]
+	mi := &file_proto_group_v1_group_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1226,7 +1314,7 @@ func (x *CalculateSettlementsResponse) String() string {
 func (*CalculateSettlementsResponse) ProtoMessage() {}
 
 func (x *CalculateSettlementsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[21]
+	mi := &file_proto_group_v1_group_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1239,7 +1327,7 @@ func (x *CalculateSettlementsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CalculateSettlementsResponse.ProtoReflect.Descriptor instead.
 func (*CalculateSettlementsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{21}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *CalculateSettlementsResponse) GetSettlements() []*Settlement {
@@ -1270,7 +1358,7 @@ type Expense struct {
 
 func (x *Expense) Reset() {
 	*x = Expense{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[22]
+	mi := &file_proto_group_v1_group_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1282,7 +1370,7 @@ func (x *Expense) String() string {
 func (*Expense) ProtoMessage() {}
 
 func (x *Expense) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[22]
+	mi := &file_proto_group_v1_group_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1295,7 +1383,7 @@ func (x *Expense) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Expense.ProtoReflect.Descriptor instead.
 func (*Expense) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{22}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *Expense) GetId() string {
@@ -1353,7 +1441,7 @@ type Settlement struct {
 
 func (x *Settlement) Reset() {
 	*x = Settlement{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[23]
+	mi := &file_proto_group_v1_group_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1365,7 +1453,7 @@ func (x *Settlement) String() string {
 func (*Settlement) ProtoMessage() {}
 
 func (x *Settlement) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[23]
+	mi := &file_proto_group_v1_group_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1378,7 +1466,7 @@ func (x *Settlement) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Settlement.ProtoReflect.Descriptor instead.
 func (*Settlement) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{23}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *Settlement) GetFromMemberId() string {
@@ -1427,7 +1515,7 @@ type MemberBalance struct {
 
 func (x *MemberBalance) Reset() {
 	*x = MemberBalance{}
-	mi := &file_proto_group_v1_group_proto_msgTypes[24]
+	mi := &file_proto_group_v1_group_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1439,7 +1527,7 @@ func (x *MemberBalance) String() string {
 func (*MemberBalance) ProtoMessage() {}
 
 func (x *MemberBalance) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_group_v1_group_proto_msgTypes[24]
+	mi := &file_proto_group_v1_group_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1452,7 +1540,7 @@ func (x *MemberBalance) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MemberBalance.ProtoReflect.Descriptor instead.
 func (*MemberBalance) Descriptor() ([]byte, []int) {
-	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{24}
+	return file_proto_group_v1_group_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *MemberBalance) GetMemberId() string {
@@ -1538,7 +1626,12 @@ const file_proto_group_v1_group_proto_rawDesc = "" +
 	"paid_by_id\x18\x04 \x01(\tR\bpaidById\x12(\n" +
 	"\x10split_member_ids\x18\x05 \x03(\tR\x0esplitMemberIds\"L\n" +
 	"\x12AddExpenseResponse\x126\n" +
-	"\aexpense\x18\x01 \x01(\v2\x1c.group.v1.ExpenseWithDetailsR\aexpense\"4\n" +
+	"\aexpense\x18\x01 \x01(\v2\x1c.group.v1.ExpenseWithDetailsR\aexpense\"5\n" +
+	"\x14DeleteExpenseRequest\x12\x1d\n" +
+	"\n" +
+	"expense_id\x18\x01 \x01(\tR\texpenseId\"1\n" +
+	"\x15DeleteExpenseResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"4\n" +
 	"\x17GetGroupExpensesRequest\x12\x19\n" +
 	"\bgroup_id\x18\x01 \x01(\tR\agroupId\"T\n" +
 	"\x18GetGroupExpensesResponse\x128\n" +
@@ -1586,7 +1679,7 @@ const file_proto_group_v1_group_proto_rawDesc = "" +
 	"\tmember_id\x18\x01 \x01(\tR\bmemberId\x12\x1f\n" +
 	"\vmember_name\x18\x02 \x01(\tR\n" +
 	"memberName\x12\x18\n" +
-	"\abalance\x18\x03 \x01(\x03R\abalance2\xd5\x05\n" +
+	"\abalance\x18\x03 \x01(\x03R\abalance2\xa7\x06\n" +
 	"\fGroupService\x12J\n" +
 	"\vCreateGroup\x12\x1c.group.v1.CreateGroupRequest\x1a\x1d.group.v1.CreateGroupResponse\x12A\n" +
 	"\bGetGroup\x12\x19.group.v1.GetGroupRequest\x1a\x1a.group.v1.GetGroupResponse\x12J\n" +
@@ -1595,7 +1688,8 @@ const file_proto_group_v1_group_proto_rawDesc = "" +
 	"\tAddMember\x12\x1a.group.v1.AddMemberRequest\x1a\x1b.group.v1.AddMemberResponse\x12M\n" +
 	"\fRemoveMember\x12\x1d.group.v1.RemoveMemberRequest\x1a\x1e.group.v1.RemoveMemberResponse\x12G\n" +
 	"\n" +
-	"AddExpense\x12\x1b.group.v1.AddExpenseRequest\x1a\x1c.group.v1.AddExpenseResponse\x12Y\n" +
+	"AddExpense\x12\x1b.group.v1.AddExpenseRequest\x1a\x1c.group.v1.AddExpenseResponse\x12P\n" +
+	"\rDeleteExpense\x12\x1e.group.v1.DeleteExpenseRequest\x1a\x1f.group.v1.DeleteExpenseResponse\x12Y\n" +
 	"\x10GetGroupExpenses\x12!.group.v1.GetGroupExpensesRequest\x1a\".group.v1.GetGroupExpensesResponse\x12e\n" +
 	"\x14CalculateSettlements\x12%.group.v1.CalculateSettlementsRequest\x1a&.group.v1.CalculateSettlementsResponseB>Z<github.com/jt-chihara/warikan/backend/proto/group/v1;groupv1b\x06proto3"
 
@@ -1611,7 +1705,7 @@ func file_proto_group_v1_group_proto_rawDescGZIP() []byte {
 	return file_proto_group_v1_group_proto_rawDescData
 }
 
-var file_proto_group_v1_group_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_proto_group_v1_group_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_proto_group_v1_group_proto_goTypes = []any{
 	(*Group)(nil),                        // 0: group.v1.Group
 	(*Member)(nil),                       // 1: group.v1.Member
@@ -1629,34 +1723,36 @@ var file_proto_group_v1_group_proto_goTypes = []any{
 	(*RemoveMemberResponse)(nil),         // 13: group.v1.RemoveMemberResponse
 	(*AddExpenseRequest)(nil),            // 14: group.v1.AddExpenseRequest
 	(*AddExpenseResponse)(nil),           // 15: group.v1.AddExpenseResponse
-	(*GetGroupExpensesRequest)(nil),      // 16: group.v1.GetGroupExpensesRequest
-	(*GetGroupExpensesResponse)(nil),     // 17: group.v1.GetGroupExpensesResponse
-	(*ExpenseWithDetails)(nil),           // 18: group.v1.ExpenseWithDetails
-	(*SplitMember)(nil),                  // 19: group.v1.SplitMember
-	(*CalculateSettlementsRequest)(nil),  // 20: group.v1.CalculateSettlementsRequest
-	(*CalculateSettlementsResponse)(nil), // 21: group.v1.CalculateSettlementsResponse
-	(*Expense)(nil),                      // 22: group.v1.Expense
-	(*Settlement)(nil),                   // 23: group.v1.Settlement
-	(*MemberBalance)(nil),                // 24: group.v1.MemberBalance
-	(*timestamppb.Timestamp)(nil),        // 25: google.protobuf.Timestamp
+	(*DeleteExpenseRequest)(nil),         // 16: group.v1.DeleteExpenseRequest
+	(*DeleteExpenseResponse)(nil),        // 17: group.v1.DeleteExpenseResponse
+	(*GetGroupExpensesRequest)(nil),      // 18: group.v1.GetGroupExpensesRequest
+	(*GetGroupExpensesResponse)(nil),     // 19: group.v1.GetGroupExpensesResponse
+	(*ExpenseWithDetails)(nil),           // 20: group.v1.ExpenseWithDetails
+	(*SplitMember)(nil),                  // 21: group.v1.SplitMember
+	(*CalculateSettlementsRequest)(nil),  // 22: group.v1.CalculateSettlementsRequest
+	(*CalculateSettlementsResponse)(nil), // 23: group.v1.CalculateSettlementsResponse
+	(*Expense)(nil),                      // 24: group.v1.Expense
+	(*Settlement)(nil),                   // 25: group.v1.Settlement
+	(*MemberBalance)(nil),                // 26: group.v1.MemberBalance
+	(*timestamppb.Timestamp)(nil),        // 27: google.protobuf.Timestamp
 }
 var file_proto_group_v1_group_proto_depIdxs = []int32{
-	25, // 0: group.v1.Group.created_at:type_name -> google.protobuf.Timestamp
-	25, // 1: group.v1.Group.updated_at:type_name -> google.protobuf.Timestamp
+	27, // 0: group.v1.Group.created_at:type_name -> google.protobuf.Timestamp
+	27, // 1: group.v1.Group.updated_at:type_name -> google.protobuf.Timestamp
 	1,  // 2: group.v1.Group.members:type_name -> group.v1.Member
-	25, // 3: group.v1.Member.joined_at:type_name -> google.protobuf.Timestamp
+	27, // 3: group.v1.Member.joined_at:type_name -> google.protobuf.Timestamp
 	0,  // 4: group.v1.CreateGroupResponse.group:type_name -> group.v1.Group
 	0,  // 5: group.v1.GetGroupResponse.group:type_name -> group.v1.Group
 	0,  // 6: group.v1.UpdateGroupResponse.group:type_name -> group.v1.Group
 	1,  // 7: group.v1.AddMemberResponse.member:type_name -> group.v1.Member
-	18, // 8: group.v1.AddExpenseResponse.expense:type_name -> group.v1.ExpenseWithDetails
-	18, // 9: group.v1.GetGroupExpensesResponse.expenses:type_name -> group.v1.ExpenseWithDetails
-	19, // 10: group.v1.ExpenseWithDetails.split_members:type_name -> group.v1.SplitMember
-	25, // 11: group.v1.ExpenseWithDetails.created_at:type_name -> google.protobuf.Timestamp
-	22, // 12: group.v1.CalculateSettlementsRequest.expenses:type_name -> group.v1.Expense
-	23, // 13: group.v1.CalculateSettlementsResponse.settlements:type_name -> group.v1.Settlement
-	24, // 14: group.v1.CalculateSettlementsResponse.balances:type_name -> group.v1.MemberBalance
-	25, // 15: group.v1.Expense.created_at:type_name -> google.protobuf.Timestamp
+	20, // 8: group.v1.AddExpenseResponse.expense:type_name -> group.v1.ExpenseWithDetails
+	20, // 9: group.v1.GetGroupExpensesResponse.expenses:type_name -> group.v1.ExpenseWithDetails
+	21, // 10: group.v1.ExpenseWithDetails.split_members:type_name -> group.v1.SplitMember
+	27, // 11: group.v1.ExpenseWithDetails.created_at:type_name -> google.protobuf.Timestamp
+	24, // 12: group.v1.CalculateSettlementsRequest.expenses:type_name -> group.v1.Expense
+	25, // 13: group.v1.CalculateSettlementsResponse.settlements:type_name -> group.v1.Settlement
+	26, // 14: group.v1.CalculateSettlementsResponse.balances:type_name -> group.v1.MemberBalance
+	27, // 15: group.v1.Expense.created_at:type_name -> google.protobuf.Timestamp
 	2,  // 16: group.v1.GroupService.CreateGroup:input_type -> group.v1.CreateGroupRequest
 	4,  // 17: group.v1.GroupService.GetGroup:input_type -> group.v1.GetGroupRequest
 	6,  // 18: group.v1.GroupService.UpdateGroup:input_type -> group.v1.UpdateGroupRequest
@@ -1664,19 +1760,21 @@ var file_proto_group_v1_group_proto_depIdxs = []int32{
 	10, // 20: group.v1.GroupService.AddMember:input_type -> group.v1.AddMemberRequest
 	12, // 21: group.v1.GroupService.RemoveMember:input_type -> group.v1.RemoveMemberRequest
 	14, // 22: group.v1.GroupService.AddExpense:input_type -> group.v1.AddExpenseRequest
-	16, // 23: group.v1.GroupService.GetGroupExpenses:input_type -> group.v1.GetGroupExpensesRequest
-	20, // 24: group.v1.GroupService.CalculateSettlements:input_type -> group.v1.CalculateSettlementsRequest
-	3,  // 25: group.v1.GroupService.CreateGroup:output_type -> group.v1.CreateGroupResponse
-	5,  // 26: group.v1.GroupService.GetGroup:output_type -> group.v1.GetGroupResponse
-	7,  // 27: group.v1.GroupService.UpdateGroup:output_type -> group.v1.UpdateGroupResponse
-	9,  // 28: group.v1.GroupService.DeleteGroup:output_type -> group.v1.DeleteGroupResponse
-	11, // 29: group.v1.GroupService.AddMember:output_type -> group.v1.AddMemberResponse
-	13, // 30: group.v1.GroupService.RemoveMember:output_type -> group.v1.RemoveMemberResponse
-	15, // 31: group.v1.GroupService.AddExpense:output_type -> group.v1.AddExpenseResponse
-	17, // 32: group.v1.GroupService.GetGroupExpenses:output_type -> group.v1.GetGroupExpensesResponse
-	21, // 33: group.v1.GroupService.CalculateSettlements:output_type -> group.v1.CalculateSettlementsResponse
-	25, // [25:34] is the sub-list for method output_type
-	16, // [16:25] is the sub-list for method input_type
+	16, // 23: group.v1.GroupService.DeleteExpense:input_type -> group.v1.DeleteExpenseRequest
+	18, // 24: group.v1.GroupService.GetGroupExpenses:input_type -> group.v1.GetGroupExpensesRequest
+	22, // 25: group.v1.GroupService.CalculateSettlements:input_type -> group.v1.CalculateSettlementsRequest
+	3,  // 26: group.v1.GroupService.CreateGroup:output_type -> group.v1.CreateGroupResponse
+	5,  // 27: group.v1.GroupService.GetGroup:output_type -> group.v1.GetGroupResponse
+	7,  // 28: group.v1.GroupService.UpdateGroup:output_type -> group.v1.UpdateGroupResponse
+	9,  // 29: group.v1.GroupService.DeleteGroup:output_type -> group.v1.DeleteGroupResponse
+	11, // 30: group.v1.GroupService.AddMember:output_type -> group.v1.AddMemberResponse
+	13, // 31: group.v1.GroupService.RemoveMember:output_type -> group.v1.RemoveMemberResponse
+	15, // 32: group.v1.GroupService.AddExpense:output_type -> group.v1.AddExpenseResponse
+	17, // 33: group.v1.GroupService.DeleteExpense:output_type -> group.v1.DeleteExpenseResponse
+	19, // 34: group.v1.GroupService.GetGroupExpenses:output_type -> group.v1.GetGroupExpensesResponse
+	23, // 35: group.v1.GroupService.CalculateSettlements:output_type -> group.v1.CalculateSettlementsResponse
+	26, // [26:36] is the sub-list for method output_type
+	16, // [16:26] is the sub-list for method input_type
 	16, // [16:16] is the sub-list for extension type_name
 	16, // [16:16] is the sub-list for extension extendee
 	0,  // [0:16] is the sub-list for field type_name
@@ -1693,7 +1791,7 @@ func file_proto_group_v1_group_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_group_v1_group_proto_rawDesc), len(file_proto_group_v1_group_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

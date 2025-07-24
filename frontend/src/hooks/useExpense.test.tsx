@@ -3,7 +3,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { AddExpenseInput, Expense } from '../types/group';
-import { useAddExpense, useGroupExpenses } from './useExpense';
+import { useAddExpense, useDeleteExpense, useGroupExpenses } from './useExpense';
 
 const mockExpense: Expense = {
   id: 'expense-123',
@@ -79,6 +79,12 @@ const GET_GROUP_EXPENSES = gql`
       }
       createdAt
     }
+  }
+`;
+
+const DELETE_EXPENSE = gql`
+  mutation DeleteExpense($expenseId: ID!) {
+    deleteExpense(expenseId: $expenseId)
   }
 `;
 
@@ -271,6 +277,109 @@ describe('useGroupExpenses', () => {
       expect(result.current.data?.groupExpenses).toHaveLength(2);
       expect(result.current.data?.groupExpenses?.[0]).toEqual(mockExpenses[0]);
       expect(result.current.data?.groupExpenses?.[1]).toEqual(mockExpenses[1]);
+    });
+  });
+});
+
+describe('useDeleteExpense', () => {
+  it('deletes expense successfully', async () => {
+    const deleteExpenseMock = {
+      request: {
+        query: DELETE_EXPENSE,
+        variables: { expenseId: 'expense-123' },
+      },
+      result: {
+        data: { deleteExpense: true },
+      },
+    };
+
+    const { result } = renderHook(() => useDeleteExpense(), {
+      wrapper: ({ children }) => (
+        <MockedProvider mocks={[deleteExpenseMock]} addTypename={false}>
+          {children}
+        </MockedProvider>
+      ),
+    });
+
+    const [deleteExpense] = result.current;
+
+    const response = await deleteExpense({
+      variables: { expenseId: 'expense-123' },
+    });
+
+    await waitFor(() => {
+      expect(response.data?.deleteExpense).toBe(true);
+    });
+  });
+
+  it('handles delete expense errors', async () => {
+    const errorMock = {
+      request: {
+        query: DELETE_EXPENSE,
+        variables: { expenseId: 'expense-123' },
+      },
+      error: new Error('支払いの削除に失敗しました'),
+    };
+
+    const { result } = renderHook(() => useDeleteExpense(), {
+      wrapper: ({ children }) => (
+        <MockedProvider mocks={[errorMock]} addTypename={false}>
+          {children}
+        </MockedProvider>
+      ),
+    });
+
+    const [deleteExpense] = result.current;
+
+    await expect(
+      deleteExpense({
+        variables: { expenseId: 'expense-123' },
+      }),
+    ).rejects.toThrow('支払いの削除に失敗しました');
+  });
+
+  it('returns loading state correctly', () => {
+    const { result } = renderHook(() => useDeleteExpense(), {
+      wrapper: ({ children }) => (
+        <MockedProvider mocks={[]} addTypename={false}>
+          {children}
+        </MockedProvider>
+      ),
+    });
+
+    const [, { loading, error }] = result.current;
+
+    expect(loading).toBe(false);
+    expect(error).toBeUndefined();
+  });
+
+  it('handles successful deletion with false response', async () => {
+    const deleteExpenseMock = {
+      request: {
+        query: DELETE_EXPENSE,
+        variables: { expenseId: 'nonexistent-expense' },
+      },
+      result: {
+        data: { deleteExpense: false },
+      },
+    };
+
+    const { result } = renderHook(() => useDeleteExpense(), {
+      wrapper: ({ children }) => (
+        <MockedProvider mocks={[deleteExpenseMock]} addTypename={false}>
+          {children}
+        </MockedProvider>
+      ),
+    });
+
+    const [deleteExpense] = result.current;
+
+    const response = await deleteExpense({
+      variables: { expenseId: 'nonexistent-expense' },
+    });
+
+    await waitFor(() => {
+      expect(response.data?.deleteExpense).toBe(false);
     });
   });
 });

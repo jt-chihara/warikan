@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	
+
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
@@ -29,7 +29,7 @@ func (r *GroupRepository) CreateGroup(name, description, currency string, member
 	// Create group
 	groupID := uuid.New().String()
 	now := time.Now()
-	
+
 	_, err = tx.Exec(`
 		INSERT INTO groups (id, name, description, currency, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5, $6)
@@ -44,7 +44,7 @@ func (r *GroupRepository) CreateGroup(name, description, currency string, member
 		if memberName == "" {
 			continue
 		}
-		
+
 		memberID := uuid.New().String()
 		_, err = tx.Exec(`
 			INSERT INTO members (id, group_id, name, joined_at)
@@ -109,17 +109,17 @@ func (r *GroupRepository) GetGroupByID(groupID string) (*groupv1.Group, error) {
 		var member groupv1.Member
 		var email sql.NullString
 		var joinedAt time.Time
-		
+
 		err := rows.Scan(&member.Id, &member.Name, &email, &joinedAt)
 		if err != nil {
 			return nil, err
 		}
-		
+
 		if email.Valid {
 			member.Email = email.String
 		}
 		member.JoinedAt = timestamppb.New(joinedAt)
-		
+
 		members = append(members, &member)
 	}
 

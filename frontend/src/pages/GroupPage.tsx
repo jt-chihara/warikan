@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ExpenseModal from '../components/ExpenseModal';
-import { useAddExpense, useGroupExpenses } from '../hooks/useExpense';
+import { useAddExpense, useDeleteExpense, useGroupExpenses } from '../hooks/useExpense';
 import { useCalculateSettlements, useGroup } from '../hooks/useGroup';
 import { formatDateFromGraphQL } from '../lib/dateUtils';
 import type { AddExpenseInput, ExpenseInput, SettlementResult } from '../types/group';
@@ -15,6 +15,7 @@ export default function GroupPage() {
     refetch: refetchExpenses,
   } = useGroupExpenses(groupId || '');
   const [addExpense] = useAddExpense();
+  const [deleteExpense] = useDeleteExpense();
   const [activeTab, setActiveTab] = useState<'expenses' | 'settlement'>('expenses');
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [settlementResult, setSettlementResult] = useState<SettlementResult | null>(null);
@@ -74,6 +75,22 @@ export default function GroupPage() {
     } catch (err) {
       console.error('Error adding expense:', err);
       alert('支払いの追加に失敗しました。');
+    }
+  };
+
+  const handleDeleteExpense = async (expenseId: string) => {
+    if (!confirm('この支払い記録を削除してもよろしいですか？')) {
+      return;
+    }
+
+    try {
+      await deleteExpense({ variables: { expenseId } });
+      await refetchExpenses();
+      // Reset settlement result to trigger recalculation
+      setSettlementResult(null);
+    } catch (err) {
+      console.error('Error deleting expense:', err);
+      alert('支払いの削除に失敗しました。');
     }
   };
 
@@ -188,13 +205,22 @@ export default function GroupPage() {
                             {formatDateFromGraphQL(expense.createdAt)}
                           </p>
                         </div>
-                        <div className="text-right self-start">
-                          <p className="font-semibold text-lg sm:text-base">
-                            ¥{expense.amount.toLocaleString()}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {expense.splitMembers.length}人で割り勘
-                          </p>
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="text-right">
+                            <p className="font-semibold text-lg sm:text-base">
+                              ¥{expense.amount.toLocaleString()}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              {expense.splitMembers.length}人で割り勘
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteExpense(expense.id)}
+                            className="text-red-600 hover:text-red-700 text-sm font-medium underline"
+                          >
+                            削除
+                          </button>
                         </div>
                       </div>
                       <div className="mt-2 text-sm text-gray-600">

@@ -6,14 +6,14 @@ import (
 	"net"
 	"os"
 
-	"google.golang.org/grpc"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	"google.golang.org/grpc"
 
+	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 	"github.com/jt-chihara/warikan/services/group/internal/handler"
 	"github.com/jt-chihara/warikan/services/group/internal/repository"
 	"github.com/jt-chihara/warikan/services/group/internal/service"
-	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
 )
 
 func main() {
@@ -56,7 +56,7 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	
+
 	// Register GroupService
 	groupv1.RegisterGroupServiceServer(s, groupHandler)
 

@@ -118,6 +118,12 @@ const CALCULATE_SETTLEMENTS_QUERY = gql`
   }
 `;
 
+const DELETE_EXPENSE = gql`
+  mutation DeleteExpense($expenseId: ID!) {
+    deleteExpense(expenseId: $expenseId)
+  }
+`;
+
 const mocks = [
   {
     request: {
@@ -316,5 +322,138 @@ describe('GroupPage', () => {
     await waitFor(() => {
       expect(screen.getByText(/エラーが発生しました/)).toBeInTheDocument();
     });
+  });
+
+  it('deletes expense when delete button is clicked', async () => {
+    const user = userEvent.setup();
+
+    // Mock for successful deletion
+    const deleteExpenseMock = {
+      request: {
+        query: DELETE_EXPENSE,
+        variables: { expenseId: 'expense-1' },
+      },
+      result: {
+        data: { deleteExpense: true },
+      },
+    };
+
+    // Mock for refetch after deletion
+    const refetchExpensesMock = {
+      request: {
+        query: GET_GROUP_EXPENSES_QUERY,
+        variables: { groupId: 'group-123' },
+      },
+      result: {
+        data: { groupExpenses: [] }, // Empty after deletion
+      },
+    };
+
+    const mocksWithDelete = [...mocks, deleteExpenseMock, refetchExpensesMock];
+
+    render(
+      <BrowserRouter>
+        <MockedProvider mocks={mocksWithDelete} addTypename={false}>
+          <GroupPage />
+        </MockedProvider>
+      </BrowserRouter>,
+    );
+
+    // Wait for the page to load and expense to appear
+    await waitFor(() => {
+      expect(screen.getByText('ランチ')).toBeInTheDocument();
+    });
+
+    // Mock window.confirm to return true
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    // Click the delete button
+    const deleteButton = screen.getByRole('button', { name: /削除/ });
+    await user.click(deleteButton);
+
+    // Verify confirm was called
+    expect(window.confirm).toHaveBeenCalledWith('この支払い記録を削除してもよろしいですか？');
+
+    // Wait for the expense to be removed
+    await waitFor(() => {
+      expect(screen.queryByText('ランチ')).not.toBeInTheDocument();
+    });
+
+    // Restore the mock
+    vi.restoreAllMocks();
+  });
+
+  it('does not delete expense when user cancels confirmation', async () => {
+    const user = userEvent.setup();
+
+    renderGroupPage();
+
+    // Wait for the page to load and expense to appear
+    await waitFor(() => {
+      expect(screen.getByText('ランチ')).toBeInTheDocument();
+    });
+
+    // Mock window.confirm to return false (user cancels)
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    // Click the delete button
+    const deleteButton = screen.getByRole('button', { name: /削除/ });
+    await user.click(deleteButton);
+
+    // Verify confirm was called
+    expect(window.confirm).toHaveBeenCalledWith('この支払い記録を削除してもよろしいですか？');
+
+    // Expense should still be there since deletion was cancelled
+    expect(screen.getByText('ランチ')).toBeInTheDocument();
+
+    // Restore the mock
+    vi.restoreAllMocks();
+  });
+
+  it('shows error alert when expense deletion fails', async () => {
+    const user = userEvent.setup();
+
+    // Mock for failed deletion
+    const deleteExpenseErrorMock = {
+      request: {
+        query: DELETE_EXPENSE,
+        variables: { expenseId: 'expense-1' },
+      },
+      error: new Error('支払いの削除に失敗しました'),
+    };
+
+    const mocksWithDeleteError = [...mocks, deleteExpenseErrorMock];
+
+    render(
+      <BrowserRouter>
+        <MockedProvider mocks={mocksWithDeleteError} addTypename={false}>
+          <GroupPage />
+        </MockedProvider>
+      </BrowserRouter>,
+    );
+
+    // Wait for the page to load and expense to appear
+    await waitFor(() => {
+      expect(screen.getByText('ランチ')).toBeInTheDocument();
+    });
+
+    // Mock window.confirm to return true and window.alert
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    // Click the delete button
+    const deleteButton = screen.getByRole('button', { name: /削除/ });
+    await user.click(deleteButton);
+
+    // Wait for error handling
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith('支払いの削除に失敗しました。');
+    });
+
+    // Expense should still be there since deletion failed
+    expect(screen.getByText('ランチ')).toBeInTheDocument();
+
+    // Restore the mocks
+    vi.restoreAllMocks();
   });
 });

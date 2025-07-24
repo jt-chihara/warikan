@@ -360,3 +360,94 @@ func TestGroupService_RemoveMember_Success(t *testing.T) {
 
 	mockRepo.AssertExpectations(t)
 }
+
+func TestGroupService_DeleteExpense_Success(t *testing.T) {
+	// Arrange
+	mockGroupRepo := new(MockGroupRepository)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockGroupRepo, mockExpenseRepo)
+
+	expenseID := uuid.New()
+	req := &groupv1.DeleteExpenseRequest{
+		ExpenseId: expenseID.String(),
+	}
+
+	mockExpenseRepo.On("Delete", mock.Anything, expenseID).Return(nil)
+
+	// Act
+	resp, err := service.DeleteExpense(context.Background(), req)
+
+	// Assert
+	require.NoError(t, err)
+	assert.True(t, resp.Success)
+
+	mockExpenseRepo.AssertExpectations(t)
+}
+
+func TestGroupService_DeleteExpense_EmptyExpenseID(t *testing.T) {
+	// Arrange
+	mockGroupRepo := new(MockGroupRepository)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockGroupRepo, mockExpenseRepo)
+
+	req := &groupv1.DeleteExpenseRequest{
+		ExpenseId: "", // Empty expense ID should cause error
+	}
+
+	// Act
+	resp, err := service.DeleteExpense(context.Background(), req)
+
+	// Assert
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+	assert.Contains(t, err.Error(), "expense ID is required")
+
+	// Repository should not be called
+	mockExpenseRepo.AssertNotCalled(t, "Delete")
+}
+
+func TestGroupService_DeleteExpense_InvalidExpenseID(t *testing.T) {
+	// Arrange
+	mockGroupRepo := new(MockGroupRepository)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockGroupRepo, mockExpenseRepo)
+
+	req := &groupv1.DeleteExpenseRequest{
+		ExpenseId: "invalid-uuid", // Invalid UUID should cause error
+	}
+
+	// Act
+	resp, err := service.DeleteExpense(context.Background(), req)
+
+	// Assert
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+	assert.Contains(t, err.Error(), "invalid expense ID")
+
+	// Repository should not be called
+	mockExpenseRepo.AssertNotCalled(t, "Delete")
+}
+
+func TestGroupService_DeleteExpense_RepositoryError(t *testing.T) {
+	// Arrange
+	mockGroupRepo := new(MockGroupRepository)
+	mockExpenseRepo := new(MockExpenseRepository)
+	service := NewGroupService(mockGroupRepo, mockExpenseRepo)
+
+	expenseID := uuid.New()
+	req := &groupv1.DeleteExpenseRequest{
+		ExpenseId: expenseID.String(),
+	}
+
+	mockExpenseRepo.On("Delete", mock.Anything, expenseID).Return(errors.New("database error"))
+
+	// Act
+	resp, err := service.DeleteExpense(context.Background(), req)
+
+	// Assert
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+	assert.Contains(t, err.Error(), "database error")
+
+	mockExpenseRepo.AssertExpectations(t)
+}

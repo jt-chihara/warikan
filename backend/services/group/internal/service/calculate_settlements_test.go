@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	groupv1 "github.com/jt-chihara/warikan/backend/proto/group/v1"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGroupService_CalculateSettlements_Success(t *testing.T) {
@@ -46,7 +46,7 @@ func TestGroupService_CalculateSettlements_Success(t *testing.T) {
 	assert.NotNil(t, resp)
 	assert.Len(t, resp.Settlements, 1)
 	assert.Len(t, resp.Balances, 2)
-	
+
 	// Check settlement details
 	settlement := resp.Settlements[0]
 	assert.Equal(t, "550e8400-e29b-41d4-a716-446655440002", settlement.FromMemberId)
@@ -54,7 +54,7 @@ func TestGroupService_CalculateSettlements_Success(t *testing.T) {
 	assert.Equal(t, int64(1000), settlement.Amount)
 	assert.Equal(t, "Bob", settlement.FromName)
 	assert.Equal(t, "Alice", settlement.ToName)
-	
+
 	mockRepo.AssertExpectations(t)
 }
 

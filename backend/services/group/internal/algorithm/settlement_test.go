@@ -181,8 +181,8 @@ func TestCalculateMemberBalances(t *testing.T) {
 				{ID: "3", Name: "Carol"},
 			},
 			want: []Balance{
-				{MemberID: "1", Amount: 1250, Name: "Alice"}, // Paid 3000, owes 1750 (1000+750)
-				{MemberID: "2", Amount: -250, Name: "Bob"},   // Paid 1500, owes 1750 (1000+750)
+				{MemberID: "1", Amount: 1250, Name: "Alice"},  // Paid 3000, owes 1750 (1000+750)
+				{MemberID: "2", Amount: -250, Name: "Bob"},    // Paid 1500, owes 1750 (1000+750)
 				{MemberID: "3", Amount: -1000, Name: "Carol"}, // Paid 0, owes 1000
 			},
 		},
@@ -192,7 +192,7 @@ func TestCalculateMemberBalances(t *testing.T) {
 				{
 					ID:           "exp1",
 					PayerID:      "1",
-					Amount:       1001, // Cannot be split equally among 3
+					Amount:       1001,                    // Cannot be split equally among 3
 					SplitBetween: []string{"1", "2", "3"}, // 334, 334, 333
 				},
 			},
@@ -202,8 +202,8 @@ func TestCalculateMemberBalances(t *testing.T) {
 				{ID: "3", Name: "Carol"},
 			},
 			want: []Balance{
-				{MemberID: "1", Amount: 667, Name: "Alice"}, // Paid 1001, owes 334
-				{MemberID: "2", Amount: -334, Name: "Bob"},  // Paid 0, owes 334
+				{MemberID: "1", Amount: 667, Name: "Alice"},  // Paid 1001, owes 334
+				{MemberID: "2", Amount: -334, Name: "Bob"},   // Paid 0, owes 334
 				{MemberID: "3", Amount: -333, Name: "Carol"}, // Paid 0, owes 333
 			},
 		},

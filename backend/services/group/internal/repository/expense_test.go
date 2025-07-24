@@ -63,21 +63,21 @@ func TestExpenseRepository_Create(t *testing.T) {
 			expense: expense,
 			setupMocks: func() {
 				mock.ExpectBegin()
-				
+
 				// Expect expense insert
 				mock.ExpectExec(`INSERT INTO expenses \(id, group_id, amount, description, currency, paid_by_id, created_at, updated_at\) VALUES \(\$1, \$2, \$3, \$4, \$5, \$6, \$7, \$8\)`).
 					WithArgs(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now).
 					WillReturnResult(sqlmock.NewResult(1, 1))
-				
+
 				// Expect split member inserts
 				mock.ExpectExec(`INSERT INTO expense_splits \(expense_id, member_id, amount\) VALUES \(\$1, \$2, \$3\)`).
 					WithArgs(expenseID, member1ID, int64(1500)).
 					WillReturnResult(sqlmock.NewResult(1, 1))
-				
+
 				mock.ExpectExec(`INSERT INTO expense_splits \(expense_id, member_id, amount\) VALUES \(\$1, \$2, \$3\)`).
 					WithArgs(expenseID, member2ID, int64(1500)).
 					WillReturnResult(sqlmock.NewResult(1, 1))
-				
+
 				mock.ExpectCommit()
 			},
 			expectedErr: false,
@@ -99,15 +99,15 @@ func TestExpenseRepository_Create(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.setupMocks()
-			
+
 			err := repo.Create(context.Background(), tt.expense)
-			
+
 			if tt.expectedErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
 			}
-			
+
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
@@ -142,16 +142,16 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 				expenseRows := sqlmock.NewRows([]string{
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
-				
+
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
 					WillReturnRows(expenseRows)
-				
+
 				// Mock split members query
 				splitRows := sqlmock.NewRows([]string{"member_id", "amount", "name"}).
 					AddRow(member1ID, int64(1500), "Alice").
 					AddRow(member2ID, int64(1500), "Bob")
-				
+
 				mock.ExpectQuery(`SELECT es\.member_id, es\.amount, m\.name FROM expense_splits es JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnRows(splitRows)
@@ -166,7 +166,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 				expenseRows := sqlmock.NewRows([]string{
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				})
-				
+
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(groupID).
 					WillReturnRows(expenseRows)
@@ -190,16 +190,16 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.setupMocks()
-			
+
 			expenses, err := repo.FindByGroupID(context.Background(), tt.groupID)
-			
+
 			if tt.expectedErr {
 				assert.Error(t, err)
 				assert.Nil(t, expenses)
 			} else {
 				assert.NoError(t, err)
 				assert.Len(t, expenses, tt.expectedLen)
-				
+
 				if tt.expectedLen > 0 {
 					expense := expenses[0]
 					assert.Equal(t, expenseID, expense.ID)
@@ -210,7 +210,7 @@ func TestExpenseRepository_FindByGroupID(t *testing.T) {
 					assert.Len(t, expense.SplitMembers, 2)
 				}
 			}
-			
+
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
@@ -231,10 +231,10 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 	now := time.Now()
 
 	tests := []struct {
-		name        string
-		expenseID   uuid.UUID
-		setupMocks  func()
-		expectedErr bool
+		name            string
+		expenseID       uuid.UUID
+		setupMocks      func()
+		expectedErr     bool
 		expectedExpense *domain.Expense
 	}{
 		{
@@ -245,16 +245,16 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 				expenseRow := sqlmock.NewRows([]string{
 					"id", "group_id", "amount", "description", "currency", "paid_by_id", "created_at", "updated_at", "paid_by_name",
 				}).AddRow(expenseID, groupID, int64(3000), "Lunch", "JPY", paidByID, now, now, "Alice")
-				
+
 				mock.ExpectQuery(`SELECT e\.id, e\.group_id, e\.amount, e\.description, e\.currency, e\.paid_by_id, e\.created_at, e\.updated_at, m\.name as paid_by_name FROM expenses e JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnRows(expenseRow)
-				
+
 				// Mock split members query
 				splitRows := sqlmock.NewRows([]string{"member_id", "amount", "name"}).
 					AddRow(member1ID, int64(1500), "Alice").
 					AddRow(member2ID, int64(1500), "Bob")
-				
+
 				mock.ExpectQuery(`SELECT es\.member_id, es\.amount, m\.name FROM expense_splits es JOIN members m`).
 					WithArgs(expenseID).
 					WillReturnRows(splitRows)
@@ -277,7 +277,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 					WithArgs(expenseID).
 					WillReturnError(sql.ErrNoRows)
 			},
-			expectedErr: true,
+			expectedErr:     true,
 			expectedExpense: nil,
 		},
 		{
@@ -288,7 +288,7 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 					WithArgs(expenseID).
 					WillReturnError(sql.ErrConnDone)
 			},
-			expectedErr: true,
+			expectedErr:     true,
 			expectedExpense: nil,
 		},
 	}
@@ -296,9 +296,9 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.setupMocks()
-			
+
 			expense, err := repo.FindByID(context.Background(), tt.expenseID)
-			
+
 			if tt.expectedErr {
 				assert.Error(t, err)
 				assert.Nil(t, expense)
@@ -312,7 +312,114 @@ func TestExpenseRepository_FindByID(t *testing.T) {
 				assert.Equal(t, tt.expectedExpense.PaidByName, expense.PaidByName)
 				assert.Len(t, expense.SplitMembers, 2)
 			}
-			
+
+			assert.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}
+
+func TestExpenseRepository_Delete(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer db.Close()
+
+	repo := NewExpenseRepository(db)
+	expenseID := uuid.New()
+
+	tests := []struct {
+		name        string
+		expenseID   uuid.UUID
+		setupMocks  func()
+		expectedErr bool
+	}{
+		{
+			name:      "successful expense deletion",
+			expenseID: expenseID,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense splits deletion
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 2))
+
+				// Expect expense deletion
+				mock.ExpectExec(`DELETE FROM expenses WHERE id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+
+				mock.ExpectCommit()
+			},
+			expectedErr: false,
+		},
+		{
+			name:      "expense not found",
+			expenseID: expenseID,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense splits deletion (might return 0 rows)
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 0))
+
+				// Expect expense deletion with 0 rows affected
+				mock.ExpectExec(`DELETE FROM expenses WHERE id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 0))
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+		{
+			name:      "splits deletion fails",
+			expenseID: expenseID,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnError(sql.ErrConnDone)
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+		{
+			name:      "expense deletion fails",
+			expenseID: expenseID,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense splits deletion succeeds
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 2))
+
+				// Expect expense deletion fails
+				mock.ExpectExec(`DELETE FROM expenses WHERE id = \$1`).
+					WithArgs(expenseID).
+					WillReturnError(sql.ErrConnDone)
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setupMocks()
+
+			err := repo.Delete(context.Background(), tt.expenseID)
+
+			if tt.expectedErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
