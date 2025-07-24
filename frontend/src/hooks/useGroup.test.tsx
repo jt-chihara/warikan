@@ -11,6 +11,7 @@ const mockGroup: Group = {
   description: 'テスト用のグループです',
   currency: 'JPY',
   createdAt: '2024-01-01',
+  updatedAt: '2024-01-01',
   members: [
     { id: 'member-1', name: 'Alice', email: 'alice@example.com', joinedAt: '2024-01-01' },
     { id: 'member-2', name: 'Bob', email: 'bob@example.com', joinedAt: '2024-01-01' },
@@ -122,7 +123,9 @@ describe('useCreateGroup', () => {
       variables: { input: mockCreateGroupInput },
     });
 
-    expect(response.data?.createGroup).toEqual(mockGroup);
+    await waitFor(() => {
+      expect(response.data?.createGroup).toEqual(mockGroup);
+    });
   });
 
   it('handles create group errors', async () => {
@@ -144,13 +147,11 @@ describe('useCreateGroup', () => {
 
     const [createGroup] = result.current;
 
-    try {
-      await createGroup({
+    await expect(
+      createGroup({
         variables: { input: mockCreateGroupInput },
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-    }
+      }),
+    ).rejects.toThrow('グループの作成に失敗しました');
   });
 });
 
