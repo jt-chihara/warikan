@@ -15,7 +15,7 @@ jobs:
           POSTGRES_USER: warikan
           POSTGRES_PASSWORD: warikan_dev_password
         options: >-
-          --health-cmd pg_isready -U warikan -d warikan
+          --health-cmd "pg_isready -U warikan -d warikan"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
