@@ -108,7 +108,9 @@ describe('useAddExpense', () => {
       variables: { input: mockAddExpenseInput },
     });
 
-    expect(response.data?.addExpense).toEqual(mockExpense);
+    await waitFor(() => {
+      expect(response.data?.addExpense).toEqual(mockExpense);
+    });
   });
 
   it('handles add expense errors', async () => {
@@ -130,13 +132,11 @@ describe('useAddExpense', () => {
 
     const [addExpense] = result.current;
 
-    try {
-      await addExpense({
+    await expect(
+      addExpense({
         variables: { input: mockAddExpenseInput },
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(Error);
-    }
+      })
+    ).rejects.toThrow('支払いの追加に失敗しました');
   });
 
   it('returns loading state correctly', () => {
@@ -219,17 +219,33 @@ describe('useGroupExpenses', () => {
     });
   });
 
-  it('returns empty data initially', () => {
+  it('returns empty data initially', async () => {
+    const getGroupExpensesMock = {
+      request: {
+        query: GET_GROUP_EXPENSES,
+        variables: { groupId: 'group-123' },
+      },
+      result: {
+        data: { groupExpenses: [] },
+      },
+    };
+
     const { result } = renderHook(() => useGroupExpenses('group-123'), {
       wrapper: ({ children }) => (
-        <MockedProvider mocks={[]} addTypename={false}>
+        <MockedProvider mocks={[getGroupExpensesMock]} addTypename={false}>
           {children}
         </MockedProvider>
       ),
     });
 
+    expect(result.current.loading).toBe(true);
     expect(result.current.data).toBeUndefined();
     expect(result.current.error).toBeUndefined();
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.data?.groupExpenses).toEqual([]);
+    });
   });
 
   it('handles multiple expenses correctly', async () => {
