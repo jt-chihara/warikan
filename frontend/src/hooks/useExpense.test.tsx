@@ -135,7 +135,7 @@ describe('useAddExpense', () => {
     await expect(
       addExpense({
         variables: { input: mockAddExpenseInput },
-      })
+      }),
     ).rejects.toThrow('支払いの追加に失敗しました');
   });
 

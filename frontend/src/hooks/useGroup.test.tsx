@@ -150,7 +150,7 @@ describe('useCreateGroup', () => {
     await expect(
       createGroup({
         variables: { input: mockCreateGroupInput },
-      })
+      }),
     ).rejects.toThrow('グループの作成に失敗しました');
   });
 });
