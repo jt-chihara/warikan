@@ -87,7 +87,7 @@ query CalculateSettlements($groupId: ID!, $expenses: [ExpenseInput!]!) {
       toMemberId
       amount
       fromName
-      ToName
+      toName
     }
     balances {
       memberId

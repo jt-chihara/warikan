@@ -65,3 +65,11 @@ export interface SettlementResult {
   settlements: Settlement[];
   balances: MemberBalance[];
 }
+
+// For calculating settlements
+export interface ExpenseInput {
+  id: string;
+  payerId: string;
+  amount: number;
+  splitBetween: string[];
+}

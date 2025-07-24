@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import type { CreateGroupInput, Expense, Group, SettlementResult } from '../types/group';
+import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 
 const CREATE_GROUP_MUTATION = gql`
   mutation CreateGroup($input: CreateGroupInput!) {
@@ -71,7 +71,7 @@ export function useGroup(id: string) {
 export function useCalculateSettlements() {
   return useQuery<
     { calculateSettlements: SettlementResult },
-    { groupId: string; expenses: Expense[] }
+    { groupId: string; expenses: ExpenseInput[] }
   >(CALCULATE_SETTLEMENTS_QUERY, {
     skip: true, // Manual execution
   });

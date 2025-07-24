@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ExpenseModal from '../components/ExpenseModal';
 import { useAddExpense, useGroupExpenses } from '../hooks/useExpense';
-import { useGroup } from '../hooks/useGroup';
+import { useCalculateSettlements, useGroup } from '../hooks/useGroup';
 import { formatDateFromGraphQL } from '../lib/dateUtils';
-import type { AddExpenseInput } from '../types/group';
+import type { AddExpenseInput, ExpenseInput, SettlementResult } from '../types/group';
 
 export default function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -17,6 +17,40 @@ export default function GroupPage() {
   const [addExpense] = useAddExpense();
   const [activeTab, setActiveTab] = useState<'expenses' | 'settlement'>('expenses');
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [settlementResult, setSettlementResult] = useState<SettlementResult | null>(null);
+  const { refetch: calculateSettlements, loading: settlementLoading } = useCalculateSettlements();
+
+  const calculateSettlement = useCallback(async () => {
+    if (!expensesData?.groupExpenses || !groupId) return;
+
+    try {
+      // Convert frontend expenses to the format expected by backend
+      const expenses: ExpenseInput[] = expensesData.groupExpenses.map((expense) => ({
+        id: expense.id,
+        payerId: expense.paidById,
+        amount: expense.amount,
+        splitBetween: expense.splitMembers.map((member) => member.memberId),
+      }));
+
+      const result = await calculateSettlements({
+        groupId,
+        expenses,
+      });
+
+      if (result.data?.calculateSettlements) {
+        setSettlementResult(result.data.calculateSettlements);
+      }
+    } catch (err) {
+      console.error('Error calculating settlements:', err);
+    }
+  }, [expensesData?.groupExpenses, groupId, calculateSettlements]);
+
+  // Calculate settlements when expenses or tab changes
+  useEffect(() => {
+    if (activeTab === 'settlement' && expensesData?.groupExpenses && groupId) {
+      calculateSettlement();
+    }
+  }, [activeTab, expensesData?.groupExpenses, groupId, calculateSettlement]);
 
   const handleAddExpense = async (expense: {
     amount: number;
@@ -35,6 +69,8 @@ export default function GroupPage() {
 
       await addExpense({ variables: { input } });
       await refetchExpenses();
+      // Reset settlement result to trigger recalculation
+      setSettlementResult(null);
     } catch (err) {
       console.error('Error adding expense:', err);
       alert('支払いの追加に失敗しました。');
@@ -180,16 +216,60 @@ export default function GroupPage() {
                 <h3 className="text-lg font-semibold mb-2">精算方法</h3>
                 <p className="text-sm text-gray-600">最小の支払い回数で精算できる方法です</p>
               </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span>花子 → 太郎</span>
-                  <span className="font-semibold">¥10,000</span>
+
+              {settlementLoading ? (
+                <div className="text-center py-8 text-gray-600">計算中...</div>
+              ) : settlementResult?.settlements?.length ? (
+                <div className="space-y-3">
+                  {settlementResult.settlements.map((settlement) => (
+                    <div
+                      key={`${settlement.fromMemberId}-${settlement.toMemberId}`}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <span>
+                        {settlement.fromName} → {settlement.toName}
+                      </span>
+                      <span className="font-semibold">¥{settlement.amount.toLocaleString()}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span>次郎 → 太郎</span>
-                  <span className="font-semibold">¥10,000</span>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  {expensesData?.groupExpenses?.length
+                    ? '精算の必要がありません'
+                    : '支払い記録がないため精算できません'}
                 </div>
-              </div>
+              )}
+
+              {settlementResult?.balances?.length && (
+                <div className="mt-8">
+                  <h3 className="text-lg font-semibold mb-4">各メンバーの収支</h3>
+                  <div className="space-y-2">
+                    {settlementResult.balances.map((balance) => (
+                      <div
+                        key={balance.memberId}
+                        className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                      >
+                        <span>{balance.memberName}</span>
+                        <span
+                          className={`font-semibold ${
+                            balance.balance > 0
+                              ? 'text-green-600'
+                              : balance.balance < 0
+                                ? 'text-red-600'
+                                : 'text-gray-600'
+                          }`}
+                        >
+                          {balance.balance > 0 && '+'}¥{balance.balance.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    ※ 正の値: 受け取る金額、負の値: 支払う金額
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
