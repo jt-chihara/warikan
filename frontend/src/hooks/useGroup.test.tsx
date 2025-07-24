@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import type { CreateGroupInput, Group, SettlementResult } from '../types/group';
+import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 import { useCalculateSettlements, useCreateGroup, useGroup } from './useGroup';
 
 const mockGroup: Group = {
@@ -221,21 +221,22 @@ describe('useGroup', () => {
 });
 
 describe('useCalculateSettlements', () => {
-  it.skip('calculates settlements successfully', async () => {
+  it('calculates settlements successfully', async () => {
+    const mockExpenses: ExpenseInput[] = [
+      {
+        id: 'expense-1',
+        payerId: 'member-1',
+        amount: 1000,
+        splitBetween: ['member-1', 'member-2'],
+      },
+    ];
+
     const calculateSettlementsMock = {
       request: {
         query: CALCULATE_SETTLEMENTS_QUERY,
         variables: {
           groupId: 'group-123',
-          expenses: [
-            {
-              id: 'expense-1',
-              amount: 1000,
-              description: 'ランチ',
-              paidById: 'member-1',
-              splitMembers: ['member-1', 'member-2'],
-            },
-          ],
+          expenses: mockExpenses,
         },
       },
       result: {
@@ -257,21 +258,7 @@ describe('useCalculateSettlements', () => {
 
     const refetchResult = await result.current.refetch({
       groupId: 'group-123',
-      expenses: [
-        {
-          id: 'expense-1',
-          groupId: 'group-123',
-          amount: 1000,
-          description: 'ランチ',
-          paidById: 'member-1',
-          paidByName: 'Alice',
-          splitMembers: [
-            { memberId: 'member-1', memberName: 'Alice', amount: 500 },
-            { memberId: 'member-2', memberName: 'Bob', amount: 500 },
-          ],
-          createdAt: '2024-01-01T12:00:00Z',
-        },
-      ],
+      expenses: mockExpenses,
     });
 
     expect(refetchResult.data.calculateSettlements).toEqual(mockSettlementResult);
