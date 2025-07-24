@@ -56,20 +56,24 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y postgresql-client
         
-        # Apply CI schema (統合版)
-        echo "Applying CI schema..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/ci_schema.sql"
+        # Apply migrations in order
+        echo "Applying migrations in order..."
+        
+        echo "1. Applying initial schema..."
+        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/001_initial_schema.sql"
+        
+        echo "2. Applying expenses table migration..."
+        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250722235017_add_expenses_table.sql"
+        
+        echo "3. Applying paid_by column rename..."
+        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250723000000_rename_paid_by_column.sql"
+        
+        echo "4. Applying expense_splits amount type fix..."
+        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250723000001_fix_expense_splits_amount_type.sql"
         
         # Verify tables were created
         echo "Verifying tables..."
         PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -c "\dt"
-        
-        # Verify schema structure
-        echo "Verifying expenses table structure..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -c "\d expenses"
-        
-        echo "Verifying expense_splits table structure..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -c "\d expense_splits"
 
     - name: Download Go dependencies
       working-directory: ./backend/services/group
