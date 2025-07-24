@@ -4,11 +4,13 @@
 
 ## 🏗️ アーキテクチャ
 
-- **フロントエンド**: React + TypeScript + Vite + TailwindCSS
+- **フロントエンド**: React + TypeScript + Vite + TailwindCSS v4
 - **ゲートウェイ**: GraphQL Gateway (Go)
 - **バックエンド**: gRPCマイクロサービス (Go)
-- **データベース**: PostgreSQL
+- **データベース**: PostgreSQL 17
 - **開発環境**: Docker Compose
+- **テスト**: Vitest (フロントエンド), Go Testing (バックエンド)
+- **Lint/Format**: Biome (フロントエンド)
 
 ## 🚀 開発環境の構築
 
@@ -40,8 +42,17 @@
 起動後、以下のURLでアクセスできます：
 
 - **フロントエンド**: http://localhost:3000
-- **GraphQL Gateway**: http://localhost:8080/query (GraphQL Playground)
+- **GraphQL Gateway**: http://localhost:8080/graphql (GraphQL Playground)
 - **データベース**: localhost:5432
+
+## ✨ 主な機能
+
+- **グループ管理**: グループ作成・編集・削除
+- **メンバー管理**: グループメンバーの追加・削除
+- **支払い記録**: 個人が立て替えた支払いの記録
+- **精算計算**: 最適な精算方法の自動計算
+- **レスポンシブUI**: モバイル・デスクトップ対応
+- **利用規約**: サービス利用規約の表示
 
 ## 📁 プロジェクト構造
 
@@ -59,17 +70,18 @@ warikan/
 ├── backend/
 │   ├── gateway/             # GraphQL Gateway
 │   │   ├── cmd/
-│   │   ├── graph/
+│   │   ├── internal/
 │   │   ├── Dockerfile
 │   │   └── go.mod
-│   └── services/
-│       └── group/           # Group gRPCサービス
-│           ├── cmd/
-│           ├── internal/
-│           ├── Dockerfile
-│           └── go.mod
+│   ├── services/
+│   │   └── group/           # Group gRPCサービス
+│   │       ├── cmd/
+│   │       ├── internal/
+│   │       ├── Dockerfile
+│   │       └── go.mod
+│   ├── migrations/          # データベースマイグレーション
+│   └── proto/               # Protocol Buffers定義
 ├── docker-compose.yml       # Docker Compose設定
-├── .env.example             # 環境変数テンプレート
 └── README.md
 ```
 
@@ -131,10 +143,16 @@ docker compose exec db psql -U warikan -d warikan
 # コンテナ内でテスト実行
 docker compose exec frontend npm test
 
-# カバレッジ付きテスト
-docker compose exec frontend npm run test:coverage
+# CI用テスト実行（1回のみ）
+docker compose exec frontend npm run test:ci
 
-# ホストマシンでテスト実行 (node_modulesが必要)
+# Lintチェック
+docker compose exec frontend npm run lint:ci
+
+# Lint自動修正
+docker compose exec frontend npm run lint
+
+# ホストマシンでテスト実行（node_modulesが必要）
 cd frontend
 npm test
 ```
@@ -143,10 +161,16 @@ npm test
 
 ```bash
 # Group Serviceのテスト
-docker compose exec group-service go test ./...
+docker compose exec group-service sh -c "cd /app/services/group && go test ./..."
+
+# 詳細出力付きテスト
+docker compose exec group-service sh -c "cd /app/services/group && go test -v ./..."
 
 # カバレッジ付きテスト
-docker compose exec group-service go test -coverprofile=coverage.out ./...
+docker compose exec group-service sh -c "cd /app/services/group && go test -coverprofile=coverage.out ./..."
+
+# 特定のパッケージのみテスト
+docker compose exec group-service sh -c "cd /app/services/group && go test ./internal/repository"
 ```
 
 ## 🔄 開発ワークフロー
@@ -155,7 +179,8 @@ docker compose exec group-service go test -coverprofile=coverage.out ./...
 
 1. コードを編集すると自動でホットリロードされます
 2. `http://localhost:3000` でリアルタイムに変更を確認
-3. GraphQL クエリは `http://localhost:8080/query` に送信されます
+3. GraphQL クエリは `http://localhost:8080/graphql` に送信されます
+4. TailwindCSS v4 を使用した CSS-first 設定
 
 ### バックエンド開発
 
@@ -166,16 +191,21 @@ docker compose exec group-service go test -coverprofile=coverage.out ./...
 ### データベース操作
 
 ```bash
-# マイグレーション実行
-docker compose exec group-service go run cmd/migrate/main.go
-
 # データベース接続
 docker compose exec db psql -U warikan -d warikan
 
+# マイグレーション手動適用（必要に応じて）
+docker compose exec -T db psql -U warikan -d warikan < backend/migrations/20250723000000_rename_paid_by_column.sql
+
 # よく使うSQL
 SELECT * FROM groups;
-SELECT * FROM group_members;
+SELECT * FROM members;
 SELECT * FROM expenses;
+SELECT * FROM expense_splits;
+
+# テーブル構造確認
+\d expenses
+\d expense_splits
 ```
 
 ## 🐛 トラブルシューティング
@@ -262,7 +292,7 @@ docker compose ps
 
 ### GraphQL
 
-GraphQL Playgroundで API を探索できます: http://localhost:8080/query
+GraphQL Playgroundで API を見ることができます: http://localhost:8080/graphql
 
 主要なクエリ・ミューテーション：
 
@@ -272,9 +302,12 @@ mutation CreateGroup($input: CreateGroupInput!) {
   createGroup(input: $input) {
     id
     name
+    description
+    currency
     members {
       id
       name
+      email
     }
   }
 }
@@ -284,15 +317,46 @@ query GetGroup($id: ID!) {
   group(id: $id) {
     id
     name
+    description
+    currency
     members {
       id
       name
+      email
     }
-    expenses {
-      id
+  }
+}
+
+# 支払い追加
+mutation AddExpense($input: AddExpenseInput!) {
+  addExpense(input: $input) {
+    id
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
       amount
-      description
     }
+  }
+}
+
+# グループの支払い履歴取得
+query GetGroupExpenses($groupId: ID!) {
+  groupExpenses(groupId: $groupId) {
+    id
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
   }
 }
 ```
@@ -301,8 +365,23 @@ query GetGroup($id: ID!) {
 
 1. 機能ブランチを作成
 2. 変更をコミット
-3. テストが通ることを確認
+3. テストとLintが通ることを確認
+   ```bash
+   # フロントエンド
+   npm run test:ci
+   npm run lint:ci
+   
+   # バックエンド
+   docker compose exec group-service sh -c "cd /app/services/group && go test ./..."
+   ```
 4. プルリクエストを作成
+
+### 開発ガイドライン
+
+- **コミットメッセージ**: 英語で簡潔に
+- **テストカバレッジ**: 新機能には必ずテストを追加
+- **コードスタイル**: Biome（フロントエンド）、gofmt（バックエンド）に従う
+- **型安全性**: TypeScript・Go の型安全性を活用
 
 ## 📄 ライセンス
 
