@@ -5,7 +5,7 @@ on:
 
 jobs:
   test-backend:
-    name: Backend Tests
+    name: Backend Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -50,7 +50,7 @@ jobs:
         fail_ci_if_error: false
 
   test-frontend:
-    name: Frontend Tests
+    name: Frontend Unit Tests
     runs-on: ubuntu-latest
 
     steps:
