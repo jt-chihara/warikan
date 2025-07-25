@@ -55,7 +55,7 @@ describe('HomePage', () => {
     expect(
       screen.getByText('旅行や飲み会の支払いを記録して、最適な精算方法を計算します'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'グループを作成する' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '新しいグループを作成する' })).toBeInTheDocument();
   });
 
   it('renders feature cards', () => {
