@@ -116,52 +116,57 @@ export default function CreateGroupPage() {
         </div>
 
         <div>
-          <label htmlFor="members" className="block text-sm font-medium text-gray-700 mb-2">
-            メンバー
-          </label>
-          <div className="space-y-2">
-            {members.map((member, index) => (
-              <div key={member.id} className="flex gap-2">
-                <input
-                  type="text"
-                  value={member.name}
-                  onChange={(e) => handleMemberChange(index, e.target.value)}
-                  placeholder="メンバー名"
-                  className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base"
-                />
-                {members.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveMember(index)}
-                    className="px-3 py-2 text-red-600 hover:text-red-800"
-                  >
-                    削除
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={handleAddMember}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800"
-          >
-            + メンバーを追加
-          </button>
+          <fieldset>
+            <legend className="block text-sm font-medium text-gray-700 mb-2">メンバー</legend>
+            <div className="space-y-2">
+              {members.map((member, index) => (
+                <div key={member.id} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={member.name}
+                    onChange={(e) => handleMemberChange(index, e.target.value)}
+                    placeholder="メンバー名"
+                    className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm sm:text-base"
+                    aria-label={`メンバー ${index + 1} の名前`}
+                  />
+                  {members.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveMember(index)}
+                      className="px-3 py-2 text-red-600 hover:text-red-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                      aria-label={`${member.name || 'メンバー'}を削除`}
+                    >
+                      削除
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={handleAddMember}
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+              aria-label="新しいメンバーを追加"
+            >
+              + メンバーを追加
+            </button>
+          </fieldset>
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4">
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 w-full sm:w-auto"
+            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 w-full sm:w-auto cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+            aria-label="グループ作成をキャンセルしてホームページに戻る"
           >
             キャンセル
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+            aria-label="グループを作成して管理ページに移動"
           >
             {loading ? '作成中...' : 'グループを作成'}
           </button>

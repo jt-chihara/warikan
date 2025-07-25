@@ -52,6 +52,20 @@ export default function ExpenseModal({
     }
   }, [expense]);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -112,16 +126,36 @@ export default function ExpenseModal({
     setSplitAmong([]);
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center sm:p-4 z-50">
-      <div className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center sm:p-4 z-50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      onClick={onClose}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClose();
+        }
+      }}
+    >
+      <div
+        className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        role="document"
+      >
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">{isEditMode ? '支払いを編集' : '支払いを追加'}</h3>
+          <h3 id="modal-title" className="text-lg font-semibold">
+            {isEditMode ? '支払いを編集' : '支払いを追加'}
+          </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2"
-            aria-label="閉じる"
+            className="text-gray-400 hover:text-gray-600 p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-colors duration-200"
+            aria-label="モーダルを閉じる"
           >
             <svg
               className="w-5 h-5"
@@ -197,50 +231,60 @@ export default function ExpenseModal({
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <span className="block text-sm font-medium text-gray-700">割り勘対象者</span>
+              <span className="block text-sm font-medium text-gray-700" id="split-members-label">
+                割り勘対象者
+              </span>
               <div className="space-x-2">
                 <button
                   type="button"
                   onClick={handleSelectAll}
-                  className="text-xs text-blue-600 hover:text-blue-800"
+                  className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                  aria-label="全メンバーを選択"
                 >
                   全選択
                 </button>
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="text-xs text-gray-600 hover:text-gray-800"
+                  className="text-xs text-gray-600 hover:text-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                  aria-label="全メンバーの選択を解除"
                 >
                   全解除
                 </button>
               </div>
             </div>
-            <div className="space-y-2 max-h-32 overflow-y-auto">
+            <fieldset className="space-y-2 max-h-32 overflow-y-auto">
+              <legend className="sr-only">割り勘対象者選択</legend>
               {group.members.map((member) => (
-                <label key={member.id} className="flex items-center">
+                <label key={member.id} className="flex items-center cursor-pointer">
                   <input
                     type="checkbox"
                     checked={splitAmong.includes(member.id)}
                     onChange={() => handleMemberToggle(member.id)}
-                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer"
+                    aria-describedby={`member-${member.id}-desc`}
                   />
-                  <span className="ml-2 text-sm text-gray-700">{member.name}</span>
+                  <span className="ml-2 text-sm text-gray-700" id={`member-${member.id}-desc`}>
+                    {member.name}
+                  </span>
                 </label>
               ))}
-            </div>
+            </fieldset>
           </div>
 
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+              aria-label={isEditMode ? '支払い情報を更新' : '新しい支払いを追加'}
             >
               {isEditMode ? '更新' : '追加'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+              aria-label="操作をキャンセルしてモーダルを閉じる"
             >
               キャンセル
             </button>

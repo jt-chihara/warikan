@@ -199,40 +199,52 @@ export default function GroupPage() {
 
       <div className="bg-white shadow rounded-lg">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex">
+          <div className="-mb-px flex" role="tablist" aria-label="グループ情報タブ">
             <button
               type="button"
               onClick={() => setActiveTab('expenses')}
-              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors duration-200 ${
                 activeTab === 'expenses'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
+              role="tab"
+              aria-selected={activeTab === 'expenses'}
+              aria-controls="expenses-panel"
             >
               支払い記録
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('settlement')}
-              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors duration-200 ${
                 activeTab === 'settlement'
                   ? 'border-blue-500 text-blue-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
+              role="tab"
+              aria-selected={activeTab === 'settlement'}
+              aria-controls="settlement-panel"
             >
               精算
             </button>
-          </nav>
+          </div>
         </div>
 
-        <div className="p-4 sm:p-6">
+        <div
+          className="p-4 sm:p-6"
+          role="tabpanel"
+          id={activeTab === 'expenses' ? 'expenses-panel' : 'settlement-panel'}
+          aria-labelledby={activeTab === 'expenses' ? 'expenses-tab' : 'settlement-tab'}
+        >
           {activeTab === 'expenses' ? (
             <div>
               <div className="mb-4">
                 <button
                   type="button"
                   onClick={() => setIsExpenseModalOpen(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-colors duration-200"
+                  aria-label="支払いを追加"
                 >
                   支払いを追加
                 </button>
@@ -265,14 +277,16 @@ export default function GroupPage() {
                             <button
                               type="button"
                               onClick={() => handleEditExpense(expense)}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-medium underline"
+                              className="text-blue-600 hover:text-blue-700 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                              aria-label={`${expense.description}の支払いを編集`}
                             >
                               編集
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteExpense(expense.id)}
-                              className="text-red-600 hover:text-red-700 text-sm font-medium underline"
+                              className="text-red-600 hover:text-red-700 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                              aria-label={`${expense.description}の支払いを削除`}
                             >
                               削除
                             </button>
