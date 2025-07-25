@@ -64,6 +64,8 @@ export default function ExpenseModal({
       document.addEventListener('keydown', handleEscape);
       return () => document.removeEventListener('keydown', handleEscape);
     }
+
+    return undefined;
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
