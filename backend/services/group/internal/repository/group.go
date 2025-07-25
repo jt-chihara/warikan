@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -87,6 +88,9 @@ func (r *GroupRepository) GetGroupByID(groupID string) (*groupv1.Group, error) {
 		&createdAt, &updatedAt,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("group not found")
+		}
 		return nil, err
 	}
 
