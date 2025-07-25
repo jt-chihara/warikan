@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { AddExpenseInput, Expense } from '../types/group';
 import { useAddExpense, useDeleteExpense, useGroupExpenses } from './useExpense';
@@ -110,7 +110,7 @@ describe('useAddExpense', () => {
 
     const [addExpense] = result.current;
 
-    let response: any;
+    let response: Awaited<ReturnType<typeof addExpense>>;
     await act(async () => {
       response = await addExpense({
         variables: { input: mockAddExpenseInput },
@@ -308,7 +308,7 @@ describe('useDeleteExpense', () => {
 
     const [deleteExpense] = result.current;
 
-    let response: any;
+    let response: Awaited<ReturnType<typeof deleteExpense>>;
     await act(async () => {
       response = await deleteExpense({
         variables: { expenseId: 'expense-123' },
@@ -384,7 +384,7 @@ describe('useDeleteExpense', () => {
 
     const [deleteExpense] = result.current;
 
-    let response: any;
+    let response: Awaited<ReturnType<typeof deleteExpense>>;
     await act(async () => {
       response = await deleteExpense({
         variables: { expenseId: 'nonexistent-expense' },

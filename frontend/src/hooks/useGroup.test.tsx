@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 import { useCalculateSettlements, useCreateGroup, useGroup } from './useGroup';
@@ -119,7 +119,7 @@ describe('useCreateGroup', () => {
 
     const [createGroup] = result.current;
 
-    let response: any;
+    let response: Awaited<ReturnType<typeof createGroup>>;
     await act(async () => {
       response = await createGroup({
         variables: { input: mockCreateGroupInput },
@@ -261,7 +261,7 @@ describe('useCalculateSettlements', () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.called).toBe(false);
 
-    let refetchResult: any;
+    let refetchResult: Awaited<ReturnType<typeof result.current.refetch>>;
     await act(async () => {
       refetchResult = await result.current.refetch({
         groupId: 'group-123',
