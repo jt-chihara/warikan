@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import type { AddExpenseInput, UpdateExpenseInput, Expense } from '../types/group';
+import type { AddExpenseInput, Expense, UpdateExpenseInput } from '../types/group';
 
 const ADD_EXPENSE = gql`
   mutation AddExpense($input: AddExpenseInput!) {

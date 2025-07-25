@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import type { Group, Expense } from '../types/group';
+import { useEffect, useState } from 'react';
+import type { Expense, Group } from '../types/group';
 
 interface ExpenseModalProps {
   isOpen: boolean;
@@ -12,15 +12,25 @@ interface ExpenseModalProps {
     paidBy: string;
     splitAmong: string[];
   }) => void;
-  onUpdateExpense?: (expenseId: string, expense: {
-    amount: number;
-    description: string;
-    paidBy: string;
-    splitAmong: string[];
-  }) => void;
+  onUpdateExpense?: (
+    expenseId: string,
+    expense: {
+      amount: number;
+      description: string;
+      paidBy: string;
+      splitAmong: string[];
+    },
+  ) => void;
 }
 
-export default function ExpenseModal({ isOpen, onClose, group, expense, onAddExpense, onUpdateExpense }: ExpenseModalProps) {
+export default function ExpenseModal({
+  isOpen,
+  onClose,
+  group,
+  expense,
+  onAddExpense,
+  onUpdateExpense,
+}: ExpenseModalProps) {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [paidBy, setPaidBy] = useState('');
@@ -33,7 +43,7 @@ export default function ExpenseModal({ isOpen, onClose, group, expense, onAddExp
       setAmount(expense.amount.toString());
       setDescription(expense.description);
       setPaidBy(expense.paidById);
-      setSplitAmong(expense.splitMembers.map(m => m.memberId));
+      setSplitAmong(expense.splitMembers.map((m) => m.memberId));
     } else {
       setAmount('');
       setDescription('');

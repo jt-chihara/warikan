@@ -1,10 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ExpenseModal from '../components/ExpenseModal';
-import { useAddExpense, useUpdateExpense, useDeleteExpense, useGroupExpenses } from '../hooks/useExpense';
+import {
+  useAddExpense,
+  useDeleteExpense,
+  useGroupExpenses,
+  useUpdateExpense,
+} from '../hooks/useExpense';
 import { useCalculateSettlements, useGroup } from '../hooks/useGroup';
 import { formatDateFromGraphQL } from '../lib/dateUtils';
-import type { AddExpenseInput, UpdateExpenseInput, Expense, ExpenseInput, SettlementResult } from '../types/group';
+import type {
+  AddExpenseInput,
+  Expense,
+  ExpenseInput,
+  SettlementResult,
+  UpdateExpenseInput,
+} from '../types/group';
 
 export default function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -80,12 +91,15 @@ export default function GroupPage() {
     }
   };
 
-  const handleUpdateExpense = async (expenseId: string, expense: {
-    amount: number;
-    description: string;
-    paidBy: string;
-    splitAmong: string[];
-  }) => {
+  const handleUpdateExpense = async (
+    expenseId: string,
+    expense: {
+      amount: number;
+      description: string;
+      paidBy: string;
+      splitAmong: string[];
+    },
+  ) => {
     try {
       const input: UpdateExpenseInput = {
         expenseId,
