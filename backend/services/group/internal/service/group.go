@@ -10,6 +10,7 @@ import (
 	"github.com/jt-chihara/warikan/services/group/internal/algorithm"
 	"github.com/jt-chihara/warikan/services/group/internal/domain"
 	"github.com/jt-chihara/warikan/services/group/internal/repository"
+	"github.com/jt-chihara/warikan/services/group/internal/validator"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -26,12 +27,25 @@ func NewGroupService(repo GroupRepositoryInterface, expenseRepo repository.Expen
 }
 
 func (s *GroupService) CreateGroup(ctx context.Context, req *groupv1.CreateGroupRequest) (*groupv1.CreateGroupResponse, error) {
-	if req.Name == "" {
-		return nil, errors.New("group name is required")
+	// 入力値検証
+	if err := validator.ValidateGroupName(req.Name); err != nil {
+		return nil, err
 	}
 
+	if err := validator.ValidateDescription(req.Description); err != nil {
+		return nil, err
+	}
+
+	// デフォルト通貨設定
 	if req.Currency == "" {
-		req.Currency = "JPY" // default currency
+		req.Currency = "JPY"
+	}
+	if err := validator.ValidateCurrency(req.Currency); err != nil {
+		return nil, err
+	}
+
+	if err := validator.ValidateMemberNames(req.MemberNames); err != nil {
+		return nil, err
 	}
 
 	group, err := s.repo.CreateGroup(req.Name, req.Description, req.Currency, req.MemberNames)
@@ -45,8 +59,8 @@ func (s *GroupService) CreateGroup(ctx context.Context, req *groupv1.CreateGroup
 }
 
 func (s *GroupService) GetGroup(ctx context.Context, req *groupv1.GetGroupRequest) (*groupv1.GetGroupResponse, error) {
-	if req.Id == "" {
-		return nil, errors.New("group ID is required")
+	if err := validator.ValidateUUID(req.Id); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
 
 	group, err := s.repo.GetGroupByID(req.Id)
@@ -60,11 +74,21 @@ func (s *GroupService) GetGroup(ctx context.Context, req *groupv1.GetGroupReques
 }
 
 func (s *GroupService) UpdateGroup(ctx context.Context, req *groupv1.UpdateGroupRequest) (*groupv1.UpdateGroupResponse, error) {
-	if req.Id == "" {
-		return nil, errors.New("group ID is required")
+	// 入力値検証
+	if err := validator.ValidateUUID(req.Id); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
-	if req.Name == "" {
-		return nil, errors.New("group name is required")
+	
+	if err := validator.ValidateGroupName(req.Name); err != nil {
+		return nil, err
+	}
+	
+	if err := validator.ValidateDescription(req.Description); err != nil {
+		return nil, err
+	}
+	
+	if err := validator.ValidateCurrency(req.Currency); err != nil {
+		return nil, err
 	}
 
 	group, err := s.repo.UpdateGroup(req.Id, req.Name, req.Description, req.Currency)
@@ -78,8 +102,8 @@ func (s *GroupService) UpdateGroup(ctx context.Context, req *groupv1.UpdateGroup
 }
 
 func (s *GroupService) DeleteGroup(ctx context.Context, req *groupv1.DeleteGroupRequest) (*groupv1.DeleteGroupResponse, error) {
-	if req.Id == "" {
-		return nil, errors.New("group ID is required")
+	if err := validator.ValidateUUID(req.Id); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
 
 	err := s.repo.DeleteGroup(req.Id)
@@ -93,11 +117,13 @@ func (s *GroupService) DeleteGroup(ctx context.Context, req *groupv1.DeleteGroup
 }
 
 func (s *GroupService) AddMember(ctx context.Context, req *groupv1.AddMemberRequest) (*groupv1.AddMemberResponse, error) {
-	if req.GroupId == "" {
-		return nil, errors.New("group ID is required")
+	// 入力値検証
+	if err := validator.ValidateUUID(req.GroupId); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
-	if req.MemberName == "" {
-		return nil, errors.New("member name is required")
+	
+	if err := validator.ValidateMemberName(req.MemberName); err != nil {
+		return nil, err
 	}
 
 	member, err := s.repo.AddMember(req.GroupId, req.MemberName, req.MemberEmail)
@@ -111,11 +137,13 @@ func (s *GroupService) AddMember(ctx context.Context, req *groupv1.AddMemberRequ
 }
 
 func (s *GroupService) RemoveMember(ctx context.Context, req *groupv1.RemoveMemberRequest) (*groupv1.RemoveMemberResponse, error) {
-	if req.GroupId == "" {
-		return nil, errors.New("group ID is required")
+	// 入力値検証
+	if err := validator.ValidateUUID(req.GroupId); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
-	if req.MemberId == "" {
-		return nil, errors.New("member ID is required")
+	
+	if err := validator.ValidateUUID(req.MemberId); err != nil {
+		return nil, errors.New("メンバーIDが無効です")
 	}
 
 	err := s.repo.RemoveMember(req.GroupId, req.MemberId)
@@ -129,8 +157,8 @@ func (s *GroupService) RemoveMember(ctx context.Context, req *groupv1.RemoveMemb
 }
 
 func (s *GroupService) CalculateSettlements(ctx context.Context, req *groupv1.CalculateSettlementsRequest) (*groupv1.CalculateSettlementsResponse, error) {
-	if req.GroupId == "" {
-		return nil, errors.New("group ID is required")
+	if err := validator.ValidateUUID(req.GroupId); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
 
 	// Get group to validate it exists and get members
@@ -196,20 +224,25 @@ func (s *GroupService) CalculateSettlements(ctx context.Context, req *groupv1.Ca
 }
 
 func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRequest) (*groupv1.AddExpenseResponse, error) {
-	if req.GroupId == "" {
-		return nil, errors.New("group ID is required")
+	// 入力値検証
+	if err := validator.ValidateUUID(req.GroupId); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
-	if req.Amount <= 0 {
-		return nil, errors.New("amount must be positive")
+	
+	if err := validator.ValidateExpenseAmount(req.Amount); err != nil {
+		return nil, err
 	}
-	if req.Description == "" {
-		return nil, errors.New("description is required")
+	
+	if err := validator.ValidateExpenseDescription(req.Description); err != nil {
+		return nil, err
 	}
-	if req.PaidById == "" {
-		return nil, errors.New("paid by ID is required")
+	
+	if err := validator.ValidateUUID(req.PaidById); err != nil {
+		return nil, errors.New("支払い者IDが無効です")
 	}
-	if len(req.SplitMemberIds) == 0 {
-		return nil, errors.New("split members are required")
+	
+	if err := validator.ValidateSplitMemberIds(req.SplitMemberIds); err != nil {
+		return nil, err
 	}
 
 	// Parse UUIDs
@@ -312,8 +345,8 @@ func (s *GroupService) AddExpense(ctx context.Context, req *groupv1.AddExpenseRe
 }
 
 func (s *GroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGroupExpensesRequest) (*groupv1.GetGroupExpensesResponse, error) {
-	if req.GroupId == "" {
-		return nil, errors.New("group ID is required")
+	if err := validator.ValidateUUID(req.GroupId); err != nil {
+		return nil, errors.New("グループIDが無効です")
 	}
 
 	groupID, err := uuid.Parse(req.GroupId)
@@ -356,20 +389,25 @@ func (s *GroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGro
 }
 
 func (s *GroupService) UpdateExpense(ctx context.Context, req *groupv1.UpdateExpenseRequest) (*groupv1.UpdateExpenseResponse, error) {
-	if req.ExpenseId == "" {
-		return nil, errors.New("expense ID is required")
+	// 入力値検証
+	if err := validator.ValidateUUID(req.ExpenseId); err != nil {
+		return nil, errors.New("支払いIDが無効です")
 	}
-	if req.Amount <= 0 {
-		return nil, errors.New("amount must be positive")
+	
+	if err := validator.ValidateExpenseAmount(req.Amount); err != nil {
+		return nil, err
 	}
-	if req.Description == "" {
-		return nil, errors.New("description is required")
+	
+	if err := validator.ValidateExpenseDescription(req.Description); err != nil {
+		return nil, err
 	}
-	if req.PaidById == "" {
-		return nil, errors.New("paid by ID is required")
+	
+	if err := validator.ValidateUUID(req.PaidById); err != nil {
+		return nil, errors.New("支払い者IDが無効です")
 	}
-	if len(req.SplitMemberIds) == 0 {
-		return nil, errors.New("split members are required")
+	
+	if err := validator.ValidateSplitMemberIds(req.SplitMemberIds); err != nil {
+		return nil, err
 	}
 
 	// Parse UUIDs
@@ -483,8 +521,8 @@ func (s *GroupService) UpdateExpense(ctx context.Context, req *groupv1.UpdateExp
 }
 
 func (s *GroupService) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
-	if req.ExpenseId == "" {
-		return nil, errors.New("expense ID is required")
+	if err := validator.ValidateUUID(req.ExpenseId); err != nil {
+		return nil, errors.New("支払いIDが無効です")
 	}
 
 	expenseID, err := uuid.Parse(req.ExpenseId)

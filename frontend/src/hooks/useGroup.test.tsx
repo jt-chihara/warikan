@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 import { useCalculateSettlements, useCreateGroup, useGroup } from './useGroup';
@@ -119,8 +119,11 @@ describe('useCreateGroup', () => {
 
     const [createGroup] = result.current;
 
-    const response = await createGroup({
-      variables: { input: mockCreateGroupInput },
+    let response: Awaited<ReturnType<typeof createGroup>>;
+    await act(async () => {
+      response = await createGroup({
+        variables: { input: mockCreateGroupInput },
+      });
     });
 
     await waitFor(() => {
@@ -147,11 +150,13 @@ describe('useCreateGroup', () => {
 
     const [createGroup] = result.current;
 
-    await expect(
-      createGroup({
-        variables: { input: mockCreateGroupInput },
-      }),
-    ).rejects.toThrow('グループの作成に失敗しました');
+    await act(async () => {
+      await expect(
+        createGroup({
+          variables: { input: mockCreateGroupInput },
+        }),
+      ).rejects.toThrow('グループの作成に失敗しました');
+    });
   });
 });
 
@@ -256,12 +261,15 @@ describe('useCalculateSettlements', () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.called).toBe(false);
 
-    const refetchResult = await result.current.refetch({
-      groupId: 'group-123',
-      expenses: mockExpenses,
+    let refetchResult: Awaited<ReturnType<typeof result.current.refetch>>;
+    await act(async () => {
+      refetchResult = await result.current.refetch({
+        groupId: 'group-123',
+        expenses: mockExpenses,
+      });
     });
 
-    expect(refetchResult.data.calculateSettlements).toEqual(mockSettlementResult);
+    expect(refetchResult!.data.calculateSettlements).toEqual(mockSettlementResult);
   });
 
   it('is initially skipped', () => {

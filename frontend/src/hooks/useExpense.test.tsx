@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { MockedProvider } from '@apollo/client/testing';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import type { AddExpenseInput, Expense } from '../types/group';
 import { useAddExpense, useDeleteExpense, useGroupExpenses } from './useExpense';
@@ -110,8 +110,11 @@ describe('useAddExpense', () => {
 
     const [addExpense] = result.current;
 
-    const response = await addExpense({
-      variables: { input: mockAddExpenseInput },
+    let response: Awaited<ReturnType<typeof addExpense>>;
+    await act(async () => {
+      response = await addExpense({
+        variables: { input: mockAddExpenseInput },
+      });
     });
 
     await waitFor(() => {
@@ -138,11 +141,13 @@ describe('useAddExpense', () => {
 
     const [addExpense] = result.current;
 
-    await expect(
-      addExpense({
-        variables: { input: mockAddExpenseInput },
-      }),
-    ).rejects.toThrow('支払いの追加に失敗しました');
+    await act(async () => {
+      await expect(
+        addExpense({
+          variables: { input: mockAddExpenseInput },
+        }),
+      ).rejects.toThrow('支払いの追加に失敗しました');
+    });
   });
 
   it('returns loading state correctly', () => {
@@ -303,8 +308,11 @@ describe('useDeleteExpense', () => {
 
     const [deleteExpense] = result.current;
 
-    const response = await deleteExpense({
-      variables: { expenseId: 'expense-123' },
+    let response: Awaited<ReturnType<typeof deleteExpense>>;
+    await act(async () => {
+      response = await deleteExpense({
+        variables: { expenseId: 'expense-123' },
+      });
     });
 
     await waitFor(() => {
@@ -331,11 +339,13 @@ describe('useDeleteExpense', () => {
 
     const [deleteExpense] = result.current;
 
-    await expect(
-      deleteExpense({
-        variables: { expenseId: 'expense-123' },
-      }),
-    ).rejects.toThrow('支払いの削除に失敗しました');
+    await act(async () => {
+      await expect(
+        deleteExpense({
+          variables: { expenseId: 'expense-123' },
+        }),
+      ).rejects.toThrow('支払いの削除に失敗しました');
+    });
   });
 
   it('returns loading state correctly', () => {
@@ -374,8 +384,11 @@ describe('useDeleteExpense', () => {
 
     const [deleteExpense] = result.current;
 
-    const response = await deleteExpense({
-      variables: { expenseId: 'nonexistent-expense' },
+    let response: Awaited<ReturnType<typeof deleteExpense>>;
+    await act(async () => {
+      response = await deleteExpense({
+        variables: { expenseId: 'nonexistent-expense' },
+      });
     });
 
     await waitFor(() => {
