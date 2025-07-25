@@ -304,6 +304,27 @@ var addExpenseInput = graphql.NewInputObject(graphql.InputObjectConfig{
 	},
 })
 
+var updateExpenseInput = graphql.NewInputObject(graphql.InputObjectConfig{
+	Name: "UpdateExpenseInput",
+	Fields: graphql.InputObjectConfigFieldMap{
+		"expenseId": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"amount": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.Int),
+		},
+		"description": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"paidById": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.ID),
+		},
+		"splitMemberIds": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewNonNull(graphql.NewList(graphql.NewNonNull(graphql.ID))),
+		},
+	},
+})
+
 func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 	// Query type
 	queryType := graphql.NewObject(graphql.ObjectConfig{
@@ -641,6 +662,50 @@ func NewSchema(groupClient groupv1.GroupServiceClient) (graphql.Schema, error) {
 						return nil, err
 					}
 
+					return resp.Expense, nil
+				},
+			},
+			"updateExpense": &graphql.Field{
+				Type: expenseWithDetailsType,
+				Args: graphql.FieldConfigArgument{
+					"input": &graphql.ArgumentConfig{
+						Type: graphql.NewNonNull(updateExpenseInput),
+					},
+				},
+				Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+					input, ok := p.Args["input"].(map[string]interface{})
+					if !ok {
+						return nil, nil
+					}
+					// Convert amount from float64 to int64 (amount in cents)
+					amount := int64(0)
+					if amountFloat, ok := input["amount"].(float64); ok {
+						amount = int64(amountFloat)
+					} else if amountInt, ok := input["amount"].(int); ok {
+						amount = int64(amountInt)
+					}
+					// Extract splitMemberIds
+					var splitMemberIds []string
+					if splitMemberIdsInterface, ok := input["splitMemberIds"].([]interface{}); ok {
+						splitMemberIds = make([]string, len(splitMemberIdsInterface))
+						for i, id := range splitMemberIdsInterface {
+							if idStr, ok := id.(string); ok {
+								splitMemberIds[i] = idStr
+							}
+						}
+					}
+					req := &groupv1.UpdateExpenseRequest{
+						ExpenseId:      input["expenseId"].(string),
+						Amount:         amount,
+						Description:    input["description"].(string),
+						PaidById:       input["paidById"].(string),
+						SplitMemberIds: splitMemberIds,
+					}
+					resp, err := groupClient.UpdateExpense(context.Background(), req)
+					if err != nil {
+						log.Printf("Error updating expense: %v", err)
+						return nil, err
+					}
 					return resp.Expense, nil
 				},
 			},

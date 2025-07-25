@@ -1,10 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ExpenseModal from '../components/ExpenseModal';
-import { useAddExpense, useDeleteExpense, useGroupExpenses } from '../hooks/useExpense';
+import {
+  useAddExpense,
+  useDeleteExpense,
+  useGroupExpenses,
+  useUpdateExpense,
+} from '../hooks/useExpense';
 import { useCalculateSettlements, useGroup } from '../hooks/useGroup';
 import { formatDateFromGraphQL } from '../lib/dateUtils';
-import type { AddExpenseInput, ExpenseInput, SettlementResult } from '../types/group';
+import type {
+  AddExpenseInput,
+  Expense,
+  ExpenseInput,
+  SettlementResult,
+  UpdateExpenseInput,
+} from '../types/group';
 
 export default function GroupPage() {
   const { groupId } = useParams<{ groupId: string }>();
@@ -15,9 +26,11 @@ export default function GroupPage() {
     refetch: refetchExpenses,
   } = useGroupExpenses(groupId || '');
   const [addExpense] = useAddExpense();
+  const [updateExpense] = useUpdateExpense();
   const [deleteExpense] = useDeleteExpense();
   const [activeTab, setActiveTab] = useState<'expenses' | 'settlement'>('expenses');
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [settlementResult, setSettlementResult] = useState<SettlementResult | null>(null);
   const { refetch: calculateSettlements, loading: settlementLoading } = useCalculateSettlements();
 
@@ -78,6 +91,35 @@ export default function GroupPage() {
     }
   };
 
+  const handleUpdateExpense = async (
+    expenseId: string,
+    expense: {
+      amount: number;
+      description: string;
+      paidBy: string;
+      splitAmong: string[];
+    },
+  ) => {
+    try {
+      const input: UpdateExpenseInput = {
+        expenseId,
+        amount: expense.amount,
+        description: expense.description,
+        paidById: expense.paidBy,
+        splitMemberIds: expense.splitAmong,
+      };
+
+      await updateExpense({ variables: { input } });
+      await refetchExpenses();
+      // Reset settlement result to trigger recalculation
+      setSettlementResult(null);
+      setEditingExpense(null);
+    } catch (err) {
+      console.error('Error updating expense:', err);
+      alert('支払いの更新に失敗しました。');
+    }
+  };
+
   const handleDeleteExpense = async (expenseId: string) => {
     if (!confirm('この支払い記録を削除してもよろしいですか？')) {
       return;
@@ -92,6 +134,11 @@ export default function GroupPage() {
       console.error('Error deleting expense:', err);
       alert('支払いの削除に失敗しました。');
     }
+  };
+
+  const handleEditExpense = (expense: Expense) => {
+    setEditingExpense(expense);
+    setIsExpenseModalOpen(true);
   };
 
   if (loading) {
@@ -214,13 +261,22 @@ export default function GroupPage() {
                               {expense.splitMembers.length}人で割り勘
                             </p>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteExpense(expense.id)}
-                            className="text-red-600 hover:text-red-700 text-sm font-medium underline"
-                          >
-                            削除
-                          </button>
+                          <div className="flex gap-3">
+                            <button
+                              type="button"
+                              onClick={() => handleEditExpense(expense)}
+                              className="text-blue-600 hover:text-blue-700 text-sm font-medium underline"
+                            >
+                              編集
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteExpense(expense.id)}
+                              className="text-red-600 hover:text-red-700 text-sm font-medium underline"
+                            >
+                              削除
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="mt-2 text-sm text-gray-600">
@@ -304,9 +360,14 @@ export default function GroupPage() {
       {group && (
         <ExpenseModal
           isOpen={isExpenseModalOpen}
-          onClose={() => setIsExpenseModalOpen(false)}
+          onClose={() => {
+            setIsExpenseModalOpen(false);
+            setEditingExpense(null);
+          }}
           group={group}
+          expense={editingExpense}
           onAddExpense={handleAddExpense}
+          onUpdateExpense={handleUpdateExpense}
         />
       )}
     </div>

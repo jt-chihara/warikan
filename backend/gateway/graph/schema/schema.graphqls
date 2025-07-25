@@ -44,9 +44,72 @@ input RemoveMemberInput {
   memberId: ID!
 }
 
+type Expense {
+  id: ID!
+  groupId: ID!
+  amount: Int!
+  description: String!
+  paidById: ID!
+  paidByName: String!
+  splitMembers: [SplitMember!]!
+  createdAt: DateTime!
+}
+
+type SplitMember {
+  memberId: ID!
+  memberName: String!
+  amount: Int!
+}
+
+type Settlement {
+  fromMemberId: ID!
+  toMemberId: ID!
+  amount: Int!
+  fromName: String!
+  toName: String!
+}
+
+type MemberBalance {
+  memberId: ID!
+  memberName: String!
+  balance: Int!
+}
+
+type CalculateSettlementsResult {
+  settlements: [Settlement!]!
+  balances: [MemberBalance!]!
+}
+
+input AddExpenseInput {
+  groupId: ID!
+  amount: Int!
+  description: String!
+  paidById: ID!
+  splitMemberIds: [ID!]!
+}
+
+input UpdateExpenseInput {
+  expenseId: ID!
+  amount: Int!
+  description: String!
+  paidById: ID!
+  splitMemberIds: [ID!]!
+}
+
+input ExpenseInput {
+  id: ID!
+  payerId: ID!
+  amount: Int!
+  description: String!
+  splitBetween: [ID!]!
+  createdAt: DateTime!
+}
+
 type Query {
   group(id: ID!): Group
   groups: [Group!]!
+  groupExpenses(groupId: ID!): [Expense!]!
+  calculateSettlements(groupId: ID!, expenses: [ExpenseInput!]!): CalculateSettlementsResult!
 }
 
 type Mutation {
@@ -55,4 +118,7 @@ type Mutation {
   deleteGroup(id: ID!): Boolean!
   addMember(input: AddMemberInput!): Member!
   removeMember(input: RemoveMemberInput!): Boolean!
+  addExpense(input: AddExpenseInput!): Expense!
+  updateExpense(input: UpdateExpenseInput!): Expense!
+  deleteExpense(expenseId: ID!): Boolean!
 }

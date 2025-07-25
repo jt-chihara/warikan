@@ -11,6 +11,7 @@ import (
 
 type ExpenseRepository interface {
 	Create(ctx context.Context, expense *domain.Expense) error
+	Update(ctx context.Context, expense *domain.Expense) error
 	FindByGroupID(ctx context.Context, groupID uuid.UUID) ([]*domain.Expense, error)
 	FindByID(ctx context.Context, id uuid.UUID) (*domain.Expense, error)
 	Delete(ctx context.Context, id uuid.UUID) error
@@ -51,6 +52,67 @@ func (r *expenseRepository) Create(ctx context.Context, expense *domain.Expense)
 	}
 
 	// Insert expense splits
+	if len(expense.SplitMembers) > 0 {
+		splitQuery := `
+			INSERT INTO expense_splits (expense_id, member_id, amount)
+			VALUES ($1, $2, $3)`
+
+		for _, split := range expense.SplitMembers {
+			_, err = tx.ExecContext(ctx, splitQuery,
+				expense.ID,
+				split.MemberID,
+				split.Amount,
+			)
+			if err != nil {
+				return fmt.Errorf("failed to insert expense split: %w", err)
+			}
+		}
+	}
+
+	return tx.Commit()
+}
+
+func (r *expenseRepository) Update(ctx context.Context, expense *domain.Expense) error {
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback()
+
+	// Update expense
+	query := `
+		UPDATE expenses 
+		SET amount = $2, description = $3, paid_by_id = $4, updated_at = $5
+		WHERE id = $1`
+
+	result, err := tx.ExecContext(ctx, query,
+		expense.ID,
+		expense.Amount,
+		expense.Description,
+		expense.PaidByID,
+		expense.UpdatedAt,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update expense: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return domain.ErrExpenseNotFound
+	}
+
+	// Delete existing expense splits
+	deleteQuery := `DELETE FROM expense_splits WHERE expense_id = $1`
+	_, err = tx.ExecContext(ctx, deleteQuery, expense.ID)
+	if err != nil {
+		return fmt.Errorf("failed to delete expense splits: %w", err)
+	}
+
+	// Insert new expense splits
 	if len(expense.SplitMembers) > 0 {
 		splitQuery := `
 			INSERT INTO expense_splits (expense_id, member_id, amount)

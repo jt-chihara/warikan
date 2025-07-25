@@ -63,6 +63,23 @@ mutation AddExpense($input: AddExpenseInput!) {
   }
 }
 
+mutation UpdateExpense($input: UpdateExpenseInput!) {
+  updateExpense(input: $input) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
 query GetGroupExpenses($groupId: ID!) {
   groupExpenses(groupId: $groupId) {
     id

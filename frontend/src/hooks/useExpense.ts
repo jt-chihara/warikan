@@ -1,9 +1,28 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import type { AddExpenseInput, Expense } from '../types/group';
+import type { AddExpenseInput, Expense, UpdateExpenseInput } from '../types/group';
 
 const ADD_EXPENSE = gql`
   mutation AddExpense($input: AddExpenseInput!) {
     addExpense(input: $input) {
+      id
+      groupId
+      amount
+      description
+      paidById
+      paidByName
+      splitMembers {
+        memberId
+        memberName
+        amount
+      }
+      createdAt
+    }
+  }
+`;
+
+const UPDATE_EXPENSE = gql`
+  mutation UpdateExpense($input: UpdateExpenseInput!) {
+    updateExpense(input: $input) {
       id
       groupId
       amount
@@ -47,6 +66,10 @@ const GET_GROUP_EXPENSES = gql`
 
 export function useAddExpense() {
   return useMutation<{ addExpense: Expense }, { input: AddExpenseInput }>(ADD_EXPENSE);
+}
+
+export function useUpdateExpense() {
+  return useMutation<{ updateExpense: Expense }, { input: UpdateExpenseInput }>(UPDATE_EXPENSE);
 }
 
 export function useDeleteExpense() {

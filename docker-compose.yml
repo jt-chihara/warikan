@@ -1,7 +1,7 @@
 services:
   # PostgreSQL Database
   db:
-    image: postgres:17-alpine
+    image: postgres:17.5
     container_name: warikan-db
     environment:
       POSTGRES_DB: warikan

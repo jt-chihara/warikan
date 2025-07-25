@@ -1,23 +1,56 @@
-import { useState } from 'react';
-import type { Group } from '../types/group';
+import { useEffect, useState } from 'react';
+import type { Expense, Group } from '../types/group';
 
 interface ExpenseModalProps {
   isOpen: boolean;
   onClose: () => void;
   group: Group;
+  expense?: Expense | null;
   onAddExpense: (expense: {
     amount: number;
     description: string;
     paidBy: string;
     splitAmong: string[];
   }) => void;
+  onUpdateExpense?: (
+    expenseId: string,
+    expense: {
+      amount: number;
+      description: string;
+      paidBy: string;
+      splitAmong: string[];
+    },
+  ) => void;
 }
 
-export default function ExpenseModal({ isOpen, onClose, group, onAddExpense }: ExpenseModalProps) {
+export default function ExpenseModal({
+  isOpen,
+  onClose,
+  group,
+  expense,
+  onAddExpense,
+  onUpdateExpense,
+}: ExpenseModalProps) {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [paidBy, setPaidBy] = useState('');
   const [splitAmong, setSplitAmong] = useState<string[]>([]);
+
+  const isEditMode = Boolean(expense);
+
+  useEffect(() => {
+    if (expense) {
+      setAmount(expense.amount.toString());
+      setDescription(expense.description);
+      setPaidBy(expense.paidById);
+      setSplitAmong(expense.splitMembers.map((m) => m.memberId));
+    } else {
+      setAmount('');
+      setDescription('');
+      setPaidBy('');
+      setSplitAmong([]);
+    }
+  }, [expense]);
 
   if (!isOpen) return null;
 
@@ -40,12 +73,21 @@ export default function ExpenseModal({ isOpen, onClose, group, onAddExpense }: E
       return;
     }
 
-    onAddExpense({
-      amount: expenseAmount,
-      description: description.trim(),
-      paidBy,
-      splitAmong,
-    });
+    if (isEditMode && expense && onUpdateExpense) {
+      onUpdateExpense(expense.id, {
+        amount: expenseAmount,
+        description: description.trim(),
+        paidBy,
+        splitAmong,
+      });
+    } else {
+      onAddExpense({
+        amount: expenseAmount,
+        description: description.trim(),
+        paidBy,
+        splitAmong,
+      });
+    }
 
     // Reset form
     setAmount('');
@@ -74,7 +116,7 @@ export default function ExpenseModal({ isOpen, onClose, group, onAddExpense }: E
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center sm:p-4 z-50">
       <div className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">支払いを追加</h3>
+          <h3 className="text-lg font-semibold">{isEditMode ? '支払いを編集' : '支払いを追加'}</h3>
           <button
             type="button"
             onClick={onClose}
@@ -193,7 +235,7 @@ export default function ExpenseModal({ isOpen, onClose, group, onAddExpense }: E
               type="submit"
               className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700"
             >
-              追加
+              {isEditMode ? '更新' : '追加'}
             </button>
             <button
               type="button"

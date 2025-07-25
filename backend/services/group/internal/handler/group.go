@@ -53,6 +53,10 @@ func (h *GroupHandler) GetGroupExpenses(ctx context.Context, req *groupv1.GetGro
 	return h.service.GetGroupExpenses(ctx, req)
 }
 
+func (h *GroupHandler) UpdateExpense(ctx context.Context, req *groupv1.UpdateExpenseRequest) (*groupv1.UpdateExpenseResponse, error) {
+	return h.service.UpdateExpense(ctx, req)
+}
+
 func (h *GroupHandler) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
 	return h.service.DeleteExpense(ctx, req)
 }

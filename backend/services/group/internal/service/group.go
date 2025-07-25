@@ -355,6 +355,133 @@ func (s *GroupService) GetGroupExpenses(ctx context.Context, req *groupv1.GetGro
 	}, nil
 }
 
+func (s *GroupService) UpdateExpense(ctx context.Context, req *groupv1.UpdateExpenseRequest) (*groupv1.UpdateExpenseResponse, error) {
+	if req.ExpenseId == "" {
+		return nil, errors.New("expense ID is required")
+	}
+	if req.Amount <= 0 {
+		return nil, errors.New("amount must be positive")
+	}
+	if req.Description == "" {
+		return nil, errors.New("description is required")
+	}
+	if req.PaidById == "" {
+		return nil, errors.New("paid by ID is required")
+	}
+	if len(req.SplitMemberIds) == 0 {
+		return nil, errors.New("split members are required")
+	}
+
+	// Parse UUIDs
+	expenseID, err := uuid.Parse(req.ExpenseId)
+	if err != nil {
+		return nil, errors.New("invalid expense ID")
+	}
+
+	paidByID, err := uuid.Parse(req.PaidById)
+	if err != nil {
+		return nil, errors.New("invalid paid by ID")
+	}
+
+	// Get existing expense to validate it exists and get group ID
+	existingExpense, err := s.expenseRepo.FindByID(ctx, expenseID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get group to validate members
+	group, err := s.repo.GetGroupByID(existingExpense.GroupID.String())
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate paid by member exists
+	var paidByName string
+	paidByFound := false
+	memberMap := make(map[string]string) // ID -> Name
+	for _, member := range group.Members {
+		memberMap[member.Id] = member.Name
+		if member.Id == req.PaidById {
+			paidByFound = true
+			paidByName = member.Name
+		}
+	}
+	if !paidByFound {
+		return nil, errors.New("paid by member not found in group")
+	}
+
+	// Validate split members exist
+	splitMembers := make([]domain.SplitMember, 0, len(req.SplitMemberIds))
+	splitAmount := req.Amount / int64(len(req.SplitMemberIds))
+	remainder := req.Amount % int64(len(req.SplitMemberIds))
+
+	for i, memberID := range req.SplitMemberIds {
+		memberName, found := memberMap[memberID]
+		if !found {
+			return nil, errors.New("split member not found in group")
+		}
+
+		memberUUID, err := uuid.Parse(memberID)
+		if err != nil {
+			return nil, errors.New("invalid split member ID")
+		}
+
+		amount := splitAmount
+		if i < int(remainder) {
+			amount++ // Distribute remainder
+		}
+
+		splitMembers = append(splitMembers, domain.SplitMember{
+			MemberID:   memberUUID,
+			MemberName: memberName,
+			Amount:     amount,
+		})
+	}
+
+	// Update expense
+	expense := &domain.Expense{
+		ID:           expenseID,
+		GroupID:      existingExpense.GroupID,
+		Amount:       req.Amount,
+		Description:  req.Description,
+		Currency:     existingExpense.Currency,
+		PaidByID:     paidByID,
+		PaidByName:   paidByName,
+		SplitMembers: splitMembers,
+		CreatedAt:    existingExpense.CreatedAt,
+		UpdatedAt:    time.Now(),
+	}
+
+	// Save updated expense
+	err = s.expenseRepo.Update(ctx, expense)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to proto format
+	protoSplitMembers := make([]*groupv1.SplitMember, len(splitMembers))
+	for i, split := range splitMembers {
+		protoSplitMembers[i] = &groupv1.SplitMember{
+			MemberId:   split.MemberID.String(),
+			MemberName: split.MemberName,
+			Amount:     split.Amount,
+		}
+	}
+
+	return &groupv1.UpdateExpenseResponse{
+		Expense: &groupv1.ExpenseWithDetails{
+			Id:           expense.ID.String(),
+			GroupId:      expense.GroupID.String(),
+			Amount:       expense.Amount,
+			Description:  expense.Description,
+			PaidById:     expense.PaidByID.String(),
+			PaidByName:   expense.PaidByName,
+			SplitMembers: protoSplitMembers,
+			CreatedAt:    timestamppb.New(expense.CreatedAt),
+		},
+	}, nil
+}
+
 func (s *GroupService) DeleteExpense(ctx context.Context, req *groupv1.DeleteExpenseRequest) (*groupv1.DeleteExpenseResponse, error) {
 	if req.ExpenseId == "" {
 		return nil, errors.New("expense ID is required")
