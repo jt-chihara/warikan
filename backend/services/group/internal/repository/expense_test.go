@@ -424,3 +424,169 @@ func TestExpenseRepository_Delete(t *testing.T) {
 		})
 	}
 }
+
+func TestExpenseRepository_Update(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer db.Close()
+
+	repo := NewExpenseRepository(db)
+
+	groupID := uuid.New()
+	expenseID := uuid.New()
+	paidByID := uuid.New()
+	member1ID := uuid.New()
+	member2ID := uuid.New()
+	now := time.Now()
+
+	expense := &domain.Expense{
+		ID:          expenseID,
+		GroupID:     groupID,
+		Amount:      4000, // Updated amount
+		Description: "Updated Lunch", // Updated description
+		Currency:    "JPY",
+		PaidByID:    paidByID,
+		PaidByName:  "Alice",
+		SplitMembers: []domain.SplitMember{
+			{
+				MemberID:   member1ID,
+				MemberName: "Alice",
+				Amount:     2000, // Updated split
+			},
+			{
+				MemberID:   member2ID,
+				MemberName: "Bob",
+				Amount:     2000, // Updated split
+			},
+		},
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	tests := []struct {
+		name        string
+		expense     *domain.Expense
+		setupMocks  func()
+		expectedErr bool
+	}{
+		{
+			name:    "successful expense update",
+			expense: expense,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense update
+				mock.ExpectExec(`UPDATE expenses SET amount = \$2, description = \$3, paid_by_id = \$4, updated_at = \$5 WHERE id = \$1`).
+					WithArgs(expenseID, int64(4000), "Updated Lunch", paidByID, now).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+
+				// Expect deletion of existing splits
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 2))
+
+				// Expect insertion of new splits
+				mock.ExpectExec(`INSERT INTO expense_splits \(expense_id, member_id, amount\) VALUES \(\$1, \$2, \$3\)`).
+					WithArgs(expenseID, member1ID, int64(2000)).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+
+				mock.ExpectExec(`INSERT INTO expense_splits \(expense_id, member_id, amount\) VALUES \(\$1, \$2, \$3\)`).
+					WithArgs(expenseID, member2ID, int64(2000)).
+					WillReturnResult(sqlmock.NewResult(2, 1))
+
+				mock.ExpectCommit()
+			},
+			expectedErr: false,
+		},
+		{
+			name:    "expense not found",
+			expense: expense,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense update with 0 rows affected
+				mock.ExpectExec(`UPDATE expenses SET amount = \$2, description = \$3, paid_by_id = \$4, updated_at = \$5 WHERE id = \$1`).
+					WithArgs(expenseID, int64(4000), "Updated Lunch", paidByID, now).
+					WillReturnResult(sqlmock.NewResult(0, 0))
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+		{
+			name:    "expense update fails",
+			expense: expense,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				mock.ExpectExec(`UPDATE expenses SET amount = \$2, description = \$3, paid_by_id = \$4, updated_at = \$5 WHERE id = \$1`).
+					WithArgs(expenseID, int64(4000), "Updated Lunch", paidByID, now).
+					WillReturnError(sql.ErrConnDone)
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+		{
+			name:    "splits deletion fails",
+			expense: expense,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense update succeeds
+				mock.ExpectExec(`UPDATE expenses SET amount = \$2, description = \$3, paid_by_id = \$4, updated_at = \$5 WHERE id = \$1`).
+					WithArgs(expenseID, int64(4000), "Updated Lunch", paidByID, now).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+
+				// Expect deletion of existing splits fails
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnError(sql.ErrConnDone)
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+		{
+			name:    "split insertion fails",
+			expense: expense,
+			setupMocks: func() {
+				mock.ExpectBegin()
+
+				// Expect expense update succeeds
+				mock.ExpectExec(`UPDATE expenses SET amount = \$2, description = \$3, paid_by_id = \$4, updated_at = \$5 WHERE id = \$1`).
+					WithArgs(expenseID, int64(4000), "Updated Lunch", paidByID, now).
+					WillReturnResult(sqlmock.NewResult(0, 1))
+
+				// Expect deletion of existing splits succeeds
+				mock.ExpectExec(`DELETE FROM expense_splits WHERE expense_id = \$1`).
+					WithArgs(expenseID).
+					WillReturnResult(sqlmock.NewResult(0, 2))
+
+				// Expect first split insertion fails
+				mock.ExpectExec(`INSERT INTO expense_splits \(expense_id, member_id, amount\) VALUES \(\$1, \$2, \$3\)`).
+					WithArgs(expenseID, member1ID, int64(2000)).
+					WillReturnError(sql.ErrConnDone)
+
+				mock.ExpectRollback()
+			},
+			expectedErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.setupMocks()
+
+			err := repo.Update(context.Background(), tt.expense)
+
+			if tt.expectedErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+
+			assert.NoError(t, mock.ExpectationsWereMet())
+		})
+	}
+}

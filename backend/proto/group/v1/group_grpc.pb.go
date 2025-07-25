@@ -26,6 +26,7 @@ const (
 	GroupService_AddMember_FullMethodName            = "/group.v1.GroupService/AddMember"
 	GroupService_RemoveMember_FullMethodName         = "/group.v1.GroupService/RemoveMember"
 	GroupService_AddExpense_FullMethodName           = "/group.v1.GroupService/AddExpense"
+	GroupService_UpdateExpense_FullMethodName        = "/group.v1.GroupService/UpdateExpense"
 	GroupService_DeleteExpense_FullMethodName        = "/group.v1.GroupService/DeleteExpense"
 	GroupService_GetGroupExpenses_FullMethodName     = "/group.v1.GroupService/GetGroupExpenses"
 	GroupService_CalculateSettlements_FullMethodName = "/group.v1.GroupService/CalculateSettlements"
@@ -42,6 +43,7 @@ type GroupServiceClient interface {
 	AddMember(ctx context.Context, in *AddMemberRequest, opts ...grpc.CallOption) (*AddMemberResponse, error)
 	RemoveMember(ctx context.Context, in *RemoveMemberRequest, opts ...grpc.CallOption) (*RemoveMemberResponse, error)
 	AddExpense(ctx context.Context, in *AddExpenseRequest, opts ...grpc.CallOption) (*AddExpenseResponse, error)
+	UpdateExpense(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error)
 	DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error)
 	GetGroupExpenses(ctx context.Context, in *GetGroupExpensesRequest, opts ...grpc.CallOption) (*GetGroupExpensesResponse, error)
 	CalculateSettlements(ctx context.Context, in *CalculateSettlementsRequest, opts ...grpc.CallOption) (*CalculateSettlementsResponse, error)
@@ -125,6 +127,16 @@ func (c *groupServiceClient) AddExpense(ctx context.Context, in *AddExpenseReque
 	return out, nil
 }
 
+func (c *groupServiceClient) UpdateExpense(ctx context.Context, in *UpdateExpenseRequest, opts ...grpc.CallOption) (*UpdateExpenseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateExpenseResponse)
+	err := c.cc.Invoke(ctx, GroupService_UpdateExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *groupServiceClient) DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeleteExpenseResponse)
@@ -166,6 +178,7 @@ type GroupServiceServer interface {
 	AddMember(context.Context, *AddMemberRequest) (*AddMemberResponse, error)
 	RemoveMember(context.Context, *RemoveMemberRequest) (*RemoveMemberResponse, error)
 	AddExpense(context.Context, *AddExpenseRequest) (*AddExpenseResponse, error)
+	UpdateExpense(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error)
 	DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error)
 	GetGroupExpenses(context.Context, *GetGroupExpensesRequest) (*GetGroupExpensesResponse, error)
 	CalculateSettlements(context.Context, *CalculateSettlementsRequest) (*CalculateSettlementsResponse, error)
@@ -199,6 +212,9 @@ func (UnimplementedGroupServiceServer) RemoveMember(context.Context, *RemoveMemb
 }
 func (UnimplementedGroupServiceServer) AddExpense(context.Context, *AddExpenseRequest) (*AddExpenseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddExpense not implemented")
+}
+func (UnimplementedGroupServiceServer) UpdateExpense(context.Context, *UpdateExpenseRequest) (*UpdateExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateExpense not implemented")
 }
 func (UnimplementedGroupServiceServer) DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteExpense not implemented")
@@ -356,6 +372,24 @@ func _GroupService_AddExpense_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GroupService_UpdateExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateExpenseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GroupServiceServer).UpdateExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GroupService_UpdateExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GroupServiceServer).UpdateExpense(ctx, req.(*UpdateExpenseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _GroupService_DeleteExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteExpenseRequest)
 	if err := dec(in); err != nil {
@@ -444,6 +478,10 @@ var GroupService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddExpense",
 			Handler:    _GroupService_AddExpense_Handler,
+		},
+		{
+			MethodName: "UpdateExpense",
+			Handler:    _GroupService_UpdateExpense_Handler,
 		},
 		{
 			MethodName: "DeleteExpense",

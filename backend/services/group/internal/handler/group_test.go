@@ -99,6 +99,14 @@ func (m *MockGroupService) DeleteExpense(ctx context.Context, req *groupv1.Delet
 	return args.Get(0).(*groupv1.DeleteExpenseResponse), args.Error(1)
 }
 
+func (m *MockGroupService) UpdateExpense(ctx context.Context, req *groupv1.UpdateExpenseRequest) (*groupv1.UpdateExpenseResponse, error) {
+	args := m.Called(ctx, req)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*groupv1.UpdateExpenseResponse), args.Error(1)
+}
+
 func TestGroupHandler_CreateGroup_Success(t *testing.T) {
 	// Arrange
 	mockService := new(MockGroupService)

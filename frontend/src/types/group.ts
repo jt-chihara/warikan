@@ -47,6 +47,14 @@ export interface AddExpenseInput {
   splitMemberIds: string[];
 }
 
+export interface UpdateExpenseInput {
+  expenseId: string;
+  amount: number;
+  description: string;
+  paidById: string;
+  splitMemberIds: string[];
+}
+
 export interface Settlement {
   fromMemberId: string;
   toMemberId: string;

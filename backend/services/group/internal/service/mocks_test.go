@@ -41,6 +41,11 @@ func (m *MockExpenseRepository) Delete(ctx context.Context, id uuid.UUID) error 
 	return args.Error(0)
 }
 
+func (m *MockExpenseRepository) Update(ctx context.Context, expense *domain.Expense) error {
+	args := m.Called(ctx, expense)
+	return args.Error(0)
+}
+
 // MockGroupRepositoryInterface for testing
 type MockGroupRepositoryInterface struct {
 	mock.Mock
