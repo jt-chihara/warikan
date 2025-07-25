@@ -38,7 +38,7 @@ describe('formatDateFromGraphQL', () => {
   });
 
   it('handles complex object by converting to string', () => {
-    const complexObj = { toString: () => '2024-01-15T12:00:00Z' };
+    const complexObj = { toString: () => '2024-01-15T12:00:00Z' } as unknown as Date;
     const result = formatDateFromGraphQL(complexObj);
 
     expect(result).toBe('2024/1/15');

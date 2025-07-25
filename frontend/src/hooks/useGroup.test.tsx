@@ -261,7 +261,7 @@ describe('useCalculateSettlements', () => {
     expect(result.current.loading).toBe(false);
     expect(result.current.called).toBe(false);
 
-    let refetchResult: Awaited<ReturnType<typeof result.current.refetch>>;
+    let refetchResult: Awaited<ReturnType<typeof result.current.refetch>> | undefined;
     await act(async () => {
       refetchResult = await result.current.refetch({
         groupId: 'group-123',
