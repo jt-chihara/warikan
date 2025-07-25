@@ -269,7 +269,7 @@ describe('useCalculateSettlements', () => {
       });
     });
 
-    expect(refetchResult!.data.calculateSettlements).toEqual(mockSettlementResult);
+    expect(refetchResult?.data.calculateSettlements).toEqual(mockSettlementResult);
   });
 
   it('is initially skipped', () => {

@@ -29,7 +29,7 @@ vi.mock('../hooks/useLocalGroups', () => ({
 // crypto.randomUUID のモック
 Object.defineProperty(global, 'crypto', {
   value: {
-    randomUUID: () => 'test-uuid-' + Math.random(),
+    randomUUID: () => `test-uuid-${Math.random()}`,
   },
   writable: true,
 });
@@ -40,7 +40,7 @@ const renderCreateGroupPage = () => {
       <MemoryRouter>
         <CreateGroupPage />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
@@ -49,27 +49,31 @@ describe('CreateGroupPage', () => {
     vi.clearAllMocks();
     // alert のモック
     global.alert = vi.fn();
-    
+
     // crypto.randomUUID のモック設定をbeforeEachで実行
     vi.clearAllMocks();
   });
 
   it('renders create group form', () => {
     renderCreateGroupPage();
-    
+
     expect(screen.getByText('新しいグループを作成')).toBeInTheDocument();
     expect(screen.getByLabelText('グループ名')).toBeInTheDocument();
     expect(screen.getByLabelText('説明（任意）')).toBeInTheDocument();
     expect(screen.getByText('通貨')).toBeInTheDocument();
     expect(screen.getByText('円 (JPY)')).toBeInTheDocument();
     expect(screen.getByText('メンバー')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'グループを作成して管理ページに移動' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'グループ作成をキャンセルしてホームページに戻る' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'グループを作成して管理ページに移動' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'グループ作成をキャンセルしてホームページに戻る' }),
+    ).toBeInTheDocument();
   });
 
   it('has initial member input field', () => {
     renderCreateGroupPage();
-    
+
     const memberInputs = screen.getAllByPlaceholderText('メンバー名');
     expect(memberInputs).toHaveLength(1);
     expect(memberInputs[0]).toHaveValue('');
@@ -78,10 +82,10 @@ describe('CreateGroupPage', () => {
   it('adds member input field when "メンバーを追加" is clicked', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
-    
+
     const addMemberButton = screen.getByRole('button', { name: '新しいメンバーを追加' });
     await user.click(addMemberButton);
-    
+
     const memberInputs = screen.getAllByPlaceholderText('メンバー名');
     expect(memberInputs).toHaveLength(2);
   });
@@ -89,22 +93,22 @@ describe('CreateGroupPage', () => {
   it('removes member input field when "削除" is clicked', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
-    
+
     // メンバーを追加
     const addMemberButton = screen.getByRole('button', { name: '新しいメンバーを追加' });
     await user.click(addMemberButton);
-    
+
     // 削除ボタンをクリック（複数ある場合は最初のものを選択）
     const removeButtons = screen.getAllByRole('button', { name: 'メンバーを削除' });
     await user.click(removeButtons[0]);
-    
+
     const memberInputs = screen.getAllByPlaceholderText('メンバー名');
     expect(memberInputs).toHaveLength(1);
   });
 
   it('does not show remove button when only one member exists', () => {
     renderCreateGroupPage();
-    
+
     const removeButtons = screen.queryAllByRole('button', { name: 'メンバーを削除' });
     expect(removeButtons).toHaveLength(0);
   });
@@ -112,23 +116,23 @@ describe('CreateGroupPage', () => {
   it('updates member name when typing in input field', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
-    
+
     const memberInput = screen.getByPlaceholderText('メンバー名');
     await user.type(memberInput, 'Alice');
-    
+
     expect(memberInput).toHaveValue('Alice');
   });
 
   it('shows alert when submitting without members', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
-    
+
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     expect(global.alert).toHaveBeenCalledWith('少なくとも1人のメンバーを追加してください。');
   });
 
@@ -139,24 +143,24 @@ describe('CreateGroupPage', () => {
       name: 'テストグループ',
       members: [{ id: 'member-1', name: 'Alice' }],
     };
-    
+
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: mockGroupData },
     });
-    
+
     renderCreateGroupPage();
-    
+
     // フォームに入力
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     const memberInput = screen.getByPlaceholderText('メンバー名');
     await user.type(memberInput, 'Alice');
-    
+
     // フォーム送信
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
       expect(mockCreateGroup).toHaveBeenCalledWith({
         variables: {
@@ -168,7 +172,7 @@ describe('CreateGroupPage', () => {
         },
       });
     });
-    
+
     expect(mockAddGroup).toHaveBeenCalledWith(mockGroupData);
     expect(mockNavigate).toHaveBeenCalledWith('/groups/test-group-id');
   });
@@ -178,21 +182,21 @@ describe('CreateGroupPage', () => {
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: { id: 'test-id' } },
     });
-    
+
     renderCreateGroupPage();
-    
+
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     const descriptionInput = screen.getByLabelText('説明（任意）');
     await user.type(descriptionInput, 'テスト説明');
-    
+
     const memberInput = screen.getByPlaceholderText('メンバー名');
     await user.type(memberInput, 'Alice');
-    
+
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
       expect(mockCreateGroup).toHaveBeenCalledWith({
         variables: {
@@ -210,34 +214,36 @@ describe('CreateGroupPage', () => {
   it('handles create group error', async () => {
     const user = userEvent.setup();
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
-    
+
     mockCreateGroup.mockRejectedValue(new Error('作成エラー'));
-    
+
     renderCreateGroupPage();
-    
+
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     const memberInput = screen.getByPlaceholderText('メンバー名');
     await user.type(memberInput, 'Alice');
-    
+
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
       expect(consoleError).toHaveBeenCalledWith('Error creating group:', expect.any(Error));
     });
-    
+
     consoleError.mockRestore();
   });
 
   it('navigates to home when cancel button is clicked', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
-    
-    const cancelButton = screen.getByRole('button', { name: 'グループ作成をキャンセルしてホームページに戻る' });
+
+    const cancelButton = screen.getByRole('button', {
+      name: 'グループ作成をキャンセルしてホームページに戻る',
+    });
     await user.click(cancelButton);
-    
+
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
@@ -246,18 +252,18 @@ describe('CreateGroupPage', () => {
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: { id: 'test-id' } },
     });
-    
+
     renderCreateGroupPage();
-    
+
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     const memberInput = screen.getByPlaceholderText('メンバー名');
     await user.type(memberInput, '  Alice  ');
-    
+
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
       expect(mockCreateGroup).toHaveBeenCalledWith({
         variables: {
@@ -276,23 +282,23 @@ describe('CreateGroupPage', () => {
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: { id: 'test-id' } },
     });
-    
+
     renderCreateGroupPage();
-    
+
     const groupNameInput = screen.getByLabelText('グループ名');
     await user.type(groupNameInput, 'テストグループ');
-    
+
     // 2つのメンバーを追加
     const addMemberButton = screen.getByRole('button', { name: '新しいメンバーを追加' });
     await user.click(addMemberButton);
-    
+
     const memberInputs = screen.getAllByPlaceholderText('メンバー名');
     await user.type(memberInputs[0], 'Alice');
     // 2番目は空のまま
-    
+
     const submitButton = screen.getByRole('button', { name: 'グループを作成して管理ページに移動' });
     await user.click(submitButton);
-    
+
     await waitFor(() => {
       expect(mockCreateGroup).toHaveBeenCalledWith({
         variables: {

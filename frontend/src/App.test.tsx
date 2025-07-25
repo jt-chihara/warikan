@@ -31,14 +31,14 @@ vi.mock('./components/Layout', () => ({
 // App コンポーネントをテスト
 describe('App', () => {
   it('renders App component successfully', async () => {
-    const App = await import('./App').then(m => m.default);
-    
+    const App = await import('./App').then((m) => m.default);
+
     expect(() => render(<App />)).not.toThrow();
   });
 
   it('exports App component as default', async () => {
     const AppModule = await import('./App');
-    
+
     expect(AppModule.default).toBeDefined();
     expect(typeof AppModule.default).toBe('function');
   });
