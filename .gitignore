@@ -45,6 +45,8 @@ coverage.*
 *.test
 *.out
 go.work.sum
+bin/
+*/bin/
 
 # Database
 *.db
