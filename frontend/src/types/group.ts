@@ -30,7 +30,7 @@ export interface Expense {
   paidById: string;
   paidByName: string;
   splitMembers: SplitMember[];
-  createdAt: string;
+  createdAt: string | { seconds: number; nanos: number };
 }
 
 export interface SplitMember {
