@@ -10,7 +10,6 @@ import {
   aggregateExpensesByMember,
   aggregateExpensesByMonth,
 } from '../utils/chartUtils';
-import { timestampToDate } from '../utils/timestampUtils';
 
 type ChartType = 'daily' | 'monthly' | 'members';
 
@@ -72,15 +71,6 @@ export default function AnalyticsPage() {
   const group = groupData?.group;
   const expenses = expensesData?.groupExpenses || [];
 
-  // デバッグ: データ取得状況を確認
-  console.log('Analytics Page Debug:', {
-    groupId,
-    groupData,
-    expensesData,
-    expensesLength: expenses.length,
-    group: group,
-  });
-
   if (!group) {
     return (
       <div className="flex justify-center items-center min-h-64">
@@ -93,19 +83,6 @@ export default function AnalyticsPage() {
   const dailyData = aggregateExpensesByDay(expenses);
   const monthlyData = aggregateExpensesByMonth(expenses);
   const memberData = aggregateExpensesByMember(expenses, group.members);
-
-  // デバッグ: 最初の数件のexpenseの日付形式を確認
-  if (expenses.length > 0) {
-    console.log(
-      'Sample expense dates:',
-      expenses.slice(0, 3).map((e) => ({
-        id: e.id,
-        createdAt: e.createdAt,
-        parsed: timestampToDate(e.createdAt),
-        isValid: !Number.isNaN(timestampToDate(e.createdAt).getTime()),
-      })),
-    );
-  }
 
   const chartTabs = [
     { key: 'daily' as const, label: '日別推移', count: dailyData.length },
