@@ -49,27 +49,16 @@ jobs:
         done
         echo "PostgreSQL is ready!"
 
-    - name: Apply database migrations
+    - name: Apply database schema
       working-directory: ./backend
       run: |
         # Install psql for running migrations
         sudo apt-get update
         sudo apt-get install -y postgresql-client
         
-        # Apply migrations in order
-        echo "Applying migrations in order..."
-        
-        echo "1. Applying initial schema..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/001_initial_schema.sql"
-        
-        echo "2. Applying expenses table migration..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250722235017_add_expenses_table.sql"
-        
-        echo "3. Applying paid_by column rename..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250723000000_rename_paid_by_column.sql"
-        
-        echo "4. Applying expense_splits amount type fix..."
-        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/20250723000001_fix_expense_splits_amount_type.sql"
+        # Apply simplified schema
+        echo "Applying simplified schema..."
+        PGPASSWORD=warikan_dev_password psql -h localhost -p 5432 -U warikan -d warikan -f "migrations/simplified_schema.sql"
         
         # Verify tables were created
         echo "Verifying tables..."

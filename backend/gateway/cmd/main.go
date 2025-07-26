@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/graphql-go/handler"
@@ -49,9 +50,35 @@ func main() {
 	router := mux.NewRouter()
 	router.Handle("/graphql", h).Methods("GET", "POST", "OPTIONS")
 
-	// Setup CORS
+	// Setup CORS for both local and production
+	var allowedOrigins []string
+	
+	// Get FRONTEND_URLS from environment (comma-separated list)
+	if frontendURLs := os.Getenv("FRONTEND_URLS"); frontendURLs != "" {
+		origins := strings.Split(frontendURLs, ",")
+		for _, origin := range origins {
+			allowedOrigins = append(allowedOrigins, strings.TrimSpace(origin))
+		}
+	} else {
+		// Default origins for local development
+		allowedOrigins = []string{
+			"http://localhost:5173", 
+			"http://localhost:3000",
+		}
+	}
+	
+	// Add additional custom origins from ALLOWED_ORIGINS (for backward compatibility)
+	if customOrigins := os.Getenv("ALLOWED_ORIGINS"); customOrigins != "" {
+		additionalOrigins := strings.Split(customOrigins, ",")
+		for _, origin := range additionalOrigins {
+			allowedOrigins = append(allowedOrigins, strings.TrimSpace(origin))
+		}
+	}
+	
+	log.Printf("CORS allowed origins: %v", allowedOrigins)
+	
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"},
+		AllowedOrigins:   allowedOrigins,
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
 		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,

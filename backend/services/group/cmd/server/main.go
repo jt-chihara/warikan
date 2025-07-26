@@ -25,6 +25,7 @@ func main() {
 	// Database connection
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
+		// Local development fallback
 		dbURL = "postgres://user:password@localhost/warikan?sslmode=disable"
 	}
 

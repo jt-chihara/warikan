@@ -1,0 +1,23 @@
+# Cloudflare Pages configuration for Frontend
+name = "warikan-frontend"
+compatibility_date = "2024-01-01"
+
+# Environment variables for build
+[vars]
+VITE_GRAPHQL_ENDPOINT = "https://warikan-api.your-domain.com/graphql"
+
+# Pages configuration
+[build]
+command = "npm run build"
+output_dir = "dist"
+
+# Routes configuration
+[[routes]]
+pattern = "warikan.your-domain.com/*"
+zone_name = "your-domain.com"
+
+# SPA routing support
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
