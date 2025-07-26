@@ -3,7 +3,6 @@
 グループでの支払いを記録し、最適な精算方法を計算する割り勘アプリケーションです。
 
 ## 🏗️ アーキテクチャ
-
 - **フロントエンド**: React + TypeScript + Vite + TailwindCSS v4
 - **ゲートウェイ**: GraphQL Gateway (Go)
 - **バックエンド**: gRPCマイクロサービス (Go)
@@ -51,6 +50,7 @@
 - **メンバー管理**: グループメンバーの追加・削除
 - **支払い記録**: 個人が立て替えた支払いの記録
 - **精算計算**: 最適な精算方法の自動計算
+- **データ可視化**: 支払い履歴のグラフ表示（日別・月別・メンバー別）
 - **レスポンシブUI**: モバイル・デスクトップ対応
 - **利用規約**: サービス利用規約の表示
 
@@ -79,7 +79,7 @@ warikan/
 │   │       ├── internal/
 │   │       ├── Dockerfile
 │   │       └── go.mod
-│   ├── migrations/          # データベースマイグレーション
+│   ├── migrations/          # データベーススキーマ
 │   └── proto/               # Protocol Buffers定義
 ├── docker-compose.yml       # Docker Compose設定
 └── README.md
@@ -194,8 +194,8 @@ docker compose exec group-service sh -c "cd /app/services/group && go test ./int
 # データベース接続
 docker compose exec db psql -U warikan -d warikan
 
-# マイグレーション手動適用（必要に応じて）
-docker compose exec -T db psql -U warikan -d warikan < backend/migrations/20250723000000_rename_paid_by_column.sql
+# スキーマ手動適用（初回セットアップ時）
+docker compose exec -T db psql -U warikan -d warikan < backend/migrations/simplified_schema.sql
 
 # よく使うSQL
 SELECT * FROM groups;
@@ -277,16 +277,6 @@ docker stats
 # Docker Composeサービスの状態
 docker compose ps
 ```
-
-## 🚀 本番環境への展開
-
-本番環境用のDockerfileとdocker-compose.prod.ymlは別途作成してください。開発環境との主な違い：
-
-- マルチステージビルドによる最適化
-- セキュリティ設定の強化
-- 環境変数の外部管理
-- ヘルスチェックの追加
-- ログ管理の設定
 
 ## 💡 精算アルゴリズム
 
