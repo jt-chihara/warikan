@@ -86,9 +86,15 @@ func main() {
 
 	handler := c.Handler(router)
 
-	log.Println("GraphQL Gateway server started on :8080")
-	log.Println("GraphQL endpoint: http://localhost:8080/graphql")
-	log.Println("GraphiQL playground: http://localhost:8080/graphql")
+	// Get port from environment
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "443"
+	}
+
+	log.Printf("GraphQL Gateway server started on :%s", port)
+	log.Printf("GraphQL endpoint: http://localhost:%s/graphql", port)
+	log.Printf("GraphiQL playground: http://localhost:%s/graphql", port)
 	
-	log.Fatal(http.ListenAndServe(":8080", handler))
+	log.Fatal(http.ListenAndServe(":"+port, handler))
 }
