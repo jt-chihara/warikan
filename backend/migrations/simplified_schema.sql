@@ -27,6 +27,7 @@ CREATE TABLE expenses (
     group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
     amount BIGINT NOT NULL, -- Amount in cents (JPY)
     description TEXT NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'JPY',
     paid_by_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
