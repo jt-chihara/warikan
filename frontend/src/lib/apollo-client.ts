@@ -8,12 +8,12 @@ const httpLink = createHttpLink({
 const authLink = setContext((_, { headers }) => {
   // Get API key from environment variable
   const apiKey = import.meta.env['VITE_API_KEY'];
-  
+
   return {
     headers: {
       ...headers,
       'X-API-Key': apiKey || '',
-    }
+    },
   };
 });
 
