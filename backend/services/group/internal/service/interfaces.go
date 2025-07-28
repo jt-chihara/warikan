@@ -8,7 +8,7 @@ type GroupRepositoryInterface interface {
 	GetGroupByID(groupID string) (*groupv1.Group, error)
 	UpdateGroup(groupID, name, description, currency string) (*groupv1.Group, error)
 	DeleteGroup(groupID string) error
-	AddMember(groupID, memberName, memberEmail string) (*groupv1.Member, error)
+	AddMember(groupID, memberName string) (*groupv1.Member, error)
 	RemoveMember(groupID, memberID string) error
 }
 
@@ -18,7 +18,7 @@ type GroupServiceInterface interface {
 	GetGroup(groupID string) (*groupv1.Group, error)
 	UpdateGroup(groupID, name, description, currency string) (*groupv1.Group, error)
 	DeleteGroup(groupID string) error
-	AddMember(groupID, memberName, memberEmail string) (*groupv1.Member, error)
+	AddMember(groupID, memberName string) (*groupv1.Member, error)
 	RemoveMember(groupID, memberID string) error
 	CalculateSettlements(groupID string, expenses []*groupv1.Expense) ([]*groupv1.Settlement, []*groupv1.MemberBalance, error)
 }

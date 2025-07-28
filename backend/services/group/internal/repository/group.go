@@ -99,7 +99,7 @@ func (r *GroupRepository) GetGroupByID(groupID string) (*groupv1.Group, error) {
 
 	// Get members
 	rows, err := r.db.Query(`
-		SELECT id, name, email, joined_at
+		SELECT id, name, joined_at
 		FROM members WHERE group_id = $1
 		ORDER BY joined_at ASC
 	`, groupID)
@@ -111,17 +111,13 @@ func (r *GroupRepository) GetGroupByID(groupID string) (*groupv1.Group, error) {
 	var members []*groupv1.Member
 	for rows.Next() {
 		var member groupv1.Member
-		var email sql.NullString
 		var joinedAt time.Time
 
-		err := rows.Scan(&member.Id, &member.Name, &email, &joinedAt)
+		err := rows.Scan(&member.Id, &member.Name, &joinedAt)
 		if err != nil {
 			return nil, err
 		}
 
-		if email.Valid {
-			member.Email = email.String
-		}
 		member.JoinedAt = timestamppb.New(joinedAt)
 
 		members = append(members, &member)
@@ -150,14 +146,14 @@ func (r *GroupRepository) DeleteGroup(groupID string) error {
 	return err
 }
 
-func (r *GroupRepository) AddMember(groupID, memberName, memberEmail string) (*groupv1.Member, error) {
+func (r *GroupRepository) AddMember(groupID, memberName string) (*groupv1.Member, error) {
 	memberID := uuid.New().String()
 	now := time.Now()
 
 	_, err := r.db.Exec(`
-		INSERT INTO members (id, group_id, name, email, joined_at)
-		VALUES ($1, $2, $3, $4, $5)
-	`, memberID, groupID, memberName, memberEmail, now)
+		INSERT INTO members (id, group_id, name, joined_at)
+		VALUES ($1, $2, $3, $4)
+	`, memberID, groupID, memberName, now)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +161,6 @@ func (r *GroupRepository) AddMember(groupID, memberName, memberEmail string) (*g
 	return &groupv1.Member{
 		Id:       memberID,
 		Name:     memberName,
-		Email:    memberEmail,
 		JoinedAt: timestamppb.New(now),
 	}, nil
 }
