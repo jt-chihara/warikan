@@ -242,15 +242,13 @@ func (suite *IntegrationTestSuite) TestAddAndRemoveMember() {
 
 	// Add member
 	addReq := &groupv1.AddMemberRequest{
-		GroupId:     groupID,
-		MemberName:  "Bob",
-		MemberEmail: "bob@example.com",
+		GroupId:    groupID,
+		MemberName: "Bob",
 	}
 
 	addResp, err := suite.handler.AddMember(ctx, addReq)
 	require.NoError(suite.T(), err)
 	assert.Equal(suite.T(), "Bob", addResp.Member.Name)
-	assert.Equal(suite.T(), "bob@example.com", addResp.Member.Email)
 
 	// Verify member was added
 	getReq := &groupv1.GetGroupRequest{Id: groupID}
@@ -267,7 +265,6 @@ func (suite *IntegrationTestSuite) TestAddAndRemoveMember() {
 		}
 	}
 	require.NotNil(suite.T(), bobMember)
-	assert.Equal(suite.T(), "bob@example.com", bobMember.Email)
 
 	// Remove member
 	removeReq := &groupv1.RemoveMemberRequest{

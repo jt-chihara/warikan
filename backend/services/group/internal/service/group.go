@@ -126,7 +126,7 @@ func (s *GroupService) AddMember(ctx context.Context, req *groupv1.AddMemberRequ
 		return nil, err
 	}
 
-	member, err := s.repo.AddMember(req.GroupId, req.MemberName, req.MemberEmail)
+	member, err := s.repo.AddMember(req.GroupId, req.MemberName)
 	if err != nil {
 		return nil, err
 	}
