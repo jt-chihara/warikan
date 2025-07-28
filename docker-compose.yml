@@ -44,6 +44,7 @@ services:
     environment:
       - GROUP_SERVICE_URL=group-service:50051
       - PORT=8080
+      - API_KEY=dev-api-key-12345
     ports:
       - "8080:8080"
     depends_on:
@@ -59,6 +60,7 @@ services:
     container_name: warikan-frontend
     environment:
       - VITE_GRAPHQL_ENDPOINT=http://localhost:8080/graphql
+      - VITE_API_KEY=dev-api-key-12345
     ports:
       - "3000:3000"
     depends_on:

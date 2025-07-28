@@ -48,7 +48,37 @@ func main() {
 
 	// Setup router
 	router := mux.NewRouter()
-	router.Handle("/graphql", h).Methods("GET", "POST", "OPTIONS")
+	
+	// API Key authentication middleware
+	authMiddleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Skip auth for OPTIONS requests (CORS preflight)
+			if r.Method == "OPTIONS" {
+				next.ServeHTTP(w, r)
+				return
+			}
+			
+			// Get API key from environment
+			expectedAPIKey := os.Getenv("API_KEY")
+			if expectedAPIKey == "" {
+				// If no API key is set, allow all requests (development mode)
+				next.ServeHTTP(w, r)
+				return
+			}
+			
+			// Check API key from header
+			apiKey := r.Header.Get("X-API-Key")
+			if apiKey != expectedAPIKey {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				return
+			}
+			
+			next.ServeHTTP(w, r)
+		})
+	}
+	
+	// Apply auth middleware to GraphQL endpoint
+	router.Handle("/graphql", authMiddleware(h)).Methods("GET", "POST", "OPTIONS")
 
 	// Setup CORS for both local and production
 	var allowedOrigins []string
