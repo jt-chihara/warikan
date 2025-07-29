@@ -352,54 +352,267 @@ export default function GroupPage() {
               {settlementLoading ? (
                 <div className="text-center py-8 text-gray-600">計算中...</div>
               ) : settlementResult?.settlements?.length ? (
-                <div className="space-y-3">
-                  {settlementResult.settlements.map((settlement) => (
-                    <div
-                      key={`${settlement.fromMemberId}-${settlement.toMemberId}`}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
-                      <span>
-                        {settlement.fromName} → {settlement.toName}
-                      </span>
-                      <span className="font-semibold">¥{settlement.amount.toLocaleString()}</span>
+                <>
+                  <div className="space-y-6">
+                    {/* 精算結果 */}
+                    <div>
+                      <h4 className="font-semibold mb-3">📋 精算結果</h4>
+                      <div className="space-y-3">
+                        {settlementResult.settlements.map((settlement) => (
+                          <div
+                            key={`${settlement.fromMemberId}-${settlement.toMemberId}`}
+                            className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg"
+                          >
+                            <span className="font-medium">
+                              {settlement.fromName} → {settlement.toName}
+                            </span>
+                            <span className="font-bold text-green-700">
+                              ¥{settlement.amount.toLocaleString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
+
+                    {/* 計算過程の説明 */}
+                    <div>
+                      <h4 className="font-semibold mb-3">💡 計算過程</h4>
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="space-y-3 text-sm text-blue-800">
+                          {/* Step 1: 1人あたりの負担額 */}
+                          <div>
+                            <p className="font-medium mb-2">1. 各支払いを1人あたりの負担額に分割</p>
+                            <div className="ml-4 space-y-1">
+                              {expensesData?.groupExpenses?.map((expense) => (
+                                <div key={expense.id} className="text-xs bg-white/50 p-2 rounded">
+                                  <span className="font-medium">{expense.description}</span>: ¥
+                                  {expense.amount.toLocaleString()} ÷ {expense.splitMembers.length}
+                                  人 = ¥
+                                  {Math.round(
+                                    expense.amount / expense.splitMembers.length,
+                                  ).toLocaleString()}
+                                  /人
+                                  <div className="text-xs text-blue-600 mt-1">
+                                    対象: {expense.splitMembers.map((m) => m.memberName).join(', ')}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Step 2: 各メンバーの支払った額と負担すべき額 */}
+                          <div>
+                            <p className="font-medium mb-2">
+                              2. 各メンバーの「支払った額」と「負担すべき額」を計算
+                            </p>
+                            <div className="ml-4 space-y-1">
+                              {settlementResult.balances?.map((balance) => {
+                                // 支払った額を計算
+                                const paidAmount =
+                                  expensesData?.groupExpenses
+                                    ?.filter((expense) => expense.paidById === balance.memberId)
+                                    .reduce((sum, expense) => sum + expense.amount, 0) || 0;
+
+                                // 負担すべき額を計算
+                                const shouldPayAmount =
+                                  expensesData?.groupExpenses
+                                    ?.filter((expense) =>
+                                      expense.splitMembers.some(
+                                        (m) => m.memberId === balance.memberId,
+                                      ),
+                                    )
+                                    .reduce(
+                                      (sum, expense) =>
+                                        sum +
+                                        Math.round(expense.amount / expense.splitMembers.length),
+                                      0,
+                                    ) || 0;
+
+                                return (
+                                  <div
+                                    key={balance.memberId}
+                                    className="text-xs bg-white/50 p-2 rounded"
+                                  >
+                                    <span className="font-medium">{balance.memberName}</span>:
+                                    支払った額 ¥{paidAmount.toLocaleString()} - 負担すべき額 ¥
+                                    {shouldPayAmount.toLocaleString()} =
+                                    <span
+                                      className={
+                                        balance.balance >= 0 ? 'text-green-600' : 'text-red-600'
+                                      }
+                                    >
+                                      {balance.balance >= 0 ? '+' : ''}¥
+                                      {balance.balance.toLocaleString()}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Step 3: 収支の説明 */}
+                          <div>
+                            <p className="font-medium mb-2">3. 各メンバーの収支を算出</p>
+                            <div className="ml-4 text-xs">
+                              <p>プラス(+): 受け取る金額（他の人より多く支払っている）</p>
+                              <p>マイナス(-): 支払う金額（他の人より少なく支払っている）</p>
+                            </div>
+                          </div>
+
+                          {/* Step 4: 最適化の説明 */}
+                          <div>
+                            <p className="font-medium mb-2">
+                              4. 最小の送金回数で精算できる組み合わせを計算（Greedy Algorithm）
+                            </p>
+                            <div className="ml-4 space-y-2">
+                              <div className="text-xs">
+                                <p className="font-medium mb-1">精算手順:</p>
+                                {(() => {
+                                  // 精算の手順をシミュレートして表示
+                                  if (!settlementResult?.balances) return null;
+
+                                  // 収支をコピーして操作用にする
+                                  const balances = settlementResult.balances.map((b) => ({
+                                    ...b,
+                                    remainingBalance: b.balance,
+                                  }));
+
+                                  const steps: Array<{
+                                    step: number;
+                                    from: string;
+                                    to: string;
+                                    amount: number;
+                                    fromBalance: number;
+                                    toBalance: number;
+                                    afterFromBalance: number;
+                                    afterToBalance: number;
+                                  }> = [];
+
+                                  let stepCount = 1;
+
+                                  // Greedy Algorithmのシミュレーション
+                                  while (true) {
+                                    // 最大債権者（プラス収支が最大）
+                                    const maxCreditor = balances
+                                      .filter((b) => b.remainingBalance > 0)
+                                      .sort((a, b) => b.remainingBalance - a.remainingBalance)[0];
+
+                                    // 最大債務者（マイナス収支が最大）
+                                    const maxDebtor = balances
+                                      .filter((b) => b.remainingBalance < 0)
+                                      .sort((a, b) => a.remainingBalance - b.remainingBalance)[0];
+
+                                    if (!maxCreditor || !maxDebtor) break;
+
+                                    // 送金額を決定（小さい方の絶対値）
+                                    const transferAmount = Math.min(
+                                      maxCreditor.remainingBalance,
+                                      Math.abs(maxDebtor.remainingBalance),
+                                    );
+
+                                    // ステップを記録
+                                    steps.push({
+                                      step: stepCount++,
+                                      from: maxDebtor.memberName,
+                                      to: maxCreditor.memberName,
+                                      amount: transferAmount,
+                                      fromBalance: maxDebtor.remainingBalance,
+                                      toBalance: maxCreditor.remainingBalance,
+                                      afterFromBalance: maxDebtor.remainingBalance + transferAmount,
+                                      afterToBalance: maxCreditor.remainingBalance - transferAmount,
+                                    });
+
+                                    // 残高を更新
+                                    maxDebtor.remainingBalance += transferAmount;
+                                    maxCreditor.remainingBalance -= transferAmount;
+
+                                    // 端数処理（1円未満は無視）
+                                    if (Math.abs(maxDebtor.remainingBalance) < 1) {
+                                      maxDebtor.remainingBalance = 0;
+                                    }
+                                    if (Math.abs(maxCreditor.remainingBalance) < 1) {
+                                      maxCreditor.remainingBalance = 0;
+                                    }
+                                  }
+
+                                  return (
+                                    <div className="space-y-1">
+                                      {steps.map((step) => (
+                                        <div
+                                          key={step.step}
+                                          className="bg-white/70 p-2 rounded text-xs"
+                                        >
+                                          <div className="font-medium">
+                                            Step {step.step}: 最大債権者（{step.to}:{' '}
+                                            {step.toBalance >= 0 ? '+' : ''}¥
+                                            {step.toBalance.toLocaleString()}）と最大債務者（
+                                            {step.from}: ¥{step.fromBalance.toLocaleString()}
+                                            ）をペア
+                                          </div>
+                                          <div className="mt-1">
+                                            →{' '}
+                                            <span className="font-medium">
+                                              {step.from}が{step.to}に¥
+                                              {step.amount.toLocaleString()}
+                                              支払い
+                                            </span>
+                                          </div>
+                                          <div className="text-blue-600 text-xs">
+                                            結果: {step.to} {step.afterToBalance >= 0 ? '+' : ''}¥
+                                            {step.afterToBalance.toLocaleString()}, {step.from} ¥
+                                            {step.afterFromBalance.toLocaleString()}
+                                          </div>
+                                        </div>
+                                      ))}
+                                      <div className="bg-green-100 p-2 rounded text-xs font-medium text-green-800">
+                                        ✅ 全員の貸し借り残高が0になり精算完了！
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {settlementResult?.balances?.length && (
+                    <div className="mt-8">
+                      <h4 className="font-semibold mb-4">各メンバーの収支</h4>
+                      <div className="space-y-2">
+                        {settlementResult.balances.map((balance) => (
+                          <div
+                            key={balance.memberId}
+                            className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                          >
+                            <span>{balance.memberName}</span>
+                            <span
+                              className={`font-semibold ${
+                                balance.balance > 0
+                                  ? 'text-green-600'
+                                  : balance.balance < 0
+                                    ? 'text-red-600'
+                                    : 'text-gray-600'
+                              }`}
+                            >
+                              {balance.balance > 0 && '+'}¥{balance.balance.toLocaleString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500">
+                        ※ 正の値: 受け取る金額、負の値: 支払う金額
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-8 text-gray-500">
                   {expensesData?.groupExpenses?.length
                     ? '精算の必要がありません'
                     : '支払い記録がないため精算できません'}
-                </div>
-              )}
-
-              {settlementResult?.balances?.length && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-semibold mb-4">各メンバーの収支</h3>
-                  <div className="space-y-2">
-                    {settlementResult.balances.map((balance) => (
-                      <div
-                        key={balance.memberId}
-                        className="flex items-center justify-between p-3 bg-white border rounded-lg"
-                      >
-                        <span>{balance.memberName}</span>
-                        <span
-                          className={`font-semibold ${
-                            balance.balance > 0
-                              ? 'text-green-600'
-                              : balance.balance < 0
-                                ? 'text-red-600'
-                                : 'text-gray-600'
-                          }`}
-                        >
-                          {balance.balance > 0 && '+'}¥{balance.balance.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    ※ 正の値: 受け取る金額、負の値: 支払う金額
-                  </div>
                 </div>
               )}
             </div>

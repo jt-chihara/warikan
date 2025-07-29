@@ -238,8 +238,8 @@ describe('GroupPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('各メンバーの収支')).toBeInTheDocument();
-      expect(screen.getByText('+¥500')).toBeInTheDocument(); // Aliceの収支
-      expect(screen.getByText('¥-500')).toBeInTheDocument(); // Bobの収支
+      expect(screen.getAllByText('+¥500')[0]).toBeInTheDocument(); // Aliceの収支（計算過程と収支表示の重複のため配列の最初の要素を使用）
+      expect(screen.getAllByText('¥-500')[0]).toBeInTheDocument(); // Bobの収支（計算過程と収支表示の重複のため配列の最初の要素を使用）
     });
   });
 
