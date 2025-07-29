@@ -144,7 +144,7 @@ export default function ExpenseModal({
       }}
     >
       <div
-        className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-t-lg sm:rounded-lg p-4 sm:p-6 w-full sm:max-w-lg max-h-[90vh] sm:max-h-[95vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
@@ -156,7 +156,7 @@ export default function ExpenseModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-colors duration-200"
+            className="text-gray-400 hover:text-gray-600 active:text-gray-700 active:scale-95 p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-all duration-200"
             aria-label="モーダルを閉じる"
           >
             <svg
@@ -240,7 +240,7 @@ export default function ExpenseModal({
                 <button
                   type="button"
                   onClick={handleSelectAll}
-                  className="text-xs text-blue-600 hover:text-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                  className="text-xs text-blue-600 hover:text-blue-800 active:text-blue-900 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-all duration-200"
                   aria-label="全メンバーを選択"
                 >
                   全選択
@@ -248,25 +248,31 @@ export default function ExpenseModal({
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="text-xs text-gray-600 hover:text-gray-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                  className="text-xs text-gray-600 hover:text-gray-800 active:text-gray-900 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1 rounded transition-all duration-200"
                   aria-label="全メンバーの選択を解除"
                 >
                   全解除
                 </button>
               </div>
             </div>
-            <fieldset className="space-y-2 max-h-32 overflow-y-auto">
+            <fieldset className="max-h-48 overflow-y-auto">
               <legend className="sr-only">割り勘対象者選択</legend>
               {group.members.map((member) => (
-                <label key={member.id} className="flex items-center cursor-pointer">
+                <label
+                  key={member.id}
+                  className="flex items-center cursor-pointer py-2 sm:py-3 px-2 -mx-2 rounded-md hover:bg-gray-50 active:bg-gray-100 active:scale-98 transition-all duration-200"
+                >
                   <input
                     type="checkbox"
                     checked={splitAmong.includes(member.id)}
                     onChange={() => handleMemberToggle(member.id)}
-                    className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer"
+                    className="w-5 h-5 rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 cursor-pointer"
                     aria-describedby={`member-${member.id}-desc`}
                   />
-                  <span className="ml-2 text-sm text-gray-700" id={`member-${member.id}-desc`}>
+                  <span
+                    className="ml-3 text-sm text-gray-700 flex-1"
+                    id={`member-${member.id}-desc`}
+                  >
                     {member.name}
                   </span>
                 </label>
@@ -277,7 +283,7 @@ export default function ExpenseModal({
           <div className="flex gap-3 pt-4">
             <button
               type="submit"
-              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+              className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
               aria-label={isEditMode ? '支払い情報を更新' : '新しい支払いを追加'}
             >
               {isEditMode ? '更新' : '追加'}
@@ -285,7 +291,7 @@ export default function ExpenseModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
               aria-label="操作をキャンセルしてモーダルを閉じる"
             >
               キャンセル

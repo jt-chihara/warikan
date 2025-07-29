@@ -133,7 +133,7 @@ export default function CreateGroupPage() {
                     <button
                       type="button"
                       onClick={() => handleRemoveMember(index)}
-                      className="px-3 py-2 text-red-600 hover:text-red-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                      className="px-3 py-2 text-red-600 hover:text-red-800 active:text-red-900 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-all duration-200"
                       aria-label={`${member.name || 'メンバー'}を削除`}
                     >
                       削除
@@ -145,7 +145,7 @@ export default function CreateGroupPage() {
             <button
               type="button"
               onClick={handleAddMember}
-              className="mt-2 text-sm text-blue-600 hover:text-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+              className="mt-2 text-sm text-blue-600 hover:text-blue-800 active:text-blue-900 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-all duration-200"
               aria-label="新しいメンバーを追加"
             >
               + メンバーを追加
@@ -157,7 +157,7 @@ export default function CreateGroupPage() {
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 w-full sm:w-auto cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200"
+            className="px-4 py-2 border border-gray-300 rounded-md font-medium text-gray-700 hover:bg-gray-50 active:bg-gray-100 active:scale-95 w-full sm:w-auto cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
             aria-label="グループ作成をキャンセルしてホームページに戻る"
           >
             キャンセル
@@ -165,7 +165,7 @@ export default function CreateGroupPage() {
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+            className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
             aria-label="グループを作成して管理ページに移動"
           >
             {loading ? '作成中...' : 'グループを作成'}

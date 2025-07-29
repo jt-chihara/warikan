@@ -195,7 +195,7 @@ export default function GroupPage() {
             </span>
             <Link
               to={`/groups/${group.id}/analytics`}
-              className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 active:bg-blue-300 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
             >
               📊 データ分析
             </Link>
@@ -219,10 +219,10 @@ export default function GroupPage() {
             <button
               type="button"
               onClick={() => setActiveTab('expenses')}
-              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors duration-200 ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 active:scale-95 ${
                 activeTab === 'expenses'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 active:text-blue-700'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active:text-gray-800'
               }`}
               role="tab"
               aria-selected={activeTab === 'expenses'}
@@ -233,10 +233,10 @@ export default function GroupPage() {
             <button
               type="button"
               onClick={() => setActiveTab('settlement')}
-              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-colors duration-200 ${
+              className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 active:scale-95 ${
                 activeTab === 'settlement'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? 'border-blue-500 text-blue-600 active:text-blue-700'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active:text-gray-800'
               }`}
               role="tab"
               aria-selected={activeTab === 'settlement'}
@@ -259,7 +259,7 @@ export default function GroupPage() {
                 <button
                   type="button"
                   onClick={() => setIsExpenseModalOpen(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-colors duration-200"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-all duration-200"
                   aria-label="支払いを追加"
                 >
                   支払いを追加
@@ -293,7 +293,7 @@ export default function GroupPage() {
                             <button
                               type="button"
                               onClick={() => handleEditExpense(expense)}
-                              className="text-blue-600 hover:text-blue-700 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                              className="text-blue-600 hover:text-blue-700 active:text-blue-800 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-all duration-200"
                               aria-label={`${expense.description}の支払いを編集`}
                             >
                               編集
@@ -301,7 +301,7 @@ export default function GroupPage() {
                             <button
                               type="button"
                               onClick={() => handleDeleteExpense(expense.id)}
-                              className="text-red-600 hover:text-red-700 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-colors duration-200"
+                              className="text-red-600 hover:text-red-700 active:text-red-800 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-all duration-200"
                               aria-label={`${expense.description}の支払いを削除`}
                             >
                               削除
