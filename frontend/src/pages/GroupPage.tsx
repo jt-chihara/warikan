@@ -181,7 +181,7 @@ export default function GroupPage() {
     <div>
       <div className="bg-white shadow rounded-lg p-4 sm:p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-          <div>
+          <div className="flex-1">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{group.name}</h2>
             {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
@@ -189,18 +189,28 @@ export default function GroupPage() {
               <span>作成日: {formatDateFromGraphQL(group.createdAt)}</span>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 self-start">
+          {/* Desktop: 人数とボタンを右に表示 */}
+          <div className="hidden sm:flex flex-col gap-2 self-start">
             <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm text-center">
               {group.members.length}人
             </span>
             <Link
               to={`/groups/${group.id}/analytics`}
-              className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm hover:bg-blue-200 active:bg-blue-300 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
             >
               📊 データ分析
             </Link>
           </div>
         </div>
+
+        {/* Mobile: 人数表示 */}
+        <div className="mt-4 sm:hidden">
+          <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+            {group.members.length}人
+          </span>
+        </div>
+
+        {/* メンバー一覧 */}
         <div className="mt-4 flex flex-wrap gap-2">
           {group.members.map((member) => (
             <span
@@ -210,6 +220,16 @@ export default function GroupPage() {
               {member.name}
             </span>
           ))}
+        </div>
+
+        {/* Mobile: データ分析ボタン */}
+        <div className="mt-4 sm:hidden">
+          <Link
+            to={`/groups/${group.id}/analytics`}
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm w-full sm:w-auto"
+          >
+            📊 データ分析
+          </Link>
         </div>
       </div>
 

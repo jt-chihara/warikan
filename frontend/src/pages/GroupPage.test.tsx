@@ -182,7 +182,8 @@ describe('GroupPage', () => {
       expect(screen.getByText('テストグループ')).toBeInTheDocument();
       expect(screen.getByText('テスト用のグループです')).toBeInTheDocument();
       expect(screen.getByText('通貨: JPY')).toBeInTheDocument();
-      expect(screen.getByText('2人')).toBeInTheDocument();
+      // レスポンシブレイアウトで複数の「2人」表示があるため、最初の要素をチェック
+      expect(screen.getAllByText('2人')[0]).toBeInTheDocument();
       expect(screen.getByText('Alice')).toBeInTheDocument();
       expect(screen.getByText('Bob')).toBeInTheDocument();
     });
