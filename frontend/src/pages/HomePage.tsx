@@ -13,7 +13,7 @@ export default function HomePage() {
         </p>
         <Link
           to="/groups/new"
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
           aria-label="新しいグループを作成する"
         >
           グループを作成する
@@ -28,7 +28,7 @@ export default function HomePage() {
               <Link
                 key={group.id}
                 to={`/groups/${group.id}`}
-                className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="bg-white p-6 rounded-lg shadow hover:shadow-md active:shadow-lg active:scale-98 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 aria-label={`${group.name}グループの詳細を表示`}
               >
                 <div className="flex justify-between items-start mb-2">
@@ -51,7 +51,7 @@ export default function HomePage() {
             <div className="mt-4 text-center">
               <Link
                 to="/groups"
-                className="text-blue-600 hover:text-blue-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-colors duration-200"
+                className="text-blue-600 hover:text-blue-800 active:text-blue-900 active:scale-95 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded transition-all duration-200"
                 aria-label="保存されているすべてのグループを表示"
               >
                 すべてのグループを見る
