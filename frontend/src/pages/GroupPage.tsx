@@ -180,6 +180,8 @@ export default function GroupPage() {
         message: '支払いの削除に失敗しました',
         type: 'error',
       });
+      // エラーの場合でもモーダルを閉じる
+      setDeleteConfirm({ isOpen: false, expenseId: null, expenseName: '' });
     }
   };
 
