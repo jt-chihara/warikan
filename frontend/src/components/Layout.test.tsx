@@ -1,11 +1,37 @@
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DarkModeProvider } from '../contexts/DarkModeContext';
 import Layout from './Layout';
 
 describe('Layout', () => {
+  beforeEach(() => {
+    // LocalStorageのモック
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+      },
+      writable: true,
+    });
+
+    // matchMediaのモック
+    Object.defineProperty(window, 'matchMedia', {
+      value: vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+      writable: true,
+    });
+  });
+
   const renderWithRouter = (ui: React.ReactElement) => {
-    return render(<BrowserRouter>{ui}</BrowserRouter>);
+    return render(
+      <DarkModeProvider>
+        <BrowserRouter>{ui}</BrowserRouter>
+      </DarkModeProvider>,
+    );
   };
 
   it('renders navigation with app title', () => {
@@ -80,5 +106,16 @@ describe('Layout', () => {
       'pb-8',
       'w-full',
     );
+  });
+
+  it('renders dark mode toggle button', () => {
+    renderWithRouter(
+      <Layout>
+        <div>Test Content</div>
+      </Layout>,
+    );
+
+    const toggleButton = screen.getByRole('button', { name: /ダークモードに切り替え/i });
+    expect(toggleButton).toBeInTheDocument();
   });
 });

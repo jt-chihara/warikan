@@ -193,7 +193,7 @@ export default function GroupPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="text-gray-600">読み込み中...</div>
+        <div className="text-gray-600 dark:text-gray-300">読み込み中...</div>
       </div>
     );
   }
@@ -206,8 +206,8 @@ export default function GroupPage() {
       error.message.includes('group not found');
 
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4">
-        <div className="text-red-800">
+      <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-md p-4">
+        <div className="text-red-800 dark:text-red-200">
           {isGroupNotFound
             ? 'そのグループは存在しません。'
             : `エラーが発生しました: ${error.message}`}
@@ -218,8 +218,8 @@ export default function GroupPage() {
 
   if (!data?.group) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-        <div className="text-yellow-800">グループが見つかりません。</div>
+      <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-md p-4">
+        <div className="text-yellow-800 dark:text-yellow-200">グループが見つかりません。</div>
       </div>
     );
   }
@@ -228,24 +228,28 @@ export default function GroupPage() {
 
   return (
     <div>
-      <div className="bg-white shadow rounded-lg p-4 sm:p-6 mb-6">
+      <div className="bg-white dark:bg-gray-800 shadow dark:shadow-gray-900/20 rounded-lg p-4 sm:p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
           <div className="flex-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{group.name}</h2>
-            {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
-            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+              {group.name}
+            </h2>
+            {group.description && (
+              <p className="text-gray-600 dark:text-gray-300 mt-1">{group.description}</p>
+            )}
+            <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500 dark:text-gray-400">
               <span>通貨: {group.currency}</span>
               <span>作成日: {formatDateFromGraphQL(group.createdAt)}</span>
             </div>
           </div>
           {/* Desktop: 人数とボタンを右に表示 */}
           <div className="hidden sm:flex flex-col gap-2 self-start">
-            <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm text-center">
+            <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm text-center">
               {group.members.length}人
             </span>
             <Link
               to={`/groups/${group.id}/analytics`}
-              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
+              className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
             >
               📊 データ分析
             </Link>
@@ -254,7 +258,7 @@ export default function GroupPage() {
 
         {/* Mobile: 人数表示 */}
         <div className="mt-4 sm:hidden">
-          <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+          <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm">
             {group.members.length}人
           </span>
         </div>
@@ -264,7 +268,7 @@ export default function GroupPage() {
           {group.members.map((member) => (
             <span
               key={member.id}
-              className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm"
+              className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm"
             >
               {member.name}
             </span>
@@ -275,23 +279,23 @@ export default function GroupPage() {
         <div className="mt-4 sm:hidden">
           <Link
             to={`/groups/${group.id}/analytics`}
-            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm w-full sm:w-auto"
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm w-full sm:w-auto"
           >
             📊 データ分析
           </Link>
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 shadow dark:shadow-gray-900/20 rounded-lg">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <div className="-mb-px flex" role="tablist" aria-label="グループ情報タブ">
             <button
               type="button"
               onClick={() => setActiveTab('expenses')}
               className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 active:scale-95 ${
                 activeTab === 'expenses'
-                  ? 'border-blue-500 text-blue-600 active:text-blue-700'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active:text-gray-800'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400 active:text-blue-700 dark:active:text-blue-300'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 active:text-gray-800 dark:active:text-gray-200'
               }`}
               role="tab"
               aria-selected={activeTab === 'expenses'}
@@ -304,8 +308,8 @@ export default function GroupPage() {
               onClick={() => setActiveTab('settlement')}
               className={`py-3 px-4 sm:py-4 sm:px-6 border-b-2 font-medium text-sm flex-1 sm:flex-initial cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 active:scale-95 ${
                 activeTab === 'settlement'
-                  ? 'border-blue-500 text-blue-600 active:text-blue-700'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active:text-gray-800'
+                  ? 'border-blue-500 text-blue-600 dark:text-blue-400 active:text-blue-700 dark:active:text-blue-300'
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 active:text-gray-800 dark:active:text-gray-200'
               }`}
               role="tab"
               aria-selected={activeTab === 'settlement'}
@@ -328,7 +332,7 @@ export default function GroupPage() {
                 <button
                   type="button"
                   onClick={() => setIsExpenseModalOpen(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-all duration-200"
+                  className="bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer transition-all duration-200"
                   aria-label="支払いを追加"
                 >
                   支払いを追加
@@ -336,25 +340,34 @@ export default function GroupPage() {
               </div>
 
               {expensesLoading ? (
-                <div className="text-center py-8 text-gray-600">読み込み中...</div>
+                <div className="text-center py-8 text-gray-600 dark:text-gray-300">
+                  読み込み中...
+                </div>
               ) : expensesData?.groupExpenses?.length ? (
                 <div className="space-y-4">
                   {expensesData.groupExpenses.map((expense) => (
-                    <div key={expense.id} className="border rounded-lg p-3 sm:p-4">
+                    <div
+                      key={expense.id}
+                      className="border border-gray-200 dark:border-gray-700 rounded-lg p-3 sm:p-4"
+                    >
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                         <div className="flex-1">
-                          <h4 className="font-semibold">{expense.description}</h4>
-                          <p className="text-sm text-gray-600">{expense.paidByName}が支払い</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+                            {expense.description}
+                          </h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            {expense.paidByName}が支払い
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {formatDateFromGraphQL(expense.createdAt)}
                           </p>
                         </div>
                         <div className="flex flex-col items-end gap-2">
                           <div className="text-right">
-                            <p className="font-semibold text-lg sm:text-base">
+                            <p className="font-semibold text-lg sm:text-base text-gray-900 dark:text-gray-100">
                               ¥{expense.amount.toLocaleString()}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
                               {expense.splitMembers.length}人で割り勘
                             </p>
                           </div>
@@ -362,7 +375,7 @@ export default function GroupPage() {
                             <button
                               type="button"
                               onClick={() => handleEditExpense(expense)}
-                              className="text-blue-600 hover:text-blue-700 active:text-blue-800 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-all duration-200"
+                              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 active:text-blue-800 dark:active:text-blue-200 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded transition-all duration-200"
                               aria-label={`${expense.description}の支払いを編集`}
                             >
                               編集
@@ -370,7 +383,7 @@ export default function GroupPage() {
                             <button
                               type="button"
                               onClick={() => openDeleteConfirm(expense.id, expense.description)}
-                              className="text-red-600 hover:text-red-700 active:text-red-800 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-all duration-200"
+                              className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 active:text-red-800 dark:active:text-red-200 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-all duration-200"
                               aria-label={`${expense.description}の支払いを削除`}
                             >
                               削除
@@ -378,7 +391,7 @@ export default function GroupPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-2 text-sm text-gray-600">
+                      <div className="mt-2 text-sm text-gray-600 dark:text-gray-300">
                         <span>割り勘対象: </span>
                         <span>
                           {expense.splitMembers.map((member) => member.memberName).join(', ')}
@@ -388,34 +401,42 @@ export default function GroupPage() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">まだ支払い記録がありません。</div>
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                  まだ支払い記録がありません。
+                </div>
               )}
             </div>
           ) : (
             <div>
               <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">精算方法</h3>
-                <p className="text-sm text-gray-600">最小の支払い回数で精算できる方法です</p>
+                <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
+                  精算方法
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  最小の支払い回数で精算できる方法です
+                </p>
               </div>
 
               {settlementLoading ? (
-                <div className="text-center py-8 text-gray-600">計算中...</div>
+                <div className="text-center py-8 text-gray-600 dark:text-gray-300">計算中...</div>
               ) : settlementResult?.settlements?.length ? (
                 <>
                   <div className="space-y-6">
                     {/* 精算結果 */}
                     <div>
-                      <h4 className="font-semibold mb-3">📋 精算結果</h4>
+                      <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                        📋 精算結果
+                      </h4>
                       <div className="space-y-3">
                         {settlementResult.settlements.map((settlement) => (
                           <div
                             key={`${settlement.fromMemberId}-${settlement.toMemberId}`}
-                            className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg"
+                            className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg"
                           >
-                            <span className="font-medium">
+                            <span className="font-medium text-gray-900 dark:text-gray-100">
                               {settlement.fromName} → {settlement.toName}
                             </span>
-                            <span className="font-bold text-green-700">
+                            <span className="font-bold text-green-700 dark:text-green-300">
                               ¥{settlement.amount.toLocaleString()}
                             </span>
                           </div>
@@ -425,15 +446,20 @@ export default function GroupPage() {
 
                     {/* 計算過程の説明 */}
                     <div>
-                      <h4 className="font-semibold mb-3">💡 計算過程</h4>
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <div className="space-y-3 text-sm text-blue-800">
+                      <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100">
+                        💡 計算過程
+                      </h4>
+                      <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                        <div className="space-y-3 text-sm text-blue-800 dark:text-blue-200">
                           {/* Step 1: 1人あたりの負担額 */}
                           <div>
                             <p className="font-medium mb-2">1. 各支払いを1人あたりの負担額に分割</p>
                             <div className="ml-4 space-y-1">
                               {expensesData?.groupExpenses?.map((expense) => (
-                                <div key={expense.id} className="text-xs bg-white/50 p-2 rounded">
+                                <div
+                                  key={expense.id}
+                                  className="text-xs bg-white/50 dark:bg-gray-800/50 p-2 rounded"
+                                >
                                   <span className="font-medium">{expense.description}</span>: ¥
                                   {expense.amount.toLocaleString()} ÷ {expense.splitMembers.length}
                                   人 = ¥
@@ -441,7 +467,7 @@ export default function GroupPage() {
                                     expense.amount / expense.splitMembers.length,
                                   ).toLocaleString()}
                                   /人
-                                  <div className="text-xs text-blue-600 mt-1">
+                                  <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
                                     対象: {expense.splitMembers.map((m) => m.memberName).join(', ')}
                                   </div>
                                 </div>
@@ -480,14 +506,16 @@ export default function GroupPage() {
                                 return (
                                   <div
                                     key={balance.memberId}
-                                    className="text-xs bg-white/50 p-2 rounded"
+                                    className="text-xs bg-white/50 dark:bg-gray-800/50 p-2 rounded"
                                   >
                                     <span className="font-medium">{balance.memberName}</span>:
                                     支払った額 ¥{paidAmount.toLocaleString()} - 負担すべき額 ¥
                                     {shouldPayAmount.toLocaleString()} =
                                     <span
                                       className={
-                                        balance.balance >= 0 ? 'text-green-600' : 'text-red-600'
+                                        balance.balance >= 0
+                                          ? 'text-green-600 dark:text-green-400'
+                                          : 'text-red-600 dark:text-red-400'
                                       }
                                     >
                                       {balance.balance >= 0 ? '+' : ''}¥
@@ -589,7 +617,7 @@ export default function GroupPage() {
                                       {steps.map((step) => (
                                         <div
                                           key={step.step}
-                                          className="bg-white/70 p-2 rounded text-xs"
+                                          className="bg-white/70 dark:bg-gray-800/70 p-2 rounded text-xs"
                                         >
                                           <div className="font-medium">
                                             Step {step.step}: 最大債権者（{step.to}:{' '}
@@ -606,14 +634,14 @@ export default function GroupPage() {
                                               支払い
                                             </span>
                                           </div>
-                                          <div className="text-blue-600 text-xs">
+                                          <div className="text-blue-600 dark:text-blue-400 text-xs">
                                             結果: {step.to} {step.afterToBalance >= 0 ? '+' : ''}¥
                                             {step.afterToBalance.toLocaleString()}, {step.from} ¥
                                             {step.afterFromBalance.toLocaleString()}
                                           </div>
                                         </div>
                                       ))}
-                                      <div className="bg-green-100 p-2 rounded text-xs font-medium text-green-800">
+                                      <div className="bg-green-100 dark:bg-green-900 p-2 rounded text-xs font-medium text-green-800 dark:text-green-200">
                                         ✅ 全員の貸し借り残高が0になり精算完了！
                                       </div>
                                     </div>
@@ -629,21 +657,25 @@ export default function GroupPage() {
 
                   {settlementResult?.balances?.length && (
                     <div className="mt-8">
-                      <h4 className="font-semibold mb-4">各メンバーの収支</h4>
+                      <h4 className="font-semibold mb-4 text-gray-900 dark:text-gray-100">
+                        各メンバーの収支
+                      </h4>
                       <div className="space-y-2">
                         {settlementResult.balances.map((balance) => (
                           <div
                             key={balance.memberId}
-                            className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                            className="flex items-center justify-between p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg"
                           >
-                            <span>{balance.memberName}</span>
+                            <span className="text-gray-900 dark:text-gray-100">
+                              {balance.memberName}
+                            </span>
                             <span
                               className={`font-semibold ${
                                 balance.balance > 0
-                                  ? 'text-green-600'
+                                  ? 'text-green-600 dark:text-green-400'
                                   : balance.balance < 0
-                                    ? 'text-red-600'
-                                    : 'text-gray-600'
+                                    ? 'text-red-600 dark:text-red-400'
+                                    : 'text-gray-600 dark:text-gray-400'
                               }`}
                             >
                               {balance.balance > 0 && '+'}¥{balance.balance.toLocaleString()}
@@ -651,14 +683,14 @@ export default function GroupPage() {
                           </div>
                         ))}
                       </div>
-                      <div className="mt-2 text-xs text-gray-500">
+                      <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                         ※ 正の値: 受け取る金額、負の値: 支払う金額
                       </div>
                     </div>
                   )}
                 </>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                   {expensesData?.groupExpenses?.length
                     ? '精算の必要がありません'
                     : '支払い記録がないため精算できません'}

@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DarkModeProvider } from '../../contexts/DarkModeContext';
 import MonthlyBarChart from './MonthlyBarChart';
 
 // Rechartsのモック
@@ -15,6 +16,26 @@ vi.mock('recharts', () => ({
 }));
 
 describe('MonthlyBarChart', () => {
+  beforeEach(() => {
+    // LocalStorageのモック
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+      },
+      writable: true,
+    });
+
+    // matchMediaのモック
+    Object.defineProperty(window, 'matchMedia', {
+      value: vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+      writable: true,
+    });
+  });
   const mockData = [
     { month: '2025-01', amount: 10000, count: 5 },
     { month: '2025-02', amount: 15000, count: 7 },
@@ -22,13 +43,21 @@ describe('MonthlyBarChart', () => {
   ];
 
   it('should render the chart title', () => {
-    render(<MonthlyBarChart data={mockData} />);
+    render(
+      <DarkModeProvider>
+        <MonthlyBarChart data={mockData} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('月別支払い推移')).toBeInTheDocument();
   });
 
   it('should render bar chart components', () => {
-    render(<MonthlyBarChart data={mockData} />);
+    render(
+      <DarkModeProvider>
+        <MonthlyBarChart data={mockData} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByTestId('bar-chart')).toBeInTheDocument();
     expect(screen.getByTestId('bar')).toBeInTheDocument();
@@ -38,14 +67,22 @@ describe('MonthlyBarChart', () => {
   });
 
   it('should show empty message when no data', () => {
-    render(<MonthlyBarChart data={[]} />);
+    render(
+      <DarkModeProvider>
+        <MonthlyBarChart data={[]} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('支払いデータがありません')).toBeInTheDocument();
     expect(screen.queryByTestId('bar-chart')).not.toBeInTheDocument();
   });
 
   it('should handle custom currency', () => {
-    render(<MonthlyBarChart data={mockData} currency="USD" />);
+    render(
+      <DarkModeProvider>
+        <MonthlyBarChart data={mockData} currency="USD" />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('月別支払い推移')).toBeInTheDocument();
   });
