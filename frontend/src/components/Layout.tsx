@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-2 sm:space-x-4">
               <Link
                 to="/groups/new"
-                className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-md text-sm font-medium hover:bg-blue-700"
+                className="bg-blue-600 text-white px-3 py-2 sm:px-4 rounded-md text-sm font-medium hover:bg-blue-700 active:bg-blue-800 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer"
               >
                 <span className="hidden sm:inline">新しいグループ</span>
                 <span className="sm:hidden">新規</span>

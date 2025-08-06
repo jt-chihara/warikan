@@ -365,23 +365,24 @@ describe('GroupPage', () => {
       expect(screen.getByText('ランチ')).toBeInTheDocument();
     });
 
-    // Mock window.confirm to return true
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-
     // Click the delete button
     const deleteButton = screen.getByRole('button', { name: /削除/ });
     await user.click(deleteButton);
 
-    // Verify confirm was called
-    expect(window.confirm).toHaveBeenCalledWith('この支払い記録を削除してもよろしいですか？');
+    // Wait for delete confirmation modal to appear
+    await waitFor(() => {
+      expect(screen.getByText('支払いを削除')).toBeInTheDocument();
+      expect(screen.getByText(/「ランチ」を削除してもよろしいですか/)).toBeInTheDocument();
+    });
+
+    // Click the confirm button in the modal
+    const confirmButton = screen.getByRole('button', { name: '削除' });
+    await user.click(confirmButton);
 
     // Wait for the expense to be removed
     await waitFor(() => {
       expect(screen.queryByText('ランチ')).not.toBeInTheDocument();
     });
-
-    // Restore the mock
-    vi.restoreAllMocks();
   });
 
   it('does not delete expense when user cancels confirmation', async () => {
@@ -394,21 +395,25 @@ describe('GroupPage', () => {
       expect(screen.getByText('ランチ')).toBeInTheDocument();
     });
 
-    // Mock window.confirm to return false (user cancels)
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
-
     // Click the delete button
     const deleteButton = screen.getByRole('button', { name: /削除/ });
     await user.click(deleteButton);
 
-    // Verify confirm was called
-    expect(window.confirm).toHaveBeenCalledWith('この支払い記録を削除してもよろしいですか？');
+    // Wait for delete confirmation modal to appear
+    await waitFor(() => {
+      expect(screen.getByText('支払いを削除')).toBeInTheDocument();
+      expect(screen.getByText(/「ランチ」を削除してもよろしいですか/)).toBeInTheDocument();
+    });
 
-    // Expense should still be there since deletion was cancelled
+    // Click the cancel button in the modal
+    const cancelButton = screen.getByRole('button', { name: 'キャンセル' });
+    await user.click(cancelButton);
+
+    // Wait for modal to close and expense should still be there
+    await waitFor(() => {
+      expect(screen.queryByText('支払いを削除')).not.toBeInTheDocument();
+    });
     expect(screen.getByText('ランチ')).toBeInTheDocument();
-
-    // Restore the mock
-    vi.restoreAllMocks();
   });
 
   it('shows error alert when expense deletion fails', async () => {
@@ -438,23 +443,26 @@ describe('GroupPage', () => {
       expect(screen.getByText('ランチ')).toBeInTheDocument();
     });
 
-    // Mock window.confirm to return true and window.alert
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
-    vi.spyOn(window, 'alert').mockImplementation(() => {});
-
     // Click the delete button
     const deleteButton = screen.getByRole('button', { name: /削除/ });
     await user.click(deleteButton);
 
-    // Wait for error handling
+    // Wait for delete confirmation modal to appear
     await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith('支払いの削除に失敗しました。');
+      expect(screen.getByText('支払いを削除')).toBeInTheDocument();
+      expect(screen.getByText(/「ランチ」を削除してもよろしいですか/)).toBeInTheDocument();
+    });
+
+    // Click the confirm button in the modal
+    const confirmButton = screen.getByRole('button', { name: '削除' });
+    await user.click(confirmButton);
+
+    // Wait for error notification to appear
+    await waitFor(() => {
+      expect(screen.getByText('支払いの削除に失敗しました')).toBeInTheDocument();
     });
 
     // Expense should still be there since deletion failed
     expect(screen.getByText('ランチ')).toBeInTheDocument();
-
-    // Restore the mocks
-    vi.restoreAllMocks();
   });
 });
