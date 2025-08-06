@@ -135,6 +135,5 @@ describe('DeleteConfirmModal', () => {
     render(<DeleteConfirmModal {...defaultProps} />);
 
     await user.keyboard('{Escape}');
-
   });
 });

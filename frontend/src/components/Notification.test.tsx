@@ -27,7 +27,7 @@ describe('Notification', () => {
     render(<Notification {...defaultProps} type="error" />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
-    
+
     const container = document.querySelector('.bg-red-50');
     expect(container).toBeInTheDocument();
   });
@@ -36,7 +36,7 @@ describe('Notification', () => {
     render(<Notification {...defaultProps} type="info" />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
-    
+
     const container = document.querySelector('.bg-blue-50');
     expect(container).toBeInTheDocument();
   });
@@ -53,7 +53,7 @@ describe('Notification', () => {
 
   it('has correct icon colors for different types', () => {
     const { rerender } = render(<Notification {...defaultProps} type="success" />);
-    
+
     let icon = document.querySelector('.text-green-400');
     expect(icon).toBeInTheDocument();
 
@@ -100,14 +100,14 @@ describe('Notification', () => {
 
     const closeButton = screen.getByRole('button', { name: '閉じる' });
     expect(closeButton).toHaveAttribute('type', 'button');
-    
+
     const icon = document.querySelector('svg[aria-hidden="true"]');
     expect(icon).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('uses custom duration when provided', () => {
     render(<Notification {...defaultProps} duration={5000} />);
-    
+
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
   });
 });
