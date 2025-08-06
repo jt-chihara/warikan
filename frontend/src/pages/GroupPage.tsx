@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import ExpenseModal from '../components/ExpenseModal';
+import { Notification } from '../components/Notification';
 import {
   useAddExpense,
   useDeleteExpense,
@@ -33,6 +35,19 @@ export default function GroupPage() {
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [settlementResult, setSettlementResult] = useState<SettlementResult | null>(null);
   const { refetch: calculateSettlements, loading: settlementLoading } = useCalculateSettlements();
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: 'success' | 'error' | 'info';
+  } | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean;
+    expenseId: string | null;
+    expenseName: string;
+  }>({
+    isOpen: false,
+    expenseId: null,
+    expenseName: '',
+  });
 
   const calculateSettlement = useCallback(async () => {
     if (!expensesData?.groupExpenses || !groupId) return;
@@ -85,9 +100,17 @@ export default function GroupPage() {
       await refetchExpenses();
       // Reset settlement result to trigger recalculation
       setSettlementResult(null);
+      // Show success notification
+      setNotification({
+        message: '支払いを追加しました',
+        type: 'success',
+      });
     } catch (err) {
       console.error('Error adding expense:', err);
-      alert('支払いの追加に失敗しました。');
+      setNotification({
+        message: '支払いの追加に失敗しました',
+        type: 'error',
+      });
     }
   };
 
@@ -114,25 +137,49 @@ export default function GroupPage() {
       // Reset settlement result to trigger recalculation
       setSettlementResult(null);
       setEditingExpense(null);
+      // Show success notification
+      setNotification({
+        message: '支払いを更新しました',
+        type: 'success',
+      });
     } catch (err) {
       console.error('Error updating expense:', err);
-      alert('支払いの更新に失敗しました。');
+      setNotification({
+        message: '支払いの更新に失敗しました',
+        type: 'error',
+      });
     }
   };
 
-  const handleDeleteExpense = async (expenseId: string) => {
-    if (!confirm('この支払い記録を削除してもよろしいですか？')) {
-      return;
-    }
+  const openDeleteConfirm = (expenseId: string, expenseName: string) => {
+    setDeleteConfirm({
+      isOpen: true,
+      expenseId,
+      expenseName,
+    });
+  };
+
+  const handleDeleteExpense = async () => {
+    if (!deleteConfirm.expenseId) return;
 
     try {
-      await deleteExpense({ variables: { expenseId } });
+      await deleteExpense({ variables: { expenseId: deleteConfirm.expenseId } });
       await refetchExpenses();
       // Reset settlement result to trigger recalculation
       setSettlementResult(null);
+      // Show success notification
+      setNotification({
+        message: '支払いを削除しました',
+        type: 'success',
+      });
+      // Close the modal
+      setDeleteConfirm({ isOpen: false, expenseId: null, expenseName: '' });
     } catch (err) {
       console.error('Error deleting expense:', err);
-      alert('支払いの削除に失敗しました。');
+      setNotification({
+        message: '支払いの削除に失敗しました',
+        type: 'error',
+      });
     }
   };
 
@@ -320,7 +367,7 @@ export default function GroupPage() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDeleteExpense(expense.id)}
+                              onClick={() => openDeleteConfirm(expense.id, expense.description)}
                               className="text-red-600 hover:text-red-700 active:text-red-800 active:scale-95 text-sm font-medium underline cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 rounded transition-all duration-200"
                               aria-label={`${expense.description}の支払いを削除`}
                             >
@@ -633,6 +680,22 @@ export default function GroupPage() {
           onUpdateExpense={handleUpdateExpense}
         />
       )}
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={() => setNotification(null)}
+        />
+      )}
+
+      <DeleteConfirmModal
+        isOpen={deleteConfirm.isOpen}
+        title="支払いを削除"
+        message={`「${deleteConfirm.expenseName}」を削除してもよろしいですか？この操作は取り消せません。`}
+        onConfirm={handleDeleteExpense}
+        onCancel={() => setDeleteConfirm({ isOpen: false, expenseId: null, expenseName: '' })}
+      />
     </div>
   );
 }
