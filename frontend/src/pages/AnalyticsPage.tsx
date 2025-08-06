@@ -48,7 +48,7 @@ export default function AnalyticsPage() {
   if (groupLoading || expensesLoading) {
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="text-gray-600">読み込み中...</div>
+        <div className="text-gray-600 dark:text-gray-300">読み込み中...</div>
       </div>
     );
   }
@@ -59,7 +59,7 @@ export default function AnalyticsPage() {
       groupError.message.includes('not found');
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="text-red-600">
+        <div className="text-red-600 dark:text-red-400">
           {isGroupNotFound
             ? 'そのグループは存在しません。'
             : `エラーが発生しました: ${groupError.message}`}
@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
   if (!group) {
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="text-gray-600">グループが見つかりません。</div>
+        <div className="text-gray-600 dark:text-gray-300">グループが見つかりません。</div>
       </div>
     );
   }
@@ -108,26 +108,32 @@ export default function AnalyticsPage() {
       {/* ヘッダー */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">📊 データ分析</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
+            📊 データ分析
+          </h1>
           <Link
             to={`/groups/${group.id}`}
-            className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 active:bg-gray-300 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1"
+            className="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-200 dark:hover:bg-gray-600 active:bg-gray-300 dark:active:bg-gray-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-1"
           >
             ← グループページに戻る
           </Link>
         </div>
-        <div className="flex items-center space-x-2 text-gray-600">
+        <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
           <span className="text-lg font-medium">{group.name}</span>
           <span>•</span>
           <span>{expenses.length}件の支払い記録</span>
         </div>
-        {group.description && <p className="text-gray-600 mt-1">{group.description}</p>}
+        {group.description && (
+          <p className="text-gray-600 dark:text-gray-300 mt-1">{group.description}</p>
+        )}
       </div>
 
       {expenses.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-gray-500 text-lg mb-4">まだ支払い記録がありません</div>
-          <p className="text-gray-400">
+          <div className="text-gray-500 dark:text-gray-400 text-lg mb-4">
+            まだ支払い記録がありません
+          </div>
+          <p className="text-gray-400 dark:text-gray-500">
             グループページで支払いを追加すると、ここにグラフが表示されます。
           </p>
         </div>
@@ -135,7 +141,7 @@ export default function AnalyticsPage() {
         <>
           {/* タブナビゲーション */}
           <div className="mb-6">
-            <div className="border-b border-gray-200">
+            <div className="border-b border-gray-200 dark:border-gray-700">
               <nav className="-mb-px flex space-x-8" aria-label="グラフタブ">
                 {chartTabs.map((tab, index) => (
                   <button
@@ -146,8 +152,8 @@ export default function AnalyticsPage() {
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     className={`py-2 px-1 border-b-2 font-medium text-sm transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95 ${
                       activeChart === tab.key
-                        ? 'border-blue-500 text-blue-600 active:text-blue-700'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active:text-gray-800'
+                        ? 'border-blue-500 text-blue-600 dark:text-blue-400 active:text-blue-700 dark:active:text-blue-300'
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600 active:text-gray-800 dark:active:text-gray-200'
                     }`}
                     aria-current={activeChart === tab.key ? 'page' : undefined}
                     aria-label={`${tab.label}を表示`}
@@ -160,8 +166,8 @@ export default function AnalyticsPage() {
                       <span
                         className={`ml-2 py-0.5 px-2 rounded-full text-xs ${
                           activeChart === tab.key
-                            ? 'bg-blue-100 text-blue-600'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         {tab.count}
@@ -175,7 +181,7 @@ export default function AnalyticsPage() {
 
           {/* グラフ表示エリア */}
           <div
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 p-6"
             role="tabpanel"
             aria-labelledby={`${activeChart}-tab`}
           >
@@ -184,9 +190,9 @@ export default function AnalyticsPage() {
 
           {/* 概要統計 */}
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-sm text-gray-500 font-medium">総支払い額</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 p-4">
+              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">総支払い額</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                 {new Intl.NumberFormat('ja-JP', {
                   style: 'currency',
                   currency: group.currency,
@@ -195,9 +201,11 @@ export default function AnalyticsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-sm text-gray-500 font-medium">平均支払い額</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 p-4">
+              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                平均支払い額
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
                 {new Intl.NumberFormat('ja-JP', {
                   style: 'currency',
                   currency: group.currency,
@@ -209,14 +217,20 @@ export default function AnalyticsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-sm text-gray-500 font-medium">支払い件数</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">{expenses.length}件</div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 p-4">
+              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">支払い件数</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                {expenses.length}件
+              </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-              <div className="text-sm text-gray-500 font-medium">参加メンバー</div>
-              <div className="text-2xl font-bold text-gray-900 mt-1">{group.members.length}人</div>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-gray-900/20 border border-gray-200 dark:border-gray-700 p-4">
+              <div className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                参加メンバー
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">
+                {group.members.length}人
+              </div>
             </div>
           </div>
         </>

@@ -1,6 +1,9 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/forms";
 
+/* ダークモードを有効にする */
+@variant dark (.dark &);
+
 /* 確実にブラウザのデフォルトマージンを除去 */
 html, body {
   margin: 0;

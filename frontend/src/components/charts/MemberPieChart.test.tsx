@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DarkModeProvider } from '../../contexts/DarkModeContext';
 import MemberPieChart from './MemberPieChart';
 
 // Rechartsのモック
@@ -14,6 +15,26 @@ vi.mock('recharts', () => ({
 }));
 
 describe('MemberPieChart', () => {
+  beforeEach(() => {
+    // LocalStorageのモック
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: vi.fn(() => null),
+        setItem: vi.fn(),
+      },
+      writable: true,
+    });
+
+    // matchMediaのモック
+    Object.defineProperty(window, 'matchMedia', {
+      value: vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+      writable: true,
+    });
+  });
   const mockData = [
     {
       memberName: 'Alice',
@@ -32,13 +53,21 @@ describe('MemberPieChart', () => {
   ];
 
   it('should render the chart title', () => {
-    render(<MemberPieChart data={mockData} />);
+    render(
+      <DarkModeProvider>
+        <MemberPieChart data={mockData} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('メンバー別支払い分布')).toBeInTheDocument();
   });
 
   it('should render pie chart components', () => {
-    render(<MemberPieChart data={mockData} />);
+    render(
+      <DarkModeProvider>
+        <MemberPieChart data={mockData} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByTestId('pie-chart')).toBeInTheDocument();
     expect(screen.getByTestId('pie')).toBeInTheDocument();
@@ -47,7 +76,11 @@ describe('MemberPieChart', () => {
   });
 
   it('should render legend with member names and amounts', () => {
-    const { container } = render(<MemberPieChart data={mockData} />);
+    const { container } = render(
+      <DarkModeProvider>
+        <MemberPieChart data={mockData} />
+      </DarkModeProvider>,
+    );
 
     // 凡例セクションが存在することを確認
     const legendItems = container.querySelectorAll('.grid .flex');
@@ -59,14 +92,22 @@ describe('MemberPieChart', () => {
   });
 
   it('should show empty message when no data', () => {
-    render(<MemberPieChart data={[]} />);
+    render(
+      <DarkModeProvider>
+        <MemberPieChart data={[]} />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('支払いデータがありません')).toBeInTheDocument();
     expect(screen.queryByTestId('pie-chart')).not.toBeInTheDocument();
   });
 
   it('should handle custom currency', () => {
-    render(<MemberPieChart data={mockData} currency="USD" />);
+    render(
+      <DarkModeProvider>
+        <MemberPieChart data={mockData} currency="USD" />
+      </DarkModeProvider>,
+    );
 
     expect(screen.getByText('メンバー別支払い分布')).toBeInTheDocument();
     // formatCurrencyがモックされていないため、通貨記号は確認できない

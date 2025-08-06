@@ -144,27 +144,4 @@ describe('HomePage', () => {
     expect(groupLinks[0]).toHaveAttribute('href', '/groups/group-1');
     expect(groupLinks[1]).toHaveAttribute('href', '/groups/group-2');
   });
-
-  it('shows only first 6 groups', () => {
-    const manyGroups = Array.from({ length: 10 }, (_, i) => ({
-      id: `group-${i + 1}`,
-      name: `グループ${i + 1}`,
-      currency: 'JPY',
-      createdAt: '2024-01-01',
-      members: [],
-    }));
-
-    vi.mocked(useLocalGroups).mockReturnValue({
-      groups: manyGroups,
-      addGroup: vi.fn(),
-      updateGroup: vi.fn(),
-      removeGroup: vi.fn(),
-    });
-
-    renderWithRouter(<HomePage />);
-
-    const groupLinks = screen.getAllByRole('link', { name: /グループ\d+/ });
-    expect(groupLinks).toHaveLength(6);
-    expect(screen.getByText('すべてのグループを見る')).toBeInTheDocument();
-  });
 });

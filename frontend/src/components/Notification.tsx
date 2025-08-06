@@ -29,9 +29,9 @@ export const Notification: React.FC<NotificationProps> = ({
   };
 
   const bgColors = {
-    success: 'bg-green-100 border border-green-200',
-    error: 'bg-red-100 border border-red-200',
-    info: 'bg-blue-100 border border-blue-200',
+    success: 'bg-green-100 dark:bg-green-900 border border-green-200 dark:border-green-700',
+    error: 'bg-red-100 dark:bg-red-900 border border-red-200 dark:border-red-700',
+    info: 'bg-blue-100 dark:bg-blue-900 border border-blue-200 dark:border-blue-700',
   };
 
   return (
@@ -46,12 +46,12 @@ export const Notification: React.FC<NotificationProps> = ({
                 <CheckCircleIcon className={`h-6 w-6 ${iconColors[type]}`} aria-hidden="true" />
               </div>
               <div className="ml-3 w-0 flex-1 pt-0.5">
-                <p className="text-sm font-medium text-gray-900">{message}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{message}</p>
               </div>
               <div className="ml-4 flex flex-shrink-0">
                 <button
                   type="button"
-                  className="inline-flex rounded-md bg-transparent text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="inline-flex rounded-md bg-transparent text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
                   onClick={onClose}
                 >
                   <span className="sr-only">閉じる</span>
