@@ -19,7 +19,7 @@ describe('Notification', () => {
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '閉じる' })).toBeInTheDocument();
 
-    const container = document.querySelector('.bg-green-50');
+    const container = document.querySelector('.bg-green-100');
     expect(container).toBeInTheDocument();
   });
 
@@ -28,7 +28,7 @@ describe('Notification', () => {
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
 
-    const container = document.querySelector('.bg-red-50');
+    const container = document.querySelector('.bg-red-100');
     expect(container).toBeInTheDocument();
   });
 
@@ -37,7 +37,7 @@ describe('Notification', () => {
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
 
-    const container = document.querySelector('.bg-blue-50');
+    const container = document.querySelector('.bg-blue-100');
     expect(container).toBeInTheDocument();
   });
 
