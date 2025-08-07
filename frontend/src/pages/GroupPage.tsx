@@ -1,3 +1,4 @@
+import { LinkIcon } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
@@ -48,6 +49,7 @@ export default function GroupPage() {
     expenseId: null,
     expenseName: '',
   });
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const calculateSettlement = useCallback(async () => {
     if (!expensesData?.groupExpenses || !groupId) return;
@@ -190,6 +192,25 @@ export default function GroupPage() {
     setIsExpenseModalOpen(true);
   };
 
+  const handleCopyInviteLink = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(true);
+      setNotification({
+        message: '招待リンクをコピーしました',
+        type: 'success',
+      });
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy URL:', err);
+      setNotification({
+        message: 'コピーに失敗しました',
+        type: 'error',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-64">
@@ -247,6 +268,14 @@ export default function GroupPage() {
             <span className="inline-block px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm text-center">
               {group.members.length}人
             </span>
+            <button
+              type="button"
+              onClick={handleCopyInviteLink}
+              className="inline-flex items-center justify-center px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md text-sm font-medium hover:bg-green-700 dark:hover:bg-green-600 active:bg-green-800 dark:active:bg-green-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm"
+            >
+              <LinkIcon className="h-4 w-4 mr-1" />
+              {copySuccess ? 'コピー完了!' : '招待リンク'}
+            </button>
             <Link
               to={`/groups/${group.id}/analytics`}
               className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm"
@@ -275,11 +304,19 @@ export default function GroupPage() {
           ))}
         </div>
 
-        {/* Mobile: データ分析ボタン */}
-        <div className="mt-4 sm:hidden">
+        {/* Mobile: データ分析ボタンと招待ボタン */}
+        <div className="mt-4 sm:hidden flex gap-2">
+          <button
+            type="button"
+            onClick={handleCopyInviteLink}
+            className="inline-flex items-center justify-center px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md text-sm font-medium hover:bg-green-700 dark:hover:bg-green-600 active:bg-green-800 dark:active:bg-green-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 shadow-sm flex-1"
+          >
+            <LinkIcon className="h-4 w-4 mr-1" />
+            {copySuccess ? 'コピー完了!' : '招待リンク'}
+          </button>
           <Link
             to={`/groups/${group.id}/analytics`}
-            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm w-full sm:w-auto"
+            className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-md text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 dark:active:bg-blue-500 active:scale-95 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 shadow-sm flex-1"
           >
             📊 データ分析
           </Link>
