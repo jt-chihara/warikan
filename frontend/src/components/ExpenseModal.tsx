@@ -193,7 +193,7 @@ export default function ExpenseModal({
               onChange={(e) => setAmount(e.target.value)}
               required
               min="0"
-              step="0.01"
+              step="1"
               className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400"
               placeholder="1000"
             />
