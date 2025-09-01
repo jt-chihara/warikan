@@ -4,11 +4,10 @@
 
 ## 🏗️ アーキテクチャ
 - **フロントエンド**: React + TypeScript + Vite + TailwindCSS v4
-- **ゲートウェイ**: GraphQL Gateway (Go)
-- **バックエンド**: gRPCマイクロサービス (Go)
-- **データベース**: PostgreSQL 17
+- **バックエンド**: REST API (Rust/Axum)
+- **データベース**: PostgreSQL 17（現状Rust APIはメモリ内データ、今後接続予定）
 - **開発環境**: Docker Compose
-- **テスト**: Vitest (フロントエンド), Go Testing (バックエンド)
+- **テスト**: Vitest (フロントエンド)
 - **Lint/Format**: Biome (フロントエンド)
 
 ## 🚀 開発環境の構築
@@ -41,7 +40,7 @@
 起動後、以下のURLでアクセスできます：
 
 - **フロントエンド**: http://localhost:3000
-- **GraphQL Gateway**: http://localhost:8080/graphql (GraphQL Playground)
+- **バックエンド（REST）**: http://localhost:8080 （OpenAPI: `backend/openapi.yaml`）
 - **データベース**: localhost:5432
 
 ## ✨ 主な機能
@@ -67,20 +66,12 @@ warikan/
 │   │   └── lib/             # ライブラリ設定
 │   ├── Dockerfile
 │   └── package.json
-├── backend/
-│   ├── gateway/             # GraphQL Gateway
-│   │   ├── cmd/
-│   │   ├── internal/
-│   │   ├── Dockerfile
-│   │   └── go.mod
-│   ├── services/
-│   │   └── group/           # Group gRPCサービス
-│   │       ├── cmd/
-│   │       ├── internal/
-│   │       ├── Dockerfile
-│   │       └── go.mod
-│   ├── migrations/          # データベーススキーマ
-│   └── proto/               # Protocol Buffers定義
+├── backend/                 # Rust REST バックエンド（Axum）
+│   ├── src/
+│   │   └── main.rs
+│   ├── Cargo.toml
+│   ├── Dockerfile
+│   └── openapi.yaml
 ├── docker-compose.yml       # Docker Compose設定
 └── README.md
 ```
@@ -111,8 +102,7 @@ docker compose down -v
 ```bash
 # 特定のサービスのみ起動
 docker compose up frontend
-docker compose up gateway
-docker compose up group-service
+docker compose up backend
 docker compose up db
 
 # サービスの再起動
@@ -120,7 +110,7 @@ docker compose restart frontend
 
 # サービスのログ確認
 docker compose logs -f frontend
-docker compose logs -f gateway
+docker compose logs -f backend
 ```
 
 ### デバッグ・開発作業
@@ -128,8 +118,7 @@ docker compose logs -f gateway
 ```bash
 # コンテナ内でシェルを実行
 docker compose exec frontend sh
-docker compose exec gateway sh
-docker compose exec group-service sh
+docker compose exec backend sh
 
 # データベースに接続
 docker compose exec db psql -U warikan -d warikan
@@ -157,21 +146,7 @@ cd frontend
 npm test
 ```
 
-### バックエンドテスト
 
-```bash
-# Group Serviceのテスト
-docker compose exec group-service sh -c "cd /app/services/group && go test ./..."
-
-# 詳細出力付きテスト
-docker compose exec group-service sh -c "cd /app/services/group && go test -v ./..."
-
-# カバレッジ付きテスト
-docker compose exec group-service sh -c "cd /app/services/group && go test -coverprofile=coverage.out ./..."
-
-# 特定のパッケージのみテスト
-docker compose exec group-service sh -c "cd /app/services/group && go test ./internal/repository"
-```
 
 ## 🔄 開発ワークフロー
 
@@ -179,14 +154,14 @@ docker compose exec group-service sh -c "cd /app/services/group && go test ./int
 
 1. コードを編集すると自動でホットリロードされます
 2. `http://localhost:3000` でリアルタイムに変更を確認
-3. GraphQL クエリは `http://localhost:8080/graphql` に送信されます
+3. API は REST (`http://localhost:8080`) に送信されます
+   - `.env` で `VITE_API_MODE=rest` と `VITE_REST_ENDPOINT=http://localhost:8080` を設定済み
 4. TailwindCSS v4 を使用した CSS-first 設定
 
 ### バックエンド開発
 
-1. Go のコードを編集すると自動で再起動されます
-2. gRPC サービスは `localhost:50051` で起動
-3. GraphQL Gateway は `localhost:8080` で起動
+1. Rust のコードを編集すると再ビルドが必要です
+2. REST API は `localhost:8080` で起動（`backend` サービス）
 
 ### データベース操作
 
@@ -263,8 +238,7 @@ docker compose logs -f
 
 # 特定のサービスのログ
 docker compose logs -f frontend
-docker compose logs -f gateway
-docker compose logs -f group-service
+docker compose logs -f backend
 docker compose logs -f db
 ```
 
@@ -325,88 +299,21 @@ docker compose ps
 - **時間計算量**: O(n²) where n = メンバー数
 - **最小精算回数**: 理論的最小回数での精算を保証
 
-```go
-// backend/services/group/internal/algorithm/settlement.go:131
-// CalculateSettlements関数でGreedy Algorithmを実装
-func CalculateOptimalSettlements(balances []Balance) ([]Settlement, error) {
-    // 最大債権者と最大債務者をペアリング
-    // 精算額は min(債権額, 債務額) で決定
-    // 貸し借り残高が0になるまで繰り返し
-}
-```
+（Rust 実装は今後 `backend/src/main.rs` とは別モジュールとして実装予定）
 
-## 📝 API仕様
+## 📝 API仕様（REST / Rust/Axum）
 
-### GraphQL
+- OpenAPI: `backend/openapi.yaml`
+- 主なエンドポイント（例）:
+  - `GET /healthz`
+  - `GET /groups`, `POST /groups`, `GET /groups/{id}`, `PUT /groups/{id}`, `DELETE /groups/{id}`
+  - `POST /groups/{id}/members`, `DELETE /groups/{id}/members/{member_id}`
+  - `GET /groups/{id}/expenses`, `POST /groups/{id}/expenses`
+  - `PUT /expenses/{expense_id}`, `DELETE /expenses/{expense_id}`
+  - `POST /groups/{id}/settlements/calculate`
 
-GraphQL Playgroundで API を見ることができます: http://localhost:8080/graphql
+フロントエンドは `.env` の `VITE_API_MODE=rest` によりRESTを利用します。
 
-主要なクエリ・ミューテーション：
-
-```graphql
-# グループ作成
-mutation CreateGroup($input: CreateGroupInput!) {
-  createGroup(input: $input) {
-    id
-    name
-    description
-    currency
-    members {
-      id
-      name
-      email
-    }
-  }
-}
-
-# グループ取得
-query GetGroup($id: ID!) {
-  group(id: $id) {
-    id
-    name
-    description
-    currency
-    members {
-      id
-      name
-      email
-    }
-  }
-}
-
-# 支払い追加
-mutation AddExpense($input: AddExpenseInput!) {
-  addExpense(input: $input) {
-    id
-    amount
-    description
-    paidById
-    paidByName
-    splitMembers {
-      memberId
-      memberName
-      amount
-    }
-  }
-}
-
-# グループの支払い履歴取得
-query GetGroupExpenses($groupId: ID!) {
-  groupExpenses(groupId: $groupId) {
-    id
-    amount
-    description
-    paidById
-    paidByName
-    splitMembers {
-      memberId
-      memberName
-      amount
-    }
-    createdAt
-  }
-}
-```
 
 ## 🤝 コントリビューション
 
@@ -418,8 +325,7 @@ query GetGroupExpenses($groupId: ID!) {
    npm run test:ci
    npm run lint:ci
    
-   # バックエンド
-   docker compose exec group-service sh -c "cd /app/services/group && go test ./..."
+   # バックエンド（Rust）: 現状は手動でユニットテストを追加して実行してください
    ```
 4. プルリクエストを作成
 
@@ -433,3 +339,20 @@ query GetGroupExpenses($groupId: ID!) {
 ## 📄 ライセンス
 
 MIT License
+# Rust REST API（ローカル動作確認）
+```bash
+# ヘルスチェック
+curl http://localhost:8080/healthz
+
+# グループ作成
+curl -X POST http://localhost:8080/groups \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name":"Demo Group",
+    "currency":"JPY",
+    "memberNames":["Alice","Bob"]
+  }'
+
+# グループ一覧
+curl http://localhost:8080/groups
+```

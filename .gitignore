@@ -41,12 +41,8 @@ coverage/
 .nyc_output
 coverage.*
 
-# Go
-*.test
-*.out
-go.work.sum
-bin/
-*/bin/
+# Rust
+backend/target
 
 # Database
 *.db
@@ -62,8 +58,7 @@ temp/
 .mise/
 
 # Generated files (exclude proto generated files from this rule)
-# *.pb.go
-# *_grpc.pb.go
+
 generated/
 
 DEPLOYMENT.md
