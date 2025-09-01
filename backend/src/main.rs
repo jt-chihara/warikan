@@ -11,6 +11,7 @@ use tracing::{info, Level};
 mod models;
 mod routes;
 use crate::models::AppState;
+use sqlx::postgres::PgPoolOptions;
 
 #[tokio::main]
 async fn main() {
@@ -19,7 +20,32 @@ async fn main() {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let state = AppState::default();
+    // Setup database connection
+    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| {
+        // Local default (docker-compose host)
+        "postgres://warikan:warikan_dev_password@localhost:5432/warikan".to_string()
+    });
+    let pool = PgPoolOptions::new()
+        .max_connections(10)
+        .connect(&db_url)
+        .await
+        .expect("failed to connect to database");
+
+    // Run SQLx migrations (tracked in sqlx_migrations table)
+    if let Err(e) = sqlx::migrate!().run(&pool).await {
+        // Strict mode by default; set SQLX_MIGRATE_STRICT=false to allow duplicate-entry warning
+        let strict = std::env::var("SQLX_MIGRATE_STRICT").map(|v| v != "false" && v != "0").unwrap_or(true);
+        let msg = e.to_string();
+        let is_dup = msg.contains("_sqlx_migrations_pkey") || msg.contains("duplicate key value") || msg.contains("23505");
+        if is_dup && !strict {
+            tracing::warn!(%msg, "duplicate migration entry detected; continuing (non-strict mode)");
+        } else {
+            panic!("failed to run migrations: {e}");
+        }
+    }
+
+    // Apply SQLx migrations (schema managed under backend/migrations)
+    let state = AppState::new(pool);
 
     let cors = CorsLayer::new()
         .allow_origin(tower_http::cors::Any)

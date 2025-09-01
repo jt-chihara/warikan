@@ -11,6 +11,7 @@ use tracing::info;
 use crate::models::{
     AppState, CalculateSettlementsRequest, CalculateSettlementsResult, MemberBalance, Settlement,
 };
+use sqlx::Row;
 
 pub async fn calculate_settlements(
     State(state): State<AppState>,
@@ -20,17 +21,24 @@ pub async fn calculate_settlements(
     info!(%group_id, expenses = req.expenses.len(), "calculate_settlements called");
     use std::cmp::Ordering;
 
-    // Load group to resolve member names
-    let store = state.0.read().await;
-    let Some(group) = store.groups.get(&group_id) else {
-        return (StatusCode::NOT_FOUND, "group not found").into_response();
+    // Load members of the group to resolve names
+    let member_rows = match sqlx::query(
+        "SELECT id, name FROM members WHERE group_id = $1",
+    )
+    .bind(group_id)
+    .fetch_all(&state.pool)
+    .await
+    {
+        Ok(rows) => rows,
+        Err(_) => return (StatusCode::NOT_FOUND, "group not found").into_response(),
     };
-
+    if member_rows.is_empty() {
+        return (StatusCode::NOT_FOUND, "group not found").into_response();
+    }
     // Initialize balances map for all members
-    let mut balances: HashMap<uuid::Uuid, i64> = group
-        .members
+    let mut balances: HashMap<uuid::Uuid, i64> = member_rows
         .iter()
-        .map(|m| (m.id, 0_i64))
+        .map(|r| (r.get::<uuid::Uuid, _>("id"), 0_i64))
         .collect();
 
     // Compute balances from provided expenses
@@ -53,10 +61,9 @@ pub async fn calculate_settlements(
     }
 
     // Build name map
-    let name_of: HashMap<uuid::Uuid, String> = group
-        .members
+    let name_of: HashMap<uuid::Uuid, String> = member_rows
         .iter()
-        .map(|m| (m.id, m.name.clone()))
+        .map(|r| (r.get::<uuid::Uuid, _>("id"), r.get::<String, _>("name")))
         .collect();
 
     // Create lists of creditors and debtors
@@ -102,16 +109,17 @@ pub async fn calculate_settlements(
     }
 
     // Build balances list with names
-    let balances_list: Vec<MemberBalance> = group
-        .members
+    let balances_list: Vec<MemberBalance> = member_rows
         .iter()
-        .map(|m| MemberBalance {
-            member_id: m.id,
-            member_name: m.name.clone(),
-            balance: *balances.get(&m.id).unwrap_or(&0),
+        .map(|r| {
+            let id: uuid::Uuid = r.get("id");
+            MemberBalance {
+                member_id: id,
+                member_name: r.get::<String, _>("name"),
+                balance: *balances.get(&id).unwrap_or(&0),
+            }
         })
         .collect();
 
     (StatusCode::OK, Json(CalculateSettlementsResult { settlements, balances: balances_list })).into_response()
 }
-
