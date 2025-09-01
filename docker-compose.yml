@@ -17,35 +17,19 @@ services:
       timeout: 5s
       retries: 5
 
-  group-service:
+  backend:
     build:
       context: ./backend
-      dockerfile: services/group/Dockerfile
-    container_name: warikan-group-service
+      dockerfile: Dockerfile
+    container_name: warikan-backend
     environment:
-      - DATABASE_URL=postgres://warikan:warikan_dev_password@db:5432/warikan?sslmode=disable
-      - GRPC_PORT=50051
-    ports:
-      - "50051:50051"
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - ./backend:/app
-
-  gateway:
-    build:
-      context: ./backend
-      dockerfile: gateway/Dockerfile
-    container_name: warikan-gateway
-    environment:
-      - GROUP_SERVICE_URL=group-service:50051
       - PORT=8080
-      - API_KEY=dev-api-key-12345
+      - RUST_LOG=info
     ports:
       - "8080:8080"
     depends_on:
-      - group-service
+      db:
+        condition: service_started
     volumes:
       - ./backend:/app
 
@@ -55,12 +39,13 @@ services:
       dockerfile: Dockerfile
     container_name: warikan-frontend
     environment:
-      - VITE_GRAPHQL_ENDPOINT=http://localhost:8080/graphql
+      - VITE_API_MODE=rest
+      - VITE_REST_ENDPOINT=http://localhost:8080
       - VITE_API_KEY=dev-api-key-12345
     ports:
       - "3000:3000"
     depends_on:
-      - gateway
+      - backend
     volumes:
       - ./frontend:/app
       - /app/node_modules

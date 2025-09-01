@@ -11,7 +11,7 @@ import {
   useUpdateExpense,
 } from '../hooks/useExpense';
 import { useCalculateSettlements, useGroup } from '../hooks/useGroup';
-import { formatDateFromGraphQL } from '../lib/dateUtils';
+import { formatTimestamp } from '../lib/dateUtils';
 import type {
   AddExpenseInput,
   Expense,
@@ -260,7 +260,7 @@ export default function GroupPage() {
             )}
             <div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-gray-500 dark:text-gray-400">
               <span>通貨: {group.currency}</span>
-              <span>作成日: {formatDateFromGraphQL(group.createdAt)}</span>
+              <span>作成日: {formatTimestamp(group.createdAt)}</span>
             </div>
           </div>
           {/* Desktop: 人数とボタンを右に表示 */}
@@ -396,7 +396,7 @@ export default function GroupPage() {
                             {expense.paidByName}が支払い
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {formatDateFromGraphQL(expense.createdAt)}
+                            {formatTimestamp(expense.createdAt)}
                           </p>
                         </div>
                         <div className="flex flex-col items-end gap-2">
