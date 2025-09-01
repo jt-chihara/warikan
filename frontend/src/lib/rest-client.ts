@@ -1,11 +1,11 @@
 import type {
-  Group,
+  AddExpenseInput,
   CreateGroupInput,
   Expense,
-  AddExpenseInput,
-  UpdateExpenseInput,
-  SettlementResult,
   ExpenseInput,
+  Group,
+  SettlementResult,
+  UpdateExpenseInput,
 } from '../types/group';
 
 const BASE_URL = (import.meta.env['VITE_REST_ENDPOINT'] as string) || 'http://localhost:8080';
@@ -32,25 +32,32 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 export const listGroups = () => apiFetch<Group[]>('/groups');
 export const getGroup = (id: string) => apiFetch<Group>(`/groups/${id}`);
 export const createGroup = (input: CreateGroupInput) =>
-  apiFetch<Group>('/groups', { method: 'POST', body: JSON.stringify({
-    name: input.name,
-    description: input.description,
-    currency: input.currency,
-    memberNames: input.memberNames,
-  }) });
-export const updateGroup = (id: string, input: { name: string; description?: string; currency: string }) =>
-  apiFetch<Group>(`/groups/${id}`, { method: 'PUT', body: JSON.stringify(input) });
+  apiFetch<Group>('/groups', {
+    method: 'POST',
+    body: JSON.stringify({
+      name: input.name,
+      description: input.description,
+      currency: input.currency,
+      memberNames: input.memberNames,
+    }),
+  });
+export const updateGroup = (
+  id: string,
+  input: { name: string; description?: string; currency: string },
+) => apiFetch<Group>(`/groups/${id}`, { method: 'PUT', body: JSON.stringify(input) });
 export const deleteGroup = (id: string) => apiFetch<void>(`/groups/${id}`, { method: 'DELETE' });
 
 // Members
 export const addMember = (groupId: string, memberName: string, memberEmail?: string) =>
-  apiFetch(`/groups/${groupId}/members`, { method: 'POST', body: JSON.stringify({ memberName, memberEmail }) });
+  apiFetch(`/groups/${groupId}/members`, {
+    method: 'POST',
+    body: JSON.stringify({ memberName, memberEmail }),
+  });
 export const removeMember = (groupId: string, memberId: string) =>
   apiFetch<void>(`/groups/${groupId}/members/${memberId}`, { method: 'DELETE' });
 
 // Expenses
-export const listExpenses = (groupId: string) =>
-  apiFetch<Expense[]>(`/groups/${groupId}/expenses`);
+export const listExpenses = (groupId: string) => apiFetch<Expense[]>(`/groups/${groupId}/expenses`);
 export const addExpense = (input: AddExpenseInput) =>
   apiFetch<Expense>(`/groups/${input.groupId}/expenses`, {
     method: 'POST',
@@ -71,7 +78,7 @@ export const updateExpense = (input: UpdateExpenseInput) =>
       splitMemberIds: input.splitMemberIds,
     }),
   });
-export const deleteExpense = (groupId: string, expenseId: string) =>
+export const deleteExpense = (_groupId: string, expenseId: string) =>
   apiFetch<void>(`/expenses/${expenseId}`, { method: 'DELETE' });
 
 // Settlements

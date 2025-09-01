@@ -1,33 +1,32 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 import {
+  calculateSettlements as calculateSettlementsRest,
   createGroup as createGroupRest,
   getGroup as getGroupRest,
-  calculateSettlements as calculateSettlementsRest,
 } from '../lib/rest-client';
+import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 
 export function useCreateGroup() {
   // REST-compatible shape
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | undefined>(undefined);
-  const mutate = useCallback(async (
-    vars:
-      | { input: CreateGroupInput }
-      | { variables: { input: CreateGroupInput } },
-  ) => {
-    try {
-      setError(undefined);
-      setLoading(true);
-      const input = 'input' in vars ? vars.input : vars.variables.input;
-      const res = await createGroupRest(input);
-      return { data: { createGroup: res } } as { data: { createGroup: Group } };
-    } catch (e) {
-      setError(e as Error);
-      throw e;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const mutate = useCallback(
+    async (vars: { input: CreateGroupInput } | { variables: { input: CreateGroupInput } }) => {
+      try {
+        setError(undefined);
+        setLoading(true);
+        const input = 'input' in vars ? vars.input : vars.variables.input;
+        const res = await createGroupRest(input);
+        return { data: { createGroup: res } } as { data: { createGroup: Group } };
+      } catch (e) {
+        setError(e as Error);
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
   return [mutate, { loading, error }] as const;
 }
 
@@ -62,7 +61,9 @@ export function useCalculateSettlements() {
     setLoading(true);
     try {
       const res = await calculateSettlementsRest(vars.groupId, vars.expenses);
-      return { data: { calculateSettlements: res } } as { data: { calculateSettlements: SettlementResult } };
+      return { data: { calculateSettlements: res } } as {
+        data: { calculateSettlements: SettlementResult };
+      };
     } finally {
       setLoading(false);
     }
