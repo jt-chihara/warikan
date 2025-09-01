@@ -1,12 +1,17 @@
 # Multi-stage build for Rust Axum API
 
-FROM rust:1.79 as builder
+FROM rust:1.83 as builder
 WORKDIR /app
 
 # Copy manifest first to leverage Docker layer cache for deps
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends pkg-config libssl-dev ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy actual source and build release binary
+# Bring in migrations for sqlx::migrate! macro at compile-time
+COPY migrations ./migrations
 COPY src ./src
 RUN cargo build --release
 

@@ -1,8 +1,7 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use tokio::sync::RwLock;
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
@@ -52,8 +51,16 @@ pub struct Store {
     pub expenses: HashMap<uuid::Uuid, Vec<Expense>>, // keyed by group_id
 }
 
-#[derive(Clone, Default)]
-pub struct AppState(pub Arc<RwLock<Store>>);
+#[derive(Clone)]
+pub struct AppState {
+    pub pool: sqlx::PgPool,
+}
+
+impl AppState {
+    pub fn new(pool: sqlx::PgPool) -> Self {
+        Self { pool }
+    }
+}
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

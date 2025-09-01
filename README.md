@@ -5,7 +5,7 @@
 ## 🏗️ アーキテクチャ
 - **フロントエンド**: React + TypeScript + Vite + TailwindCSS v4
 - **バックエンド**: REST API (Rust/Axum)
-- **データベース**: PostgreSQL 17（現状Rust APIはメモリ内データ、今後接続予定）
+- **データベース**: PostgreSQL 17（Rust REST API は PostgreSQL 接続＋sqlx migrations）
 - **開発環境**: Docker Compose
 - **テスト**: Vitest (フロントエンド)
 - **Lint/Format**: Biome (フロントエンド)
@@ -163,24 +163,24 @@ npm test
 1. Rust のコードを編集すると再ビルドが必要です
 2. REST API は `localhost:8080` で起動（`backend` サービス）
 
-### データベース操作
+### データベース / マイグレーション（sqlx）
 
 ```bash
-# データベース接続
+# sqlx-cli のインストール
+cargo install sqlx-cli --no-default-features --features postgres,rustls --locked
+
+# 環境変数（例: .env も利用可）
+export DATABASE_URL=postgres://warikan:warikan_dev_password@localhost:5432/warikan
+
+# マイグレーション適用
+cd backend
+sqlx migrate run
+
+# 新しいマイグレーションの作成（例）
+sqlx migrate add 20240902_add_indexes
+
+# DBに接続（psql）
 docker compose exec db psql -U warikan -d warikan
-
-# スキーマ手動適用（初回セットアップ時）
-docker compose exec -T db psql -U warikan -d warikan < backend/migrations/simplified_schema.sql
-
-# よく使うSQL
-SELECT * FROM groups;
-SELECT * FROM members;
-SELECT * FROM expenses;
-SELECT * FROM expense_splits;
-
-# テーブル構造確認
-\d expenses
-\d expense_splits
 ```
 
 ## 🐛 トラブルシューティング
