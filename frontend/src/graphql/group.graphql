@@ -1,0 +1,115 @@
+mutation CreateGroup($input: CreateGroupInput!) {
+  createGroup(input: $input) {
+    id
+    name
+    description
+    currency
+    createdAt
+    members {
+      id
+      name
+      email
+      joinedAt
+    }
+  }
+}
+
+query ListGroups {
+  groups {
+    id
+    name
+    description
+    currency
+    createdAt
+    updatedAt
+    members {
+      id
+      name
+    }
+  }
+}
+
+query GetGroup($id: ID!) {
+  group(id: $id) {
+    id
+    name
+    description
+    currency
+    createdAt
+    updatedAt
+    members {
+      id
+      name
+      email
+      joinedAt
+    }
+  }
+}
+
+mutation AddExpense($input: AddExpenseInput!) {
+  addExpense(input: $input) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
+mutation UpdateExpense($input: UpdateExpenseInput!) {
+  updateExpense(input: $input) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
+query GetGroupExpenses($groupId: ID!) {
+  groupExpenses(groupId: $groupId) {
+    id
+    groupId
+    amount
+    description
+    paidById
+    paidByName
+    splitMembers {
+      memberId
+      memberName
+      amount
+    }
+    createdAt
+  }
+}
+
+query CalculateSettlements($groupId: ID!, $expenses: [ExpenseInput!]!) {
+  calculateSettlements(groupId: $groupId, expenses: $expenses) {
+    settlements {
+      fromMemberId
+      toMemberId
+      amount
+      fromName
+      toName
+    }
+    balances {
+      memberId
+      memberName
+      balance
+    }
+  }
+}

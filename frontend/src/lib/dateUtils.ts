@@ -1,8 +1,8 @@
 /**
- * タイムスタンプ（Date/string/number/一部オブジェクト）を
+ * GraphQLから返されるtimestamp objectやstring値を
  * 日本語の日付文字列に変換するユーティリティ関数
  */
-export function formatTimestamp(
+export function formatDateFromGraphQL(
   dateValue: string | number | Date | { seconds?: number; value?: string } | null | undefined,
 ): string {
   // Handle object format (from GraphQL timestamppb)
