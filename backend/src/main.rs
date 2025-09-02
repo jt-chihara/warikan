@@ -1,7 +1,10 @@
 use std::net::SocketAddr;
 
 use axum::{
-    http::{HeaderName, Method},
+    body::Body,
+    http::{HeaderName, Method, Request as HttpRequest, StatusCode},
+    middleware::{self, Next},
+    response::Response,
     routing::{delete, get, post, put},
     Router,
 };
@@ -55,8 +58,8 @@ async fn main() {
             HeaderName::from_static("x-api-key"),
         ]);
 
-    let app = Router::new()
-        .route("/healthz", get(routes::health::health))
+    // Protected routes: require a valid x-api-key header matching VITE_API_KEY
+    let protected = Router::new()
         .route(
             "/groups",
             get(routes::groups::list_groups).post(routes::groups::create_group),
@@ -92,6 +95,11 @@ async fn main() {
             "/groups/:id/settlements/calculate",
             post(routes::settlements::calculate_settlements),
         )
+        .layer(middleware::from_fn(require_api_key));
+
+    let app = Router::new()
+        .route("/healthz", get(routes::health::health))
+        .merge(protected)
         .with_state(state)
         .layer(cors);
 
@@ -101,4 +109,24 @@ async fn main() {
     axum::serve(tokio::net::TcpListener::bind(addr).await.unwrap(), app)
         .await
         .unwrap();
+}
+
+// Middleware: reject requests unless header `x-api-key` matches env `VITE_API_KEY`
+async fn require_api_key(req: HttpRequest<Body>, next: Next) -> Result<Response, StatusCode> {
+    // Expected key is read from environment once per request (cheap and simple).
+    let expected = match std::env::var("VITE_API_KEY") {
+        Ok(v) if !v.is_empty() => v,
+        _ => {
+            // If no key configured, deny by default for safety.
+            return Err(StatusCode::UNAUTHORIZED);
+        }
+    };
+
+    let provided = req
+        .headers()
+        .get("x-api-key")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("");
+
+    if provided == expected { Ok(next.run(req).await) } else { Err(StatusCode::UNAUTHORIZED) }
 }
