@@ -7,29 +7,47 @@ jobs:
   test-backend:
     name: Backend Unit Tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
 
-    - name: Set up Rust (stable)
-      uses: dtolnay/rust-toolchain@stable
-
-    - name: Cache cargo builds
-      uses: Swatinem/rust-cache@v2
+    - name: Set up Go
+      uses: actions/setup-go@v5
       with:
-        workspaces: backend -> backend/target
+        go-version: '1.24.5'
 
-    - name: Install system dependencies (OpenSSL)
-      run: sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config
+    - name: Cache Go modules
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+
+    - name: Install dependencies
+      working-directory: ./backend
+      run: go work sync
 
     - name: Run backend unit tests
-      env:
-        SQLX_OFFLINE: "true"
-      run: cargo test --locked --all-targets --verbose
+      working-directory: ./backend
+      run: |
+        go test ./... -v -race -coverprofile=coverage.out
+        go tool cover -html=coverage.out -o coverage.html
+
+    - name: Run Group Service unit tests
+      working-directory: ./backend
+      run: |
+        go test ./services/group/internal/algorithm/... -v -race -coverprofile=group-coverage.out
+        go tool cover -html=group-coverage.out -o group-coverage.html
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        files: ./backend/coverage.out,./backend/group-coverage.out
+        fail_ci_if_error: false
 
   test-frontend:
     name: Frontend Unit Tests
