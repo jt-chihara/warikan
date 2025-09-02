@@ -1,72 +1,78 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  calculateSettlements as calculateSettlementsRest,
-  createGroup as createGroupRest,
-  getGroup as getGroupRest,
-} from '../lib/rest-client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import type { CreateGroupInput, ExpenseInput, Group, SettlementResult } from '../types/group';
 
-export function useCreateGroup() {
-  // REST-compatible shape
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const mutate = useCallback(
-    async (vars: { input: CreateGroupInput } | { variables: { input: CreateGroupInput } }) => {
-      try {
-        setError(undefined);
-        setLoading(true);
-        const input = 'input' in vars ? vars.input : vars.variables.input;
-        const res = await createGroupRest(input);
-        return { data: { createGroup: res } } as { data: { createGroup: Group } };
-      } catch (e) {
-        setError(e as Error);
-        throw e;
-      } finally {
-        setLoading(false);
+const CREATE_GROUP_MUTATION = gql`
+  mutation CreateGroup($input: CreateGroupInput!) {
+    createGroup(input: $input) {
+      id
+      name
+      description
+      currency
+      createdAt
+      members {
+        id
+        name
+        email
+        joinedAt
       }
-    },
-    [],
-  );
-  return [mutate, { loading, error }] as const;
+    }
+  }
+`;
+
+const GET_GROUP_QUERY = gql`
+  query GetGroup($id: ID!) {
+    group(id: $id) {
+      id
+      name
+      description
+      currency
+      createdAt
+      updatedAt
+      members {
+        id
+        name
+        email
+        joinedAt
+      }
+    }
+  }
+`;
+
+const CALCULATE_SETTLEMENTS_QUERY = gql`
+  query CalculateSettlements($groupId: ID!, $expenses: [ExpenseInput!]!) {
+    calculateSettlements(groupId: $groupId, expenses: $expenses) {
+      settlements {
+        fromMemberId
+        toMemberId
+        amount
+        fromName
+        toName
+      }
+      balances {
+        memberId
+        memberName
+        balance
+      }
+    }
+  }
+`;
+
+export function useCreateGroup() {
+  return useMutation<{ createGroup: Group }, { input: CreateGroupInput }>(CREATE_GROUP_MUTATION);
 }
 
 export function useGroup(id: string) {
-  const [data, setData] = useState<{ group: Group } | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(!!id);
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const currentId = useRef<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (!id) return;
-    currentId.current = id;
-    setLoading(true);
-    setError(undefined);
-    getGroupRest(id)
-      .then((g) => {
-        // ensure latest id
-        if (currentId.current === id) {
-          setData({ group: g });
-        }
-      })
-      .catch((e) => setError(e as Error))
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  return { data, loading, error } as const;
+  return useQuery<{ group: Group }, { id: string }>(GET_GROUP_QUERY, {
+    variables: { id },
+    skip: !id,
+  });
 }
 
 export function useCalculateSettlements() {
-  const [loading, setLoading] = useState(false);
-  const refetch = useCallback(async (vars: { groupId: string; expenses: ExpenseInput[] }) => {
-    setLoading(true);
-    try {
-      const res = await calculateSettlementsRest(vars.groupId, vars.expenses);
-      return { data: { calculateSettlements: res } } as {
-        data: { calculateSettlements: SettlementResult };
-      };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-  return { refetch, loading } as const;
+  return useQuery<
+    { calculateSettlements: SettlementResult },
+    { groupId: string; expenses: ExpenseInput[] }
+  >(CALCULATE_SETTLEMENTS_QUERY, {
+    skip: true, // Manual execution
+  });
 }

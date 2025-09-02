@@ -1,6 +1,11 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+// コンポーネントのモック
+vi.mock('./lib/apollo-client', () => ({
+  apolloClient: { cache: {}, query: vi.fn(), mutate: vi.fn() },
+}));
+
 vi.mock('./pages/HomePage', () => ({
   default: () => <div>Home Page</div>,
 }));

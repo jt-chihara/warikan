@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLocalGroups } from '../hooks/useLocalGroups';
-import { formatTimestamp } from '../lib/dateUtils';
+import { formatDateFromGraphQL } from '../lib/dateUtils';
 
 export default function HomePage() {
   const { groups } = useLocalGroups();
@@ -50,7 +50,7 @@ export default function HomePage() {
                 )}
                 <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                   <span>通貨: {group.currency}</span>
-                  <span>{formatTimestamp(group.createdAt)}</span>
+                  <span>{formatDateFromGraphQL(group.createdAt)}</span>
                 </div>
               </Link>
             ))}
