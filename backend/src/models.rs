@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
@@ -45,11 +43,7 @@ pub struct Group {
     pub members: Vec<Member>,
 }
 
-#[derive(Default)]
-pub struct Store {
-    pub groups: HashMap<uuid::Uuid, Group>,
-    pub expenses: HashMap<uuid::Uuid, Vec<Expense>>, // keyed by group_id
-}
+
 
 #[derive(Clone)]
 pub struct AppState {
@@ -151,12 +145,7 @@ mod tests {
     use super::*;
     use serde_json::{json, Value};
 
-    #[test]
-    fn test_store_default() {
-        let s = Store::default();
-        assert!(s.groups.is_empty());
-        assert!(s.expenses.is_empty());
-    }
+
 
     #[test]
     fn test_member_serde_camel_case() {
