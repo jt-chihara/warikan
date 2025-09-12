@@ -418,6 +418,8 @@ describe('GroupPage', () => {
 
   it('shows error alert when expense deletion fails', async () => {
     const user = userEvent.setup();
+    // 期待されるエラーをテスト出力に出さない（ノイズ抑制）
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     // Mock for failed deletion
     const deleteExpenseErrorMock = {
@@ -464,5 +466,8 @@ describe('GroupPage', () => {
 
     // Expense should still be there since deletion failed
     expect(screen.getByText('ランチ')).toBeInTheDocument();
+
+    // 復元
+    errorSpy.mockRestore();
   });
 });
