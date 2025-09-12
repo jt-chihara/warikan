@@ -21,7 +21,9 @@
     "codegen:watch": "graphql-codegen --watch",
     "test:e2e": "playwright test",
     "test:e2e:mobile": "playwright test --project=\"Mobile Chrome\" --project=\"Mobile Safari\" --project=\"Mobile Android\"",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@apollo/client": "^3.13.9",
@@ -40,6 +42,7 @@
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@playwright/test": "^1.55.0",
+    "@storybook/react-vite": "^9.1.5",
     "@tailwindcss/forms": "^0.5.10",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -52,6 +55,7 @@
     "autoprefixer": "^10.4.21",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.6",
+    "storybook": "^9.1.5",
     "tailwindcss": "^4.1.12",
     "typescript": "~5.9.2",
     "vite": "^7.1.5",
