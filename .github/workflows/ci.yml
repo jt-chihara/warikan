@@ -94,3 +94,15 @@ jobs:
         files: ./frontend/coverage/lcov.info
         flags: frontend
         fail_ci_if_error: false
+
+    - name: Build Storybook (static)
+      working-directory: ./frontend
+      run: npm run build-storybook
+
+    - name: Install Playwright browsers
+      working-directory: ./frontend
+      run: npx playwright install --with-deps
+
+    - name: Run Storybook interaction tests
+      working-directory: ./frontend
+      run: npx storybook test --index-url file://$PWD/storybook-static/index.html --quiet
