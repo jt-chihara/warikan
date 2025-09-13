@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 import type { Expense, Group } from '../types/group';
 import ExpenseModal from './ExpenseModal';
 
@@ -46,7 +46,23 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Create: Story = {};
+export const Create: Story = {
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.clear(canvas.getByLabelText('金額'));
+    await userEvent.type(canvas.getByLabelText('金額'), '1200');
+    await userEvent.type(canvas.getByLabelText('説明'), 'カフェ');
+    await userEvent.selectOptions(canvas.getByLabelText('支払い者'), 'u1');
+
+    await userEvent.click(canvas.getByLabelText('太郎'));
+    await userEvent.click(canvas.getByLabelText('花子'));
+
+    await userEvent.click(canvas.getByRole('button', { name: '新しい支払いを追加' }));
+
+    await expect(args.onAddExpense).toHaveBeenCalled();
+  },
+};
 
 export const Edit: Story = {
   args: {
