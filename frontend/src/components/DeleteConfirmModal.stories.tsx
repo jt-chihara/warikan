@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 
@@ -24,4 +24,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Default: Story = {
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const cancel = canvas.getByRole('button', { name: 'キャンセル' });
+    await userEvent.click(cancel);
+    await expect(args.onCancel).toHaveBeenCalled();
+
+    const confirm = canvas.getByRole('button', { name: '削除' });
+    await userEvent.click(confirm);
+    await expect(args.onConfirm).toHaveBeenCalled();
+  },
+};

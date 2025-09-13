@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Notification } from './Notification';
 
@@ -31,6 +31,12 @@ export const Success: Story = {};
 
 export const ErrorState: Story = {
   args: { type: 'error', message: 'エラーが発生しました' },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const close = canvas.getByRole('button', { name: '閉じる' });
+    await userEvent.click(close);
+    await expect(args.onClose).toHaveBeenCalled();
+  },
 };
 
 export const Info: Story = {
