@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { fn } from 'storybook/test'
-import ExpenseModal from './ExpenseModal'
-import type { Group, Expense } from '../types/group'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
+import type { Expense, Group } from '../types/group';
+import ExpenseModal from './ExpenseModal';
 
 const sampleGroup: Group = {
   id: 'g1',
@@ -13,7 +13,7 @@ const sampleGroup: Group = {
     { id: 'u2', name: '花子', joinedAt: new Date().toISOString() },
     { id: 'u3', name: '次郎', joinedAt: new Date().toISOString() },
   ],
-}
+};
 
 const sampleExpense: Expense = {
   id: 'e1',
@@ -28,7 +28,7 @@ const sampleExpense: Expense = {
     { memberId: 'u3', memberName: '次郎', amount: 1500 },
   ],
   createdAt: new Date().toISOString(),
-}
+};
 
 const meta = {
   title: 'Components/ExpenseModal',
@@ -41,17 +41,16 @@ const meta = {
     onClose: fn(),
     onAddExpense: fn(),
   },
-} satisfies Meta<typeof ExpenseModal>
+} satisfies Meta<typeof ExpenseModal>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Create: Story = {}
+export const Create: Story = {};
 
 export const Edit: Story = {
   args: {
     expense: sampleExpense,
     onUpdateExpense: fn(),
   },
-}
-
+};

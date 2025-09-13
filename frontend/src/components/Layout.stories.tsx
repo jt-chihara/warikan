@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import Layout from './Layout'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import Layout from './Layout';
 
 const meta = {
   title: 'Components/Layout',
@@ -8,10 +8,10 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
-} satisfies Meta<typeof Layout>
+} satisfies Meta<typeof Layout>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
@@ -24,5 +24,4 @@ export const Default: Story = {
       </div>
     </Layout>
   ),
-}
-
+};

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { fn } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
-import { Notification } from './Notification'
+import { Notification } from './Notification';
 
 const meta = {
   title: 'Components/Notification',
@@ -22,18 +22,17 @@ const meta = {
       options: ['success', 'error', 'info'],
     },
   },
-} satisfies Meta<typeof Notification>
+} satisfies Meta<typeof Notification>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Success: Story = {}
+export const Success: Story = {};
 
-export const Error: Story = {
+export const ErrorState: Story = {
   args: { type: 'error', message: 'エラーが発生しました' },
-}
+};
 
 export const Info: Story = {
   args: { type: 'info', message: 'お知らせです' },
-}
-
+};

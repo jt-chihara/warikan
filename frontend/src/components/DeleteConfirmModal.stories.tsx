@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react-vite'
-import { fn } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 
-import { DeleteConfirmModal } from './DeleteConfirmModal'
+import { DeleteConfirmModal } from './DeleteConfirmModal';
 
 const meta = {
   title: 'Components/DeleteConfirmModal',
@@ -19,10 +19,9 @@ const meta = {
     onConfirm: fn(),
     onCancel: fn(),
   },
-} satisfies Meta<typeof DeleteConfirmModal>
+} satisfies Meta<typeof DeleteConfirmModal>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {}
-
+export const Default: Story = {};
