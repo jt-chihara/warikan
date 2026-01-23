@@ -1,5 +1,5 @@
 // Protobuf Timestamp型の定義
-export interface Timestamp {
+interface Timestamp {
   seconds: number;
   nanos: number;
 }

@@ -31,7 +31,7 @@ export interface DailyExpenseData {
 }
 
 // カテゴリ別データ（支払い内容から推測）
-export interface CategoryData {
+interface CategoryData {
   category: string;
   amount: number;
   count: number;
