@@ -6,12 +6,7 @@ import { ErrorModal } from './ErrorModal';
 describe('ErrorModal', () => {
   it('renders nothing when isOpen is false', () => {
     render(
-      <ErrorModal
-        isOpen={false}
-        title="エラー"
-        message="テストメッセージ"
-        onClose={vi.fn()}
-      />,
+      <ErrorModal isOpen={false} title="エラー" message="テストメッセージ" onClose={vi.fn()} />,
     );
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -19,12 +14,7 @@ describe('ErrorModal', () => {
 
   it('renders modal when isOpen is true', () => {
     render(
-      <ErrorModal
-        isOpen={true}
-        title="エラー"
-        message="テストメッセージ"
-        onClose={vi.fn()}
-      />,
+      <ErrorModal isOpen={true} title="エラー" message="テストメッセージ" onClose={vi.fn()} />,
     );
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
@@ -37,12 +27,7 @@ describe('ErrorModal', () => {
     const handleClose = vi.fn();
 
     render(
-      <ErrorModal
-        isOpen={true}
-        title="エラー"
-        message="テストメッセージ"
-        onClose={handleClose}
-      />,
+      <ErrorModal isOpen={true} title="エラー" message="テストメッセージ" onClose={handleClose} />,
     );
 
     await user.click(screen.getByRole('button', { name: 'OK' }));
@@ -55,12 +40,7 @@ describe('ErrorModal', () => {
     const handleClose = vi.fn();
 
     render(
-      <ErrorModal
-        isOpen={true}
-        title="エラー"
-        message="テストメッセージ"
-        onClose={handleClose}
-      />,
+      <ErrorModal isOpen={true} title="エラー" message="テストメッセージ" onClose={handleClose} />,
     );
 
     await user.click(screen.getByLabelText('モーダルを閉じる'));
@@ -73,12 +53,7 @@ describe('ErrorModal', () => {
     const handleClose = vi.fn();
 
     render(
-      <ErrorModal
-        isOpen={true}
-        title="エラー"
-        message="テストメッセージ"
-        onClose={handleClose}
-      />,
+      <ErrorModal isOpen={true} title="エラー" message="テストメッセージ" onClose={handleClose} />,
     );
 
     await user.keyboard('{Escape}');
