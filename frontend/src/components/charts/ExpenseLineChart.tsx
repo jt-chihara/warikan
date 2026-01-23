@@ -35,8 +35,8 @@ export default function ExpenseLineChart({ data, currency = 'JPY' }: ExpenseLine
                 const date = new Date(value as string);
                 return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
               }}
-              formatter={(value: number, name: string) => [
-                formatCurrency(value, currency),
+              formatter={(value, name) => [
+                formatCurrency(value as number, currency),
                 name === 'amount' ? '支払い額' : '件数',
               ]}
               contentStyle={{

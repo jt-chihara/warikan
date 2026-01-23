@@ -39,8 +39,8 @@ export default function MonthlyBarChart({ data, currency = 'JPY' }: MonthlyBarCh
                 const [year, month] = (value as string).split('-');
                 return `${year}年${month}月`;
               }}
-              formatter={(value: number, name: string) => [
-                name === 'amount' ? formatCurrency(value, currency) : `${value}件`,
+              formatter={(value, name) => [
+                name === 'amount' ? formatCurrency(value as number, currency) : `${value}件`,
                 name === 'amount' ? '支払い額' : '件数',
               ]}
               contentStyle={{

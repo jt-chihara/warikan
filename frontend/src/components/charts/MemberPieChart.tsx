@@ -31,9 +31,10 @@ export default function MemberPieChart({ data, currency = 'JPY' }: MemberPieChar
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ memberName, percent }) =>
-                `${memberName}: ${((percent || 0) * 100).toFixed(1)}%`
-              }
+              label={(props) => {
+                const { percent, payload } = props as { percent?: number; payload?: MemberExpenseData };
+                return `${payload?.memberName ?? ''}: ${((percent || 0) * 100).toFixed(1)}%`;
+              }}
               outerRadius={80}
               fill="#8884d8"
               dataKey="totalPaid"
@@ -50,9 +51,9 @@ export default function MemberPieChart({ data, currency = 'JPY' }: MemberPieChar
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number, _name: string, props) => [
-                formatCurrency(value, currency),
-                `${props.payload.memberName}の支払い額`,
+              formatter={(value, _name, props) => [
+                formatCurrency(value as number, currency),
+                `${(props.payload as MemberExpenseData).memberName}の支払い額`,
               ]}
               contentStyle={{
                 backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
