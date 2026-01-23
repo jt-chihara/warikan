@@ -32,7 +32,10 @@ export default function MemberPieChart({ data, currency = 'JPY' }: MemberPieChar
               cy="50%"
               labelLine={false}
               label={(props) => {
-                const { percent, payload } = props as { percent?: number; payload?: MemberExpenseData };
+                const { percent, payload } = props as {
+                  percent?: number;
+                  payload?: MemberExpenseData;
+                };
                 return `${payload?.memberName ?? ''}: ${((percent || 0) * 100).toFixed(1)}%`;
               }}
               outerRadius={80}
