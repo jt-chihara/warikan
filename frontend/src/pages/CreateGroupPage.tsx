@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ErrorModal } from '../components/ErrorModal';
 import { useCreateGroup } from '../hooks/useGroup';
 import { useLocalGroups } from '../hooks/useLocalGroups';
 import type { CreateGroupInput } from '../types/group';
@@ -17,6 +18,10 @@ export default function CreateGroupPage() {
   const [description, setDescription] = useState('');
   const [currency] = useState('JPY');
   const [members, setMembers] = useState<MemberInput[]>([{ id: crypto.randomUUID(), name: '' }]);
+  const [errorModal, setErrorModal] = useState<{ isOpen: boolean; message: string }>({
+    isOpen: false,
+    message: '',
+  });
 
   const handleAddMember = () => {
     setMembers([...members, { id: crypto.randomUUID(), name: '' }]);
@@ -35,13 +40,17 @@ export default function CreateGroupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Filter out empty member names
-    const validMembers = members
-      .filter((member) => member.name.trim() !== '')
-      .map((member) => member.name.trim());
+    // Check if any member name is empty
+    const hasEmptyMember = members.some((member) => member.name.trim() === '');
+    if (hasEmptyMember) {
+      setErrorModal({ isOpen: true, message: 'すべてのメンバー名を入力してください。' });
+      return;
+    }
 
-    if (validMembers.length === 0) {
-      alert('少なくとも1人のメンバーを追加してください。');
+    const memberNames = members.map((member) => member.name.trim());
+
+    if (memberNames.length < 2) {
+      setErrorModal({ isOpen: true, message: '割り勘には少なくとも2人のメンバーが必要です。' });
       return;
     }
 
@@ -50,7 +59,7 @@ export default function CreateGroupPage() {
         name: groupName,
         ...(description.trim() && { description: description.trim() }),
         currency,
-        memberNames: validMembers,
+        memberNames,
       };
 
       const result = await createGroup({ variables: { input } });
@@ -67,6 +76,13 @@ export default function CreateGroupPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-0">
+      <ErrorModal
+        isOpen={errorModal.isOpen}
+        title="入力エラー"
+        message={errorModal.message}
+        onClose={() => setErrorModal({ isOpen: false, message: '' })}
+      />
+
       <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
         新しいグループを作成
       </h2>
