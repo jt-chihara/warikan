@@ -3,7 +3,7 @@ import { timestampToDate, timestampToString } from './timestampUtils';
 
 describe('timestampUtils', () => {
   describe('timestampToDate', () => {
-    it('should convert Timestamp object to Date', () => {
+    it('TimestampオブジェクトをDateに変換する', () => {
       const timestamp = {
         seconds: 1753447425,
         nanos: 322253000,
@@ -14,7 +14,7 @@ describe('timestampUtils', () => {
       expect(date.getTime()).toBe(1753447425322); // seconds * 1000 + nanos / 1000000
     });
 
-    it('should handle string timestamp', () => {
+    it('文字列のタイムスタンプを処理する', () => {
       const timestamp = '2025-01-25T12:00:00Z';
       const date = timestampToDate(timestamp);
 
@@ -22,7 +22,7 @@ describe('timestampUtils', () => {
       expect(date.toISOString()).toBe('2025-01-25T12:00:00.000Z');
     });
 
-    it('should handle zero nanos', () => {
+    it('nanosが0の場合を処理する', () => {
       const timestamp = {
         seconds: 1753447425,
         nanos: 0,
@@ -34,7 +34,7 @@ describe('timestampUtils', () => {
   });
 
   describe('timestampToString', () => {
-    it('should convert Timestamp object to ISO string', () => {
+    it('TimestampオブジェクトをISO文字列に変換する', () => {
       const timestamp = {
         seconds: 1753447425,
         nanos: 322253000,
@@ -44,7 +44,7 @@ describe('timestampUtils', () => {
       expect(dateString).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     });
 
-    it('should handle string timestamp', () => {
+    it('文字列のタイムスタンプを処理する', () => {
       const timestamp = '2025-01-25T12:00:00Z';
       const dateString = timestampToString(timestamp);
 

@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Mobile Button Tap Feedback', () => {
+test.describe('モバイルボタンタップフィードバック', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('Homepage create group button has active states on mobile', async ({ page, isMobile }) => {
+  test('ホームページのグループ作成ボタンがモバイルでアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     const createButton = page.getByRole('link', { name: '新しいグループを作成する' });
@@ -17,7 +17,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     await expect(createButton).toHaveClass(/transition-all/);
   });
 
-  test('Group cards have active states on mobile', async ({ page, isMobile }) => {
+  test('グループカードがモバイルでアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     // Create a mock group first by navigating to create page
@@ -32,7 +32,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     await expect(createButton).toHaveClass(/active:scale-95/);
   });
 
-  test('Create group page buttons have active states', async ({ page, isMobile }) => {
+  test('グループ作成ページのボタンがアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     await page.goto('/groups/new');
@@ -53,7 +53,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     await expect(createButton).toHaveClass(/active:scale-95/);
   });
 
-  test('Modal buttons have active states', async ({ page, isMobile }) => {
+  test('モーダルボタンがアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     // Navigate to create group and create a test group
@@ -94,7 +94,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     await expect(firstCheckbox).toHaveClass(/active:scale-98/);
   });
 
-  test('Tab buttons have active states', async ({ page, isMobile }) => {
+  test('タブボタンがアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     // Create a test group first
@@ -112,7 +112,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     await expect(settlementTab).toHaveClass(/active:scale-95/);
   });
 
-  test('Analytics page back button has active states', async ({ page, isMobile }) => {
+  test('分析ページの戻るボタンがアクティブ状態を持つ', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     // Create a test group
@@ -135,7 +135,7 @@ test.describe('Mobile Button Tap Feedback', () => {
     expect(className).toContain('active:scale-95');
   });
 
-  test('Visual button feedback on actual tap', async ({ page, isMobile }) => {
+  test('実際のタップでボタンの視覚フィードバックが動作する', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'This test is only for mobile devices');
     
     const createButton = page.getByRole('link', { name: '新しいグループを作成する' });
@@ -149,8 +149,8 @@ test.describe('Mobile Button Tap Feedback', () => {
   });
 });
 
-test.describe('Desktop Button States', () => {
-  test('Desktop buttons have hover and focus states', async ({ page, isMobile }) => {
+test.describe('デスクトップボタン状態', () => {
+  test('デスクトップボタンがホバーとフォーカス状態を持つ', async ({ page, isMobile }) => {
     test.skip(isMobile, 'This test is only for desktop devices');
     
     await page.goto('/');

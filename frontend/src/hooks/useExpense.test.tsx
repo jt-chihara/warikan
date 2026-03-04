@@ -89,7 +89,7 @@ const DELETE_EXPENSE = gql`
 `;
 
 describe('useAddExpense', () => {
-  it('adds expense successfully', async () => {
+  it('支払いを正常に追加する', async () => {
     const addExpenseMock = {
       request: {
         query: ADD_EXPENSE,
@@ -122,7 +122,7 @@ describe('useAddExpense', () => {
     });
   });
 
-  it('handles add expense errors', async () => {
+  it('支払い追加エラーを処理する', async () => {
     const errorMock = {
       request: {
         query: ADD_EXPENSE,
@@ -150,7 +150,7 @@ describe('useAddExpense', () => {
     });
   });
 
-  it('returns loading state correctly', () => {
+  it('ローディング状態を正しく返す', () => {
     const { result } = renderHook(() => useAddExpense(), {
       wrapper: ({ children }) => (
         <MockedProvider mocks={[]} addTypename={false}>
@@ -167,7 +167,7 @@ describe('useAddExpense', () => {
 });
 
 describe('useGroupExpenses', () => {
-  it('fetches group expenses successfully', async () => {
+  it('グループの支払い一覧を正常に取得する', async () => {
     const getGroupExpensesMock = {
       request: {
         query: GET_GROUP_EXPENSES,
@@ -194,7 +194,7 @@ describe('useGroupExpenses', () => {
     });
   });
 
-  it('skips query when groupId is empty', () => {
+  it('groupIdが空の場合クエリをスキップする', () => {
     const { result } = renderHook(() => useGroupExpenses(''), {
       wrapper: ({ children }) => (
         <MockedProvider mocks={[]} addTypename={false}>
@@ -207,7 +207,7 @@ describe('useGroupExpenses', () => {
     expect(result.current.data).toBeUndefined();
   });
 
-  it('handles fetch expenses errors', async () => {
+  it('支払い取得エラーを処理する', async () => {
     const errorMock = {
       request: {
         query: GET_GROUP_EXPENSES,
@@ -230,7 +230,7 @@ describe('useGroupExpenses', () => {
     });
   });
 
-  it('returns empty data initially', async () => {
+  it('初期状態で空のデータを返す', async () => {
     const getGroupExpensesMock = {
       request: {
         query: GET_GROUP_EXPENSES,
@@ -259,7 +259,7 @@ describe('useGroupExpenses', () => {
     });
   });
 
-  it('handles multiple expenses correctly', async () => {
+  it('複数の支払いを正しく処理する', async () => {
     const getGroupExpensesMock = {
       request: {
         query: GET_GROUP_EXPENSES,
@@ -287,7 +287,7 @@ describe('useGroupExpenses', () => {
 });
 
 describe('useDeleteExpense', () => {
-  it('deletes expense successfully', async () => {
+  it('支払いを正常に削除する', async () => {
     const deleteExpenseMock = {
       request: {
         query: DELETE_EXPENSE,
@@ -320,7 +320,7 @@ describe('useDeleteExpense', () => {
     });
   });
 
-  it('handles delete expense errors', async () => {
+  it('支払い削除エラーを処理する', async () => {
     const errorMock = {
       request: {
         query: DELETE_EXPENSE,
@@ -348,7 +348,7 @@ describe('useDeleteExpense', () => {
     });
   });
 
-  it('returns loading state correctly', () => {
+  it('ローディング状態を正しく返す', () => {
     const { result } = renderHook(() => useDeleteExpense(), {
       wrapper: ({ children }) => (
         <MockedProvider mocks={[]} addTypename={false}>
@@ -363,7 +363,7 @@ describe('useDeleteExpense', () => {
     expect(error).toBeUndefined();
   });
 
-  it('handles successful deletion with false response', async () => {
+  it('falseレスポンスでの削除成功を処理する', async () => {
     const deleteExpenseMock = {
       request: {
         query: DELETE_EXPENSE,

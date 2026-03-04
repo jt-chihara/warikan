@@ -13,7 +13,7 @@ describe('Notification', () => {
     vi.clearAllMocks();
   });
 
-  it('renders notification with default success type', () => {
+  it('デフォルトのsuccessタイプで通知を表示する', () => {
     render(<Notification {...defaultProps} />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe('Notification', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('renders notification with error type', () => {
+  it('errorタイプで通知を表示する', () => {
     render(<Notification {...defaultProps} type="error" />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
@@ -32,7 +32,7 @@ describe('Notification', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('renders notification with info type', () => {
+  it('infoタイプで通知を表示する', () => {
     render(<Notification {...defaultProps} type="info" />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('Notification', () => {
     expect(container).toBeInTheDocument();
   });
 
-  it('calls onClose when close button is clicked', async () => {
+  it('閉じるボタンクリック時にonCloseが呼ばれる', async () => {
     const user = userEvent.setup();
     render(<Notification {...defaultProps} />);
 
@@ -51,7 +51,7 @@ describe('Notification', () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('has correct icon colors for different types', () => {
+  it('タイプごとに正しいアイコン色を持つ', () => {
     const { rerender } = render(<Notification {...defaultProps} type="success" />);
 
     let icon = document.querySelector('.text-green-400');
@@ -66,7 +66,7 @@ describe('Notification', () => {
     expect(icon).toBeInTheDocument();
   });
 
-  it('renders CheckCircleIcon with proper attributes', () => {
+  it('CheckCircleIconを正しい属性で表示する', () => {
     render(<Notification {...defaultProps} />);
 
     const icon = document.querySelector('svg[aria-hidden="true"]');
@@ -74,7 +74,7 @@ describe('Notification', () => {
     expect(icon).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('has correct positioning classes', () => {
+  it('正しい位置指定クラスを持つ', () => {
     render(<Notification {...defaultProps} />);
 
     const outerContainer = document.querySelector('.pointer-events-none.fixed.inset-0');
@@ -85,7 +85,7 @@ describe('Notification', () => {
     expect(outerContainer).toHaveClass('z-50');
   });
 
-  it('handles different message props correctly', () => {
+  it('異なるmessageプロパティを正しく処理する', () => {
     const { rerender } = render(<Notification {...defaultProps} />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();
@@ -95,7 +95,7 @@ describe('Notification', () => {
     expect(screen.getByText('別の通知メッセージ')).toBeInTheDocument();
   });
 
-  it('renders with proper accessibility attributes', () => {
+  it('正しいアクセシビリティ属性で表示する', () => {
     render(<Notification {...defaultProps} />);
 
     const closeButton = screen.getByRole('button', { name: '閉じる' });
@@ -105,7 +105,7 @@ describe('Notification', () => {
     expect(icon).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('uses custom duration when provided', () => {
+  it('カスタムdurationが指定された場合に使用する', () => {
     render(<Notification {...defaultProps} duration={5000} />);
 
     expect(screen.getByText('テスト通知メッセージ')).toBeInTheDocument();

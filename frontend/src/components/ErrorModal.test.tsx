@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { ErrorModal } from './ErrorModal';
 
 describe('ErrorModal', () => {
-  it('renders nothing when isOpen is false', () => {
+  it('isOpenがfalseの場合は何も表示しない', () => {
     render(
       <ErrorModal isOpen={false} title="エラー" message="テストメッセージ" onClose={vi.fn()} />,
     );
@@ -12,7 +12,7 @@ describe('ErrorModal', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('renders modal when isOpen is true', () => {
+  it('isOpenがtrueの場合にモーダルを表示する', () => {
     render(
       <ErrorModal isOpen={true} title="エラー" message="テストメッセージ" onClose={vi.fn()} />,
     );
@@ -22,7 +22,7 @@ describe('ErrorModal', () => {
     expect(screen.getByText('テストメッセージ')).toBeInTheDocument();
   });
 
-  it('calls onClose when OK button is clicked', async () => {
+  it('OKボタンクリック時にonCloseが呼ばれる', async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
 
@@ -35,7 +35,7 @@ describe('ErrorModal', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when backdrop is clicked', async () => {
+  it('背景クリック時にonCloseが呼ばれる', async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
 
@@ -48,7 +48,7 @@ describe('ErrorModal', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when Escape key is pressed', async () => {
+  it('Escapeキー押下時にonCloseが呼ばれる', async () => {
     const user = userEvent.setup();
     const handleClose = vi.fn();
 
@@ -61,7 +61,7 @@ describe('ErrorModal', () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
-  it('uses custom button text when provided', () => {
+  it('カスタムボタンテキストが指定された場合に使用する', () => {
     render(
       <ErrorModal
         isOpen={true}

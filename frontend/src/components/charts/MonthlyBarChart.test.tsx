@@ -42,7 +42,7 @@ describe('MonthlyBarChart', () => {
     { month: '2025-03', amount: 12000, count: 6 },
   ];
 
-  it('should render the chart title', () => {
+  it('チャートタイトルを表示する', () => {
     render(
       <DarkModeProvider>
         <MonthlyBarChart data={mockData} />
@@ -52,7 +52,7 @@ describe('MonthlyBarChart', () => {
     expect(screen.getByText('月別支払い推移')).toBeInTheDocument();
   });
 
-  it('should render bar chart components', () => {
+  it('棒グラフコンポーネントを表示する', () => {
     render(
       <DarkModeProvider>
         <MonthlyBarChart data={mockData} />
@@ -66,7 +66,7 @@ describe('MonthlyBarChart', () => {
     expect(screen.getByTestId('tooltip')).toBeInTheDocument();
   });
 
-  it('should show empty message when no data', () => {
+  it('データがない場合に空メッセージを表示する', () => {
     render(
       <DarkModeProvider>
         <MonthlyBarChart data={[]} />
@@ -77,7 +77,7 @@ describe('MonthlyBarChart', () => {
     expect(screen.queryByTestId('bar-chart')).not.toBeInTheDocument();
   });
 
-  it('should handle custom currency', () => {
+  it('カスタム通貨を処理する', () => {
     render(
       <DarkModeProvider>
         <MonthlyBarChart data={mockData} currency="USD" />

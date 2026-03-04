@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import TermsOfServicePage from './TermsOfServicePage';
 
 describe('TermsOfServicePage', () => {
-  it('renders terms of service page correctly', () => {
+  it('利用規約ページを正しく表示する', () => {
     render(<TermsOfServicePage />);
 
     // ページタイトルが表示されることを確認
@@ -24,7 +24,7 @@ describe('TermsOfServicePage', () => {
     expect(screen.getByText('第12条（準拠法・裁判管轄）')).toBeInTheDocument();
   });
 
-  it('displays service description', () => {
+  it('サービス説明を表示する', () => {
     render(<TermsOfServicePage />);
 
     expect(
@@ -34,7 +34,7 @@ describe('TermsOfServicePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows prohibited actions list', () => {
+  it('禁止事項一覧を表示する', () => {
     render(<TermsOfServicePage />);
 
     expect(screen.getByText('法令または公序良俗に違反する行為')).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('TermsOfServicePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays service suspension conditions', () => {
+  it('サービス停止条件を表示する', () => {
     render(<TermsOfServicePage />);
 
     expect(
@@ -61,14 +61,14 @@ describe('TermsOfServicePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows terms creation and update dates', () => {
+  it('規約の制定日と最終更新日を表示する', () => {
     render(<TermsOfServicePage />);
 
     expect(screen.getByText('制定日：2025年7月23日')).toBeInTheDocument();
     expect(screen.getByText('最終更新日：2025年7月23日')).toBeInTheDocument();
   });
 
-  it('has proper semantic structure', () => {
+  it('正しいセマンティック構造を持つ', () => {
     render(<TermsOfServicePage />);
 
     // h1要素が存在することを確認
@@ -79,7 +79,7 @@ describe('TermsOfServicePage', () => {
     expect(headings).toHaveLength(12); // 12の条項
   });
 
-  it('displays copyright and disclaimer sections', () => {
+  it('著作権と免責事項セクションを表示する', () => {
     render(<TermsOfServicePage />);
 
     // 著作権関連の文言
@@ -91,7 +91,7 @@ describe('TermsOfServicePage', () => {
     expect(screen.getByText(/当方は、本サービスに事実上または法律上の瑕疵/)).toBeInTheDocument();
   });
 
-  it('shows jurisdiction information', () => {
+  it('管轄情報を表示する', () => {
     render(<TermsOfServicePage />);
 
     expect(

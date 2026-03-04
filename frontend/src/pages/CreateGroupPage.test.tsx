@@ -49,7 +49,7 @@ describe('CreateGroupPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders create group form', () => {
+  it('グループ作成フォームを表示する', () => {
     renderCreateGroupPage();
 
     expect(screen.getByText('新しいグループを作成')).toBeInTheDocument();
@@ -66,7 +66,7 @@ describe('CreateGroupPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('has initial member input field', () => {
+  it('初期メンバー入力フィールドを持つ', () => {
     renderCreateGroupPage();
 
     const memberInputs = screen.getAllByPlaceholderText('メンバー名');
@@ -74,7 +74,7 @@ describe('CreateGroupPage', () => {
     expect(memberInputs[0]).toHaveValue('');
   });
 
-  it('adds member input field when "メンバーを追加" is clicked', async () => {
+  it('「メンバーを追加」クリック時にメンバー入力フィールドを追加する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -85,7 +85,7 @@ describe('CreateGroupPage', () => {
     expect(memberInputs).toHaveLength(2);
   });
 
-  it('removes member input field when "削除" is clicked', async () => {
+  it('「削除」クリック時にメンバー入力フィールドを削除する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -101,14 +101,14 @@ describe('CreateGroupPage', () => {
     expect(memberInputs).toHaveLength(1);
   });
 
-  it('does not show remove button when only one member exists', () => {
+  it('メンバーが1人の場合に削除ボタンを表示しない', () => {
     renderCreateGroupPage();
 
     const removeButtons = screen.queryAllByRole('button', { name: 'メンバーを削除' });
     expect(removeButtons).toHaveLength(0);
   });
 
-  it('updates member name when typing in input field', async () => {
+  it('入力フィールドへの入力時にメンバー名を更新する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -118,7 +118,7 @@ describe('CreateGroupPage', () => {
     expect(memberInput).toHaveValue('Alice');
   });
 
-  it('shows error modal when submitting without members', async () => {
+  it('メンバーなしで送信時にエラーモーダルを表示する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -134,7 +134,7 @@ describe('CreateGroupPage', () => {
     expect(screen.getByText('すべてのメンバー名を入力してください。')).toBeInTheDocument();
   });
 
-  it('shows error modal when submitting with only one member', async () => {
+  it('メンバー1人で送信時にエラーモーダルを表示する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -153,7 +153,7 @@ describe('CreateGroupPage', () => {
     expect(mockCreateGroup).not.toHaveBeenCalled();
   });
 
-  it('closes error modal when OK button is clicked', async () => {
+  it('OKボタンクリック時にエラーモーダルを閉じる', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -173,7 +173,7 @@ describe('CreateGroupPage', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('creates group successfully with valid data', async () => {
+  it('有効なデータでグループを正常に作成する', async () => {
     const user = userEvent.setup();
     const mockGroupData = {
       id: 'test-group-id',
@@ -222,7 +222,7 @@ describe('CreateGroupPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/groups/test-group-id');
   });
 
-  it('includes description when provided', async () => {
+  it('説明が指定された場合に含める', async () => {
     const user = userEvent.setup();
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: { id: 'test-id' } },
@@ -261,7 +261,7 @@ describe('CreateGroupPage', () => {
     });
   });
 
-  it('handles create group error', async () => {
+  it('グループ作成エラーを処理する', async () => {
     const user = userEvent.setup();
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -290,7 +290,7 @@ describe('CreateGroupPage', () => {
     consoleError.mockRestore();
   });
 
-  it('navigates to home when cancel button is clicked', async () => {
+  it('キャンセルボタンクリック時にホームに遷移する', async () => {
     const user = userEvent.setup();
     renderCreateGroupPage();
 
@@ -302,7 +302,7 @@ describe('CreateGroupPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 
-  it('trims whitespace from member names', async () => {
+  it('メンバー名の空白をトリムする', async () => {
     const user = userEvent.setup();
     mockCreateGroup.mockResolvedValue({
       data: { createGroup: { id: 'test-id' } },
@@ -337,7 +337,7 @@ describe('CreateGroupPage', () => {
     });
   });
 
-  it('shows error modal when any member name is empty', async () => {
+  it('メンバー名が空の場合にエラーモーダルを表示する', async () => {
     const user = userEvent.setup();
 
     renderCreateGroupPage();

@@ -98,7 +98,7 @@ const CALCULATE_SETTLEMENTS_QUERY = gql`
 `;
 
 describe('useCreateGroup', () => {
-  it('creates a group successfully', async () => {
+  it('グループを正常に作成する', async () => {
     const createGroupMock = {
       request: {
         query: CREATE_GROUP_MUTATION,
@@ -131,7 +131,7 @@ describe('useCreateGroup', () => {
     });
   });
 
-  it('handles create group errors', async () => {
+  it('グループ作成エラーを処理する', async () => {
     const errorMock = {
       request: {
         query: CREATE_GROUP_MUTATION,
@@ -161,7 +161,7 @@ describe('useCreateGroup', () => {
 });
 
 describe('useGroup', () => {
-  it('fetches group data successfully', async () => {
+  it('グループデータを正常に取得する', async () => {
     const getGroupMock = {
       request: {
         query: GET_GROUP_QUERY,
@@ -188,7 +188,7 @@ describe('useGroup', () => {
     });
   });
 
-  it('skips query when id is empty', () => {
+  it('idが空の場合クエリをスキップする', () => {
     const { result } = renderHook(() => useGroup(''), {
       wrapper: ({ children }) => (
         <MockedProvider mocks={[]} addTypename={false}>
@@ -201,7 +201,7 @@ describe('useGroup', () => {
     expect(result.current.data).toBeUndefined();
   });
 
-  it('handles fetch group errors', async () => {
+  it('グループ取得エラーを処理する', async () => {
     const errorMock = {
       request: {
         query: GET_GROUP_QUERY,
@@ -226,7 +226,7 @@ describe('useGroup', () => {
 });
 
 describe('useCalculateSettlements', () => {
-  it('calculates settlements successfully', async () => {
+  it('精算を正常に計算する', async () => {
     const mockExpenses: ExpenseInput[] = [
       {
         id: 'expense-1',
@@ -272,7 +272,7 @@ describe('useCalculateSettlements', () => {
     expect(refetchResult?.data.calculateSettlements).toEqual(mockSettlementResult);
   });
 
-  it('is initially skipped', () => {
+  it('初期状態でスキップされる', () => {
     const { result } = renderHook(() => useCalculateSettlements(), {
       wrapper: ({ children }) => (
         <MockedProvider mocks={[]} addTypename={false}>

@@ -59,36 +59,36 @@ const mockExpenses: Expense[] = [
 
 describe('chartUtils', () => {
   describe('formatDateForChart', () => {
-    it('formats date string correctly', () => {
+    it('日付文字列を正しくフォーマットする', () => {
       const result = formatDateForChart('2024-01-15T12:00:00Z');
       expect(result).toBe('2024-01-15');
     });
 
-    it('handles different date formats', () => {
+    it('異なる日付フォーマットを処理する', () => {
       const result = formatDateForChart('2024-02-29T23:59:59.999Z');
       expect(result).toBe('2024-02-29');
     });
   });
 
   describe('formatCurrency', () => {
-    it('formats JPY currency correctly', () => {
+    it('JPY通貨を正しくフォーマットする', () => {
       const result = formatCurrency(1000, 'JPY');
       expect(result).toBe('￥1,000');
     });
 
-    it('formats with default JPY currency', () => {
+    it('デフォルトのJPY通貨でフォーマットする', () => {
       const result = formatCurrency(1500);
       expect(result).toBe('￥1,500');
     });
 
-    it('handles zero amount', () => {
+    it('金額0を処理する', () => {
       const result = formatCurrency(0);
       expect(result).toBe('￥0');
     });
   });
 
   describe('aggregateExpensesByMonth', () => {
-    it('aggregates expenses by month correctly', () => {
+    it('月別に支払いを正しく集計する', () => {
       const result = aggregateExpensesByMonth(mockExpenses);
 
       expect(result).toHaveLength(2);
@@ -104,14 +104,14 @@ describe('chartUtils', () => {
       });
     });
 
-    it('returns empty array for no expenses', () => {
+    it('支払いがない場合に空の配列を返す', () => {
       const result = aggregateExpensesByMonth([]);
       expect(result).toEqual([]);
     });
   });
 
   describe('aggregateExpensesByMember', () => {
-    it('aggregates expenses by member correctly', () => {
+    it('メンバー別に支払いを正しく集計する', () => {
       const result = aggregateExpensesByMember(mockExpenses, mockMembers);
 
       expect(result).toHaveLength(2);
@@ -136,7 +136,7 @@ describe('chartUtils', () => {
       });
     });
 
-    it('handles members with no expenses', () => {
+    it('支払いがないメンバーを処理する', () => {
       const membersWithNoExpenses = [
         ...mockMembers,
         { id: 'member3', name: 'Charlie', email: 'charlie@example.com', joinedAt: '2024-01-01' },
@@ -151,7 +151,7 @@ describe('chartUtils', () => {
   });
 
   describe('aggregateExpensesByCategory', () => {
-    it('categorizes expenses correctly', () => {
+    it('支払いを正しくカテゴリ分けする', () => {
       const result = aggregateExpensesByCategory(mockExpenses);
 
       expect(result).toHaveLength(3);
@@ -170,7 +170,7 @@ describe('chartUtils', () => {
       });
     });
 
-    it('handles unknown categories as その他', () => {
+    it('不明なカテゴリを「その他」として処理する', () => {
       const unknownExpense: Expense = {
         id: 'expense4',
         groupId: 'group1',
@@ -195,7 +195,7 @@ describe('chartUtils', () => {
   });
 
   describe('aggregateExpensesByDay', () => {
-    it('returns 30 days of data', () => {
+    it('30日分のデータを返す', () => {
       // 過去30日のデータが必要なので、最近の日付でテストデータを作成
       const now = new Date();
       const recentExpense: Expense = {
@@ -216,7 +216,7 @@ describe('chartUtils', () => {
       expect(result.every((day) => typeof day.count === 'number')).toBe(true);
     });
 
-    it('excludes expenses older than 30 days', () => {
+    it('30日より古い支払いを除外する', () => {
       const result = aggregateExpensesByDay(mockExpenses); // これらは30日より古い
 
       expect(result).toHaveLength(30);
