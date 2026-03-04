@@ -32,14 +32,14 @@ describe('useLocalGroups', () => {
     localStorageMock.getItem.mockReturnValue(null);
   });
 
-  it('initializes with empty groups when localStorage is empty', () => {
+  it('localStorageが空の場合に空のグループで初期化する', () => {
     const { result } = renderHook(() => useLocalGroups());
 
     expect(result.current.groups).toEqual([]);
     expect(localStorageMock.getItem).toHaveBeenCalledWith('warikan_groups');
   });
 
-  it('initializes with groups from localStorage', () => {
+  it('localStorageからグループを初期化する', () => {
     const storedGroups = [mockGroup];
     localStorageMock.getItem.mockReturnValue(JSON.stringify(storedGroups));
 
@@ -48,7 +48,7 @@ describe('useLocalGroups', () => {
     expect(result.current.groups).toEqual(storedGroups);
   });
 
-  it('handles invalid JSON in localStorage gracefully', () => {
+  it('localStorageの無効なJSONを適切に処理する', () => {
     localStorageMock.getItem.mockReturnValue('invalid json');
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -60,7 +60,7 @@ describe('useLocalGroups', () => {
     consoleSpy.mockRestore();
   });
 
-  it('adds a group and saves to localStorage', () => {
+  it('グループを追加してlocalStorageに保存する', () => {
     const { result } = renderHook(() => useLocalGroups());
 
     act(() => {
@@ -74,7 +74,7 @@ describe('useLocalGroups', () => {
     );
   });
 
-  it('does not add duplicate groups', () => {
+  it('重複するグループを追加しない', () => {
     const { result } = renderHook(() => useLocalGroups());
 
     act(() => {
@@ -89,7 +89,7 @@ describe('useLocalGroups', () => {
     expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
   });
 
-  it('adds new group to beginning of list', () => {
+  it('リストの先頭に新しいグループを追加する', () => {
     const firstGroup = { ...mockGroup, id: 'group-1' };
     const secondGroup = { ...mockGroup, id: 'group-2', name: 'グループ2' };
 
@@ -106,7 +106,7 @@ describe('useLocalGroups', () => {
     expect(result.current.groups).toEqual([secondGroup, firstGroup]);
   });
 
-  it('handles localStorage errors gracefully', () => {
+  it('localStorageのエラーを適切に処理する', () => {
     localStorageMock.setItem.mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });

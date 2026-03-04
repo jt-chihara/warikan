@@ -140,7 +140,7 @@ describe('AnalyticsPage', () => {
     vi.clearAllMocks();
   });
 
-  it('should render basic analytics page structure', () => {
+  it('基本的な分析ページ構造を表示する', () => {
     // シンプルなテスト: ページコンポーネントが問題なく作成できるかのみ確認
     const { container } = render(
       <BrowserRouter>

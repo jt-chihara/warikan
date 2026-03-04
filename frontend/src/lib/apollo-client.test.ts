@@ -8,20 +8,20 @@ vi.mock('import.meta.env', () => ({
 }));
 
 describe('apollo-client', () => {
-  it('creates ApolloClient instance', () => {
+  it('ApolloClientインスタンスを作成する', () => {
     expect(apolloClient).toBeInstanceOf(ApolloClient);
   });
 
-  it('uses InMemoryCache', () => {
+  it('InMemoryCacheを使用する', () => {
     expect(apolloClient.cache).toBeInstanceOf(InMemoryCache);
   });
 
-  it('has httpLink configured', () => {
+  it('httpLinkが設定されている', () => {
     // ApolloClient の link プロパティが存在することを確認
     expect(apolloClient.link).toBeDefined();
   });
 
-  it('uses default GraphQL endpoint when VITE_GRAPHQL_ENDPOINT is not set', () => {
+  it('VITE_GRAPHQL_ENDPOINTが未設定の場合にデフォルトのGraphQLエンドポイントを使用する', () => {
     // デフォルトのエンドポイントが設定されていることを確認するため、
     // リンクの uri プロパティを直接テストするのは困難なため、
     // ApolloClient が正常に作成されることをテスト
@@ -30,7 +30,7 @@ describe('apollo-client', () => {
     expect(typeof apolloClient.mutate).toBe('function');
   });
 
-  it('can perform basic operations', () => {
+  it('基本的な操作を実行できる', () => {
     // ApolloClient の基本的なメソッドが存在することを確認
     expect(typeof apolloClient.query).toBe('function');
     expect(typeof apolloClient.mutate).toBe('function');
@@ -39,7 +39,7 @@ describe('apollo-client', () => {
     expect(typeof apolloClient.writeQuery).toBe('function');
   });
 
-  it('has cache operations available', () => {
+  it('キャッシュ操作が利用可能である', () => {
     // キャッシュ操作のメソッドが存在することを確認
     expect(typeof apolloClient.cache.readQuery).toBe('function');
     expect(typeof apolloClient.cache.writeQuery).toBe('function');
@@ -47,7 +47,7 @@ describe('apollo-client', () => {
     expect(typeof apolloClient.cache.reset).toBe('function');
   });
 
-  it('exports apolloClient as named export', () => {
+  it('apolloClientを名前付きエクスポートとしてエクスポートする', () => {
     // 名前付きエクスポートとして apolloClient が定義されていることを確認
     expect(apolloClient).toBeDefined();
     expect(apolloClient.constructor.name).toBe('ApolloClient');

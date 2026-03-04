@@ -175,7 +175,7 @@ const renderGroupPage = () => {
 };
 
 describe('GroupPage', () => {
-  it('renders group information correctly', async () => {
+  it('グループ情報を正しく表示する', async () => {
     renderGroupPage();
 
     await waitFor(() => {
@@ -189,7 +189,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('shows expenses in the expenses tab', async () => {
+  it('支払いタブに支払い一覧を表示する', async () => {
     renderGroupPage();
 
     await waitFor(() => {
@@ -200,7 +200,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('switches to settlement tab and shows settlements', async () => {
+  it('精算タブに切り替えて精算結果を表示する', async () => {
     const user = userEvent.setup();
     renderGroupPage();
 
@@ -224,7 +224,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('shows member balances in settlement tab', async () => {
+  it('精算タブにメンバーの収支を表示する', async () => {
     const user = userEvent.setup();
     renderGroupPage();
 
@@ -243,7 +243,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('opens expense modal when add expense button is clicked', async () => {
+  it('支払い追加ボタンクリック時に支払いモーダルを開く', async () => {
     const user = userEvent.setup();
     renderGroupPage();
 
@@ -257,7 +257,7 @@ describe('GroupPage', () => {
     // 注意: ExpenseModalの内容はExpenseModal.test.tsxでテストされる
   });
 
-  it('shows loading state', () => {
+  it('ローディング状態を表示する', () => {
     const loadingMocks = [
       {
         request: {
@@ -292,7 +292,7 @@ describe('GroupPage', () => {
     expect(screen.getByText('読み込み中...')).toBeInTheDocument();
   });
 
-  it('shows error state', async () => {
+  it('エラー状態を表示する', async () => {
     const errorMocks = [
       {
         request: {
@@ -325,7 +325,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('deletes expense when delete button is clicked', async () => {
+  it('削除ボタンクリック時に支払いを削除する', async () => {
     const user = userEvent.setup();
 
     // Mock for successful deletion
@@ -385,7 +385,7 @@ describe('GroupPage', () => {
     });
   });
 
-  it('does not delete expense when user cancels confirmation', async () => {
+  it('ユーザーが確認をキャンセルした場合に支払いを削除しない', async () => {
     const user = userEvent.setup();
 
     renderGroupPage();
@@ -416,7 +416,7 @@ describe('GroupPage', () => {
     expect(screen.getByText('ランチ')).toBeInTheDocument();
   });
 
-  it('shows error alert when expense deletion fails', async () => {
+  it('支払い削除失敗時にエラーアラートを表示する', async () => {
     const user = userEvent.setup();
 
     // Mock for failed deletion

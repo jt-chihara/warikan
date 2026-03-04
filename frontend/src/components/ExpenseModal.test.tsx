@@ -24,7 +24,7 @@ describe('ExpenseModal', () => {
     vi.clearAllMocks();
   });
 
-  it('renders nothing when isOpen is false', () => {
+  it('isOpenがfalseの場合は何も表示しない', () => {
     const { container } = render(
       <ExpenseModal
         isOpen={false}
@@ -36,7 +36,7 @@ describe('ExpenseModal', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders modal when isOpen is true', () => {
+  it('isOpenがtrueの場合にモーダルを表示する', () => {
     render(
       <ExpenseModal
         isOpen={true}
@@ -52,7 +52,7 @@ describe('ExpenseModal', () => {
     expect(screen.getByLabelText('支払い者')).toBeInTheDocument();
   });
 
-  it('closes modal when close button is clicked', async () => {
+  it('閉じるボタンクリック時にモーダルを閉じる', async () => {
     const user = userEvent.setup();
 
     render(
@@ -70,7 +70,7 @@ describe('ExpenseModal', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('validates invalid amount', async () => {
+  it('無効な金額を検証する', async () => {
     const user = userEvent.setup();
     window.alert = vi.fn();
 
@@ -97,7 +97,7 @@ describe('ExpenseModal', () => {
     expect(mockOnAddExpense).not.toHaveBeenCalled();
   });
 
-  it('validates no payer selected', async () => {
+  it('支払い者未選択を検証する', async () => {
     const user = userEvent.setup();
     window.alert = vi.fn();
 
@@ -128,7 +128,7 @@ describe('ExpenseModal', () => {
     expect(mockOnAddExpense).not.toHaveBeenCalled();
   });
 
-  it('validates no split members selected', async () => {
+  it('割り勘対象者未選択を検証する', async () => {
     const user = userEvent.setup();
     window.alert = vi.fn();
 
@@ -160,7 +160,7 @@ describe('ExpenseModal', () => {
     expect(mockOnAddExpense).not.toHaveBeenCalled();
   });
 
-  it('submits valid expense data', async () => {
+  it('有効な支払いデータを送信する', async () => {
     const user = userEvent.setup();
 
     render(
@@ -204,7 +204,7 @@ describe('ExpenseModal', () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it('handles select all and clear all buttons', async () => {
+  it('全選択・全解除ボタンを処理する', async () => {
     const user = userEvent.setup();
 
     render(

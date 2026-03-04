@@ -42,7 +42,7 @@ describe('ExpenseLineChart', () => {
     { date: '2025-01-22', amount: 1500, count: 1 },
   ];
 
-  it('should render the chart title', () => {
+  it('チャートタイトルを表示する', () => {
     render(
       <DarkModeProvider>
         <ExpenseLineChart data={mockData} />
@@ -52,7 +52,7 @@ describe('ExpenseLineChart', () => {
     expect(screen.getByText('過去30日の支払い推移')).toBeInTheDocument();
   });
 
-  it('should render line chart components', () => {
+  it('折れ線グラフコンポーネントを表示する', () => {
     render(
       <DarkModeProvider>
         <ExpenseLineChart data={mockData} />
@@ -66,7 +66,7 @@ describe('ExpenseLineChart', () => {
     expect(screen.getByTestId('tooltip')).toBeInTheDocument();
   });
 
-  it('should render with custom currency', () => {
+  it('カスタム通貨で表示する', () => {
     render(
       <DarkModeProvider>
         <ExpenseLineChart data={mockData} currency="USD" />
@@ -76,7 +76,7 @@ describe('ExpenseLineChart', () => {
     expect(screen.getByText('過去30日の支払い推移')).toBeInTheDocument();
   });
 
-  it('should handle empty data', () => {
+  it('空のデータを処理する', () => {
     render(
       <DarkModeProvider>
         <ExpenseLineChart data={[]} />

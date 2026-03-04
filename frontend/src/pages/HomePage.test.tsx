@@ -41,7 +41,7 @@ describe('HomePage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders hero section', () => {
+  it('ヒーローセクションを表示する', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: [],
       addGroup: vi.fn(),
@@ -58,7 +58,7 @@ describe('HomePage', () => {
     expect(screen.getByRole('link', { name: '新しいグループを作成する' })).toBeInTheDocument();
   });
 
-  it('renders feature cards', () => {
+  it('機能カードを表示する', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: [],
       addGroup: vi.fn(),
@@ -73,7 +73,7 @@ describe('HomePage', () => {
     expect(screen.getByText('柔軟な計算')).toBeInTheDocument();
   });
 
-  it('does not show recent groups when no groups exist', () => {
+  it('グループが存在しない場合に最近のグループを表示しない', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: [],
       addGroup: vi.fn(),
@@ -86,7 +86,7 @@ describe('HomePage', () => {
     expect(screen.queryByText('最近のグループ')).not.toBeInTheDocument();
   });
 
-  it('shows recent groups when groups exist', () => {
+  it('グループが存在する場合に最近のグループを表示する', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: mockGroups,
       addGroup: vi.fn(),
@@ -102,7 +102,7 @@ describe('HomePage', () => {
     expect(screen.getByText('説明1')).toBeInTheDocument();
   });
 
-  it('shows member count for each group', () => {
+  it('各グループのメンバー数を表示する', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: mockGroups,
       addGroup: vi.fn(),
@@ -116,7 +116,7 @@ describe('HomePage', () => {
     expect(screen.getByText('1人')).toBeInTheDocument();
   });
 
-  it('formats dates correctly', () => {
+  it('日付を正しくフォーマットする', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: mockGroups,
       addGroup: vi.fn(),
@@ -130,7 +130,7 @@ describe('HomePage', () => {
     expect(dates).toHaveLength(2);
   });
 
-  it('links to group pages correctly', () => {
+  it('グループページへ正しくリンクする', () => {
     vi.mocked(useLocalGroups).mockReturnValue({
       groups: mockGroups,
       addGroup: vi.fn(),

@@ -52,7 +52,7 @@ describe('MemberPieChart', () => {
     },
   ];
 
-  it('should render the chart title', () => {
+  it('チャートタイトルを表示する', () => {
     render(
       <DarkModeProvider>
         <MemberPieChart data={mockData} />
@@ -62,7 +62,7 @@ describe('MemberPieChart', () => {
     expect(screen.getByText('メンバー別支払い分布')).toBeInTheDocument();
   });
 
-  it('should render pie chart components', () => {
+  it('円グラフコンポーネントを表示する', () => {
     render(
       <DarkModeProvider>
         <MemberPieChart data={mockData} />
@@ -75,7 +75,7 @@ describe('MemberPieChart', () => {
     expect(screen.getByTestId('tooltip')).toBeInTheDocument();
   });
 
-  it('should render legend with member names and amounts', () => {
+  it('メンバー名と金額の凡例を表示する', () => {
     const { container } = render(
       <DarkModeProvider>
         <MemberPieChart data={mockData} />
@@ -91,7 +91,7 @@ describe('MemberPieChart', () => {
     expect(colorIndicators).toHaveLength(2);
   });
 
-  it('should show empty message when no data', () => {
+  it('データがない場合に空メッセージを表示する', () => {
     render(
       <DarkModeProvider>
         <MemberPieChart data={[]} />
@@ -102,7 +102,7 @@ describe('MemberPieChart', () => {
     expect(screen.queryByTestId('pie-chart')).not.toBeInTheDocument();
   });
 
-  it('should handle custom currency', () => {
+  it('カスタム通貨を処理する', () => {
     render(
       <DarkModeProvider>
         <MemberPieChart data={mockData} currency="USD" />

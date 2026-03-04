@@ -34,7 +34,7 @@ describe('Layout', () => {
     );
   };
 
-  it('renders navigation with app title', () => {
+  it('アプリタイトル付きのナビゲーションを表示する', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
@@ -44,7 +44,7 @@ describe('Layout', () => {
     expect(screen.getByText('割り勘アプリ')).toBeInTheDocument();
   });
 
-  it('renders new group link', () => {
+  it('新しいグループリンクを表示する', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
@@ -57,7 +57,7 @@ describe('Layout', () => {
     expect(screen.getByText('新規')).toBeInTheDocument();
   });
 
-  it('renders children content', () => {
+  it('子コンテンツを表示する', () => {
     renderWithRouter(
       <Layout>
         <div data-testid="child-content">Test Child Content</div>
@@ -68,7 +68,7 @@ describe('Layout', () => {
     expect(screen.getByText('Test Child Content')).toBeInTheDocument();
   });
 
-  it('has correct navigation links', () => {
+  it('正しいナビゲーションリンクを持つ', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>
@@ -84,7 +84,7 @@ describe('Layout', () => {
     });
   });
 
-  it('applies responsive classes correctly', () => {
+  it('レスポンシブクラスを正しく適用する', () => {
     const { container } = renderWithRouter(
       <Layout>
         <div>Test Content</div>
@@ -108,7 +108,7 @@ describe('Layout', () => {
     );
   });
 
-  it('renders dark mode toggle button', () => {
+  it('ダークモード切り替えボタンを表示する', () => {
     renderWithRouter(
       <Layout>
         <div>Test Content</div>

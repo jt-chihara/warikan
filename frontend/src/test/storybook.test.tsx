@@ -26,9 +26,9 @@ const expenseLineChartStories = composeStories(ExpenseLineChartStories);
 const memberPieChartStories = composeStories(MemberPieChartStories);
 const monthlyBarChartStories = composeStories(MonthlyBarChartStories);
 
-describe('Storybook Component Tests', () => {
+describe('Storybookコンポーネントテスト', () => {
   describe('DeleteConfirmModal', () => {
-    it('Default renders and play function executes', async () => {
+    it('Defaultがレンダリングされplay関数が実行される', async () => {
       const { container } = render(<deleteConfirmModalStories.Default />);
       expect(container).toBeInTheDocument();
       await deleteConfirmModalStories.Default.play?.({ canvasElement: container });
@@ -36,24 +36,24 @@ describe('Storybook Component Tests', () => {
   });
 
   describe('ErrorModal', () => {
-    it('Default renders and play function executes', async () => {
+    it('Defaultがレンダリングされplay関数が実行される', async () => {
       const { container } = render(<errorModalStories.Default />);
       expect(container).toBeInTheDocument();
       await errorModalStories.Default.play?.({ canvasElement: container });
     });
 
-    it('CustomButtonText renders and play function executes', async () => {
+    it('CustomButtonTextがレンダリングされplay関数が実行される', async () => {
       const { container } = render(<errorModalStories.CustomButtonText />);
       expect(container).toBeInTheDocument();
       await errorModalStories.CustomButtonText.play?.({ canvasElement: container });
     });
 
-    it('LongMessage renders', () => {
+    it('LongMessageがレンダリングされる', () => {
       const { container } = render(<errorModalStories.LongMessage />);
       expect(container).toBeInTheDocument();
     });
 
-    it('Closed renders and play function executes', async () => {
+    it('Closedがレンダリングされplay関数が実行される', async () => {
       const { container } = render(<errorModalStories.Closed />);
       expect(container).toBeInTheDocument();
       await errorModalStories.Closed.play?.({ canvasElement: container });
@@ -61,54 +61,54 @@ describe('Storybook Component Tests', () => {
   });
 
   describe('ExpenseModal', () => {
-    it('Create renders', () => {
+    it('Createがレンダリングされる', () => {
       const { container } = render(<expenseModalStories.Create />);
       expect(container).toBeInTheDocument();
     });
 
-    it('Edit renders', () => {
+    it('Editがレンダリングされる', () => {
       const { container } = render(<expenseModalStories.Edit />);
       expect(container).toBeInTheDocument();
     });
   });
 
   describe('Layout', () => {
-    it('Default renders', () => {
+    it('Defaultがレンダリングされる', () => {
       const { container } = render(<layoutStories.Default />);
       expect(container).toBeInTheDocument();
     });
   });
 
   describe('Notification', () => {
-    it('Success renders and play function executes', async () => {
+    it('Successがレンダリングされplay関数が実行される', async () => {
       const { container } = render(<notificationStories.Success />);
       expect(container).toBeInTheDocument();
       await notificationStories.Success.play?.({ canvasElement: container });
     });
 
-    it('ErrorState renders', () => {
+    it('ErrorStateがレンダリングされる', () => {
       const { container } = render(<notificationStories.ErrorState />);
       expect(container).toBeInTheDocument();
     });
 
-    it('Info renders', () => {
+    it('Infoがレンダリングされる', () => {
       const { container } = render(<notificationStories.Info />);
       expect(container).toBeInTheDocument();
     });
   });
 
-  describe('Charts', () => {
-    it('ExpenseLineChart Default renders', () => {
+  describe('チャート', () => {
+    it('ExpenseLineChartのDefaultがレンダリングされる', () => {
       const { container } = render(<expenseLineChartStories.Default />);
       expect(container).toBeInTheDocument();
     });
 
-    it('MemberPieChart Default renders', () => {
+    it('MemberPieChartのDefaultがレンダリングされる', () => {
       const { container } = render(<memberPieChartStories.Default />);
       expect(container).toBeInTheDocument();
     });
 
-    it('MonthlyBarChart Default renders', () => {
+    it('MonthlyBarChartのDefaultがレンダリングされる', () => {
       const { container } = render(<monthlyBarChartStories.Default />);
       expect(container).toBeInTheDocument();
     });

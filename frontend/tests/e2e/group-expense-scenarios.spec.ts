@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Group and Expense Management Scenarios', () => {
-  test.describe('Mobile Scenarios', () => {
-    test('Complete workflow: Create group, add expense, edit expense, delete expense (Mobile)', async ({ page, isMobile }) => {
+test.describe('グループと支払い管理シナリオ', () => {
+  test.describe('モバイルシナリオ', () => {
+    test('完全なワークフロー: グループ作成、支払い追加、支払い編集、支払い削除（モバイル）', async ({ page, isMobile }) => {
       test.skip(!isMobile, 'This test is only for mobile devices');
       
       // テスト用データ
@@ -118,8 +118,8 @@ test.describe('Group and Expense Management Scenarios', () => {
     });
   });
 
-  test.describe('Desktop Scenarios', () => {
-    test('Complete workflow: Create group, add expense, edit expense, delete expense (Desktop)', async ({ page, isMobile }) => {
+  test.describe('デスクトップシナリオ', () => {
+    test('完全なワークフロー: グループ作成、支払い追加、支払い編集、支払い削除（デスクトップ）', async ({ page, isMobile }) => {
       test.skip(isMobile, 'This test is only for desktop devices');
       
       // テスト用データ
@@ -241,8 +241,8 @@ test.describe('Group and Expense Management Scenarios', () => {
     });
   });
 
-  test.describe('Cross-device Features', () => {
-    test('Analytics page navigation works on both mobile and desktop', async ({ page }) => {
+  test.describe('クロスデバイス機能', () => {
+    test('分析ページのナビゲーションがモバイルとデスクトップの両方で動作する', async ({ page }) => {
       // グループを作成
       await page.goto('/groups/new');
       await page.fill('#groupName', 'Analytics Test');
@@ -264,7 +264,7 @@ test.describe('Group and Expense Management Scenarios', () => {
       await expect(page.getByRole('heading', { name: 'Analytics Test' })).toBeVisible();
     });
 
-    test('Tab navigation works correctly', async ({ page }) => {
+    test('タブナビゲーションが正しく動作する', async ({ page }) => {
       // グループを作成
       await page.goto('/groups/new');
       await page.fill('#groupName', 'Tab Test');
