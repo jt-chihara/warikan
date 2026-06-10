@@ -1,0 +1,286 @@
+generatedAt: 2026-06-10T12:57:49.162Z
+routes:
+  HomePage: /
+  CreateGroupPage: /groups/new
+  GroupPage: /groups/:groupId
+  AnalyticsPage: /groups/:groupId/analytics
+  TermsOfServicePage: /terms
+pages:
+  DeleteConfirmModal:
+    - name: モーダルを閉じる
+      aliases: []
+      kind: button
+      locator:
+        strategy: label
+        value: モーダルを閉じる
+      source: src/components/DeleteConfirmModal.tsx:46
+  ErrorModal:
+    - name: モーダルを閉じる
+      aliases: []
+      kind: button
+      locator:
+        strategy: label
+        value: モーダルを閉じる
+      source: src/components/ErrorModal.tsx:39
+  ExpenseModal:
+    - name: モーダルを閉じる
+      aliases: []
+      kind: button
+      locator:
+        strategy: label
+        value: モーダルを閉じる
+      source: src/components/ExpenseModal.tsx:156
+    - name: 支払い者
+      aliases:
+        - paidBy
+      kind: select
+      locator:
+        strategy: label
+        value: 支払い者
+      source: src/components/ExpenseModal.tsx:227
+    - name: 全メンバーを選択
+      aliases:
+        - 全選択
+      kind: button
+      locator:
+        strategy: label
+        value: 全メンバーを選択
+      source: src/components/ExpenseModal.tsx:252
+    - name: 全メンバーの選択を解除
+      aliases:
+        - 全解除
+      kind: button
+      locator:
+        strategy: label
+        value: 全メンバーの選択を解除
+      source: src/components/ExpenseModal.tsx:260
+    - name: 更新
+      aliases:
+        - 追加
+      kind: button
+      locator:
+        strategy: role-name
+        value: 更新
+        alternatives:
+          - 更新
+          - 追加
+      source: src/components/ExpenseModal.tsx:296
+    - name: 操作をキャンセルしてモーダルを閉じる
+      aliases:
+        - キャンセル
+      kind: button
+      locator:
+        strategy: label
+        value: 操作をキャンセルしてモーダルを閉じる
+      source: src/components/ExpenseModal.tsx:303
+    - name: 金額
+      aliases:
+        - "1000"
+        - amount
+      kind: textbox
+      locator:
+        strategy: label
+        value: 金額
+      source: src/components/ExpenseModal.tsx:189
+    - name: 説明
+      aliases:
+        - "例: 昼食代"
+        - description
+      kind: textbox
+      locator:
+        strategy: label
+        value: 説明
+      source: src/components/ExpenseModal.tsx:209
+  Layout:
+    - name: h-5 w-5
+      aliases: []
+      kind: button
+      locator:
+        strategy: role-name
+        value: h-5 w-5
+        alternatives:
+          - h-5 w-5
+          - h-5 w-5
+      source: src/components/Layout.tsx:27
+    - name: 利用規約
+      aliases: []
+      kind: link
+      locator:
+        strategy: role-name
+        value: 利用規約
+      source: src/components/Layout.tsx:53
+  AnalyticsPage:
+    - name: ← グループページに戻る
+      aliases: []
+      kind: link
+      locator:
+        strategy: role-name
+        value: ← グループページに戻る
+      source: src/pages/AnalyticsPage.tsx:114
+    - name: "{param}を表示"
+      parameterized: true
+      aliases:
+        - bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300
+        - bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400
+        - "{param}-tab"
+      kind: button
+      locator:
+        strategy: label
+        value: "{param}を表示"
+      source: src/pages/AnalyticsPage.tsx:147
+  CreateGroupPage:
+    - name: "{param}を削除"
+      parameterized: true
+      aliases:
+        - 削除
+      kind: button
+      locator:
+        strategy: label
+        value: "{param}を削除"
+      source: src/pages/CreateGroupPage.tsx:161
+    - name: 新しいメンバーを追加
+      aliases:
+        - + メンバーを追加
+      kind: button
+      locator:
+        strategy: label
+        value: 新しいメンバーを追加
+      source: src/pages/CreateGroupPage.tsx:173
+    - name: グループ作成をキャンセルしてホームページに戻る
+      aliases:
+        - キャンセル
+      kind: button
+      locator:
+        strategy: label
+        value: グループ作成をキャンセルしてホームページに戻る
+      source: src/pages/CreateGroupPage.tsx:185
+    - name: グループを作成して管理ページに移動
+      aliases:
+        - 作成中...
+        - グループを作成
+      kind: button
+      locator:
+        strategy: label
+        value: グループを作成して管理ページに移動
+      source: src/pages/CreateGroupPage.tsx:193
+    - name: グループ名
+      aliases:
+        - "例: 熱海旅行"
+        - groupName
+      kind: textbox
+      locator:
+        strategy: label
+        value: グループ名
+      source: src/pages/CreateGroupPage.tsx:109
+    - name: 説明（任意）
+      aliases:
+        - "例: 2024年1月の熱海温泉旅行"
+        - description
+      kind: textbox
+      locator:
+        strategy: label
+        value: 説明（任意）
+      source: src/pages/CreateGroupPage.tsx:127
+    - name: メンバー {param} の名前
+      parameterized: true
+      aliases:
+        - メンバー名
+      kind: textbox
+      locator:
+        strategy: label
+        value: メンバー {param} の名前
+      source: src/pages/CreateGroupPage.tsx:152
+  GroupPage:
+    - name: コピー完了!
+      aliases:
+        - 招待リンク
+      kind: button
+      locator:
+        strategy: role-name
+        value: コピー完了!
+        alternatives:
+          - コピー完了!
+          - 招待リンク
+      source: src/pages/GroupPage.tsx:271
+    - name: 📊 データ分析
+      aliases: []
+      kind: link
+      locator:
+        strategy: role-name
+        value: 📊 データ分析
+      source: src/pages/GroupPage.tsx:279
+    - name: コピー完了!
+      aliases:
+        - 招待リンク
+      kind: button
+      locator:
+        strategy: role-name
+        value: コピー完了!
+        alternatives:
+          - コピー完了!
+          - 招待リンク
+      source: src/pages/GroupPage.tsx:309
+    - name: 📊 データ分析
+      aliases: []
+      kind: link
+      locator:
+        strategy: role-name
+        value: 📊 データ分析
+      source: src/pages/GroupPage.tsx:317
+    - name: 支払い記録
+      aliases: []
+      kind: button
+      locator:
+        strategy: role-name
+        value: 支払い記録
+      source: src/pages/GroupPage.tsx:329
+    - name: 精算
+      aliases: []
+      kind: button
+      locator:
+        strategy: role-name
+        value: 精算
+      source: src/pages/GroupPage.tsx:343
+    - name: 支払いを追加
+      aliases: []
+      kind: button
+      locator:
+        strategy: label
+        value: 支払いを追加
+      source: src/pages/GroupPage.tsx:369
+    - name: "{param}の支払いを編集"
+      parameterized: true
+      aliases:
+        - 編集
+      kind: button
+      locator:
+        strategy: label
+        value: "{param}の支払いを編集"
+      source: src/pages/GroupPage.tsx:412
+    - name: "{param}の支払いを削除"
+      parameterized: true
+      aliases:
+        - 削除
+      kind: button
+      locator:
+        strategy: label
+        value: "{param}の支払いを削除"
+      source: src/pages/GroupPage.tsx:420
+  HomePage:
+    - name: 新しいグループを作成する
+      aliases:
+        - グループを作成する
+      kind: link
+      locator:
+        strategy: label
+        value: 新しいグループを作成する
+      source: src/pages/HomePage.tsx:16
+    - name: "{param}グループの詳細を表示"
+      parameterized: true
+      aliases:
+        - text-gray-600 dark:text-gray-400 text-sm mb-2 line-clamp-2
+      kind: link
+      locator:
+        strategy: label
+        value: "{param}グループの詳細を表示"
+      source: src/pages/HomePage.tsx:32

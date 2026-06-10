@@ -1,0 +1,15 @@
+page: CreateGroupPage
+name: グループを作成して詳細ページに遷移する
+---
+- launchApp
+- tapOn: "グループ名"
+- inputText: "熱海旅行"
+- tapOn: "説明"
+- inputText: "2026年6月の熱海温泉旅行"
+- tapOn: "メンバー 1 の名前"
+- inputText: "太郎"
+- tapOn: "メンバーを追加"
+- tapOn: "メンバー 2 の名前"
+- inputText: "花子"
+- tapOn: "グループを作成"
+- assertUrl: /groups/

@@ -65,3 +65,5 @@ DEPLOYMENT.md
 
 frontend/test-results/
 frontend/playwright-report
+
+*/test-results/
